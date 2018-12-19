@@ -7,7 +7,7 @@
         <link href="/css/bootstrap.css" rel="stylesheet">
         <style type="text/css">
             .pre-scrollable {
-                max-height: 100%;
+                max-height: 740px;
             }
             .container {
                 max-width: 100%;
