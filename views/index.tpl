@@ -24,11 +24,12 @@
         <div class="container m-0">
             <div class="row p-1 bg-info">
                 <div class="col-9">
-                    <a href="#" role="button" class="btn btn-sm btn-secondary active">Overview</a>
-                    <button type="button" class="btn btn-sm btn-secondary" data-toggle="modal" data-target="#uploadModal">Upload</button>
+                    <a href="/" role="button" class="btn btn-sm btn-secondary active">Overview</a>
+                    <a href="/upload" role="button" class="btn btn-sm btn-secondary">Upload</a>
+                    <!-- <button type="button" class="btn btn-sm btn-secondary" data-toggle="modal" data-target="#uploadModal">Upload</button> -->
                 </div>
                 <div class="col-3">
-                    <input type="text" class="form-control form-control-sm" placeholder="search" />
+                    <input type="text" disabled class="form-control form-control-sm" placeholder="search" />
                 </div>
             </div>
 
@@ -36,9 +37,13 @@
               <div class="col-2 h-100 d-inline-block">
 
                 <div class="row">
-                  <div class="col p-0">
-                     <div class="list-group"  id="item_list">
-                        <small>
+                  <div class="col p-0 pre-scrollable">
+                     <div class="list-group">
+                        <small id="item_list">
+
+                          % for item in item_list:
+                            {{item}}
+                          % end
                             <a href="#" class="list-group-item list-group-item-action list-group-item-secondary p-2 active">title (1234)</a>
                             <a href="#" class="list-group-item list-group-item-action list-group-item-secondary p-2">title (2345)</a>
                             <a href="#" class="list-group-item list-group-item-action list-group-item-secondary p-2">title (3456)</a>
@@ -75,11 +80,6 @@
                           </tr>
                           <tr>
                             <td>
-                              <span>description</span>
-                            </td>
-                          </tr>
-                          <tr>
-                            <td>
                               <img width="100%" height="100%" src="x.jpg" />
                             </td>
                           </tr>
@@ -104,12 +104,9 @@
                           <tbody>
                             <tr>
                               <td>
-                                <span>score (probably color code it)</span>
-                              </td>
-                            </tr>
-                            <tr>
-                              <td>
-                                <span>other value i don't know the name of</span>
+                                <span class="w-100">score (color)
+                                &nbsp; (rank)
+                                </span>
                               </td>
                             </tr>
                             <tr>
@@ -117,11 +114,7 @@
                                 <a href="#">1234</a>
                               </td>
                             </tr>
-                            <tr>
-                              <td>
-                                <span>description</span>
-                              </td>
-                            </tr>
+                            
                             <tr>
                               <td>
                                 <img width="100%" height="100%" src="x.jpg" />
@@ -145,12 +138,9 @@
                           <tbody>
                             <tr>
                               <td>
-                                <span>score (probably color code it)</span>
-                              </td>
-                            </tr>
-                            <tr>
-                              <td>
-                                <span>other value i don't know the name of</span>
+                                <span class="w-100">score (color)
+                                &nbsp; (rank)
+                                </span>
                               </td>
                             </tr>
                             <tr>
@@ -158,11 +148,7 @@
                                 <a href="#">1234</a>
                               </td>
                             </tr>
-                            <tr>
-                              <td>
-                                <span>description</span>
-                              </td>
-                            </tr>
+                            
                             <tr>
                               <td>
                                 <img width="100%" height="100%" src="x.jpg" />
@@ -177,7 +163,7 @@
                         </table>
                       </div>
                       <div class="col-4 p-1">
-                        						<table class="table bg-light">
+                        <table class="table bg-light">
                           <thead>
                             <tr>
                               <td>Title</td>
@@ -186,12 +172,9 @@
                           <tbody>
                             <tr>
                               <td>
-                                <span>score (probably color code it)</span>
-                              </td>
-                            </tr>
-                            <tr>
-                              <td>
-                                <span>other value i don't know the name of</span>
+                                <span class="w-100">score (color)
+                                &nbsp; (rank)
+                                </span>
                               </td>
                             </tr>
                             <tr>
@@ -199,11 +182,7 @@
                                 <a href="#">1234</a>
                               </td>
                             </tr>
-                            <tr>
-                              <td>
-                                <span>description</span>
-                              </td>
-                            </tr>
+                            
                             <tr>
                               <td>
                                 <img width="100%" height="100%" src="x.jpg" />
@@ -230,12 +209,9 @@
                           <tbody>
                             <tr>
                               <td>
-                                <span>score (probably color code it)</span>
-                              </td>
-                            </tr>
-                            <tr>
-                              <td>
-                                <span>other value i don't know the name of</span>
+                                <span class="w-100">score (color)
+                                &nbsp; (rank)
+                                </span>
                               </td>
                             </tr>
                             <tr>
@@ -243,11 +219,7 @@
                                 <a href="#">1234</a>
                               </td>
                             </tr>
-                            <tr>
-                              <td>
-                                <span>description</span>
-                              </td>
-                            </tr>
+                            
                             <tr>
                               <td>
                                 <img width="100%" height="100%" src="x.jpg" />
@@ -271,12 +243,9 @@
                           <tbody>
                             <tr>
                               <td>
-                                <span>score (probably color code it)</span>
-                              </td>
-                            </tr>
-                            <tr>
-                              <td>
-                                <span>other value i don't know the name of</span>
+                                <span class="w-100">score (color)
+                                &nbsp; (rank)
+                                </span>
                               </td>
                             </tr>
                             <tr>
@@ -284,11 +253,7 @@
                                 <a href="#">1234</a>
                               </td>
                             </tr>
-                            <tr>
-                              <td>
-                                <span>description</span>
-                              </td>
-                            </tr>
+                            
                             <tr>
                               <td>
                                 <img width="100%" height="100%" src="x.jpg" />
@@ -312,12 +277,9 @@
                           <tbody>
                             <tr>
                               <td>
-                                <span>score (probably color code it)</span>
-                              </td>
-                            </tr>
-                            <tr>
-                              <td>
-                                <span>other value i don't know the name of</span>
+                                <span class="w-100">score (color)
+                                &nbsp; (rank)
+                                </span>
                               </td>
                             </tr>
                             <tr>
@@ -325,11 +287,7 @@
                                 <a href="#">1234</a>
                               </td>
                             </tr>
-                            <tr>
-                              <td>
-                                <span>description</span>
-                              </td>
-                            </tr>
+                            
                             <tr>
                               <td>
                                 <img width="100%" height="100%" src="x.jpg" />
@@ -356,12 +314,9 @@
                           <tbody>
                             <tr>
                               <td>
-                                <span>score (probably color code it)</span>
-                              </td>
-                            </tr>
-                            <tr>
-                              <td>
-                                <span>other value i don't know the name of</span>
+                                <span class="w-100">score (color)
+                                &nbsp; (rank)
+                                </span>
                               </td>
                             </tr>
                             <tr>
@@ -369,11 +324,7 @@
                                 <a href="#">1234</a>
                               </td>
                             </tr>
-                            <tr>
-                              <td>
-                                <span>description</span>
-                              </td>
-                            </tr>
+                            
                             <tr>
                               <td>
                                 <img width="100%" height="100%" src="x.jpg" />
@@ -397,12 +348,9 @@
                           <tbody>
                             <tr>
                               <td>
-                                <span>score (probably color code it)</span>
-                              </td>
-                            </tr>
-                            <tr>
-                              <td>
-                                <span>other value i don't know the name of</span>
+                                <span class="w-100">score (color)
+                                &nbsp; (rank)
+                                </span>
                               </td>
                             </tr>
                             <tr>
@@ -410,11 +358,7 @@
                                 <a href="#">1234</a>
                               </td>
                             </tr>
-                            <tr>
-                              <td>
-                                <span>description</span>
-                              </td>
-                            </tr>
+                            
                             <tr>
                               <td>
                                 <img width="100%" height="100%" src="x.jpg" />
@@ -438,12 +382,9 @@
                           <tbody>
                             <tr>
                               <td>
-                                <span>score (probably color code it)</span>
-                              </td>
-                            </tr>
-                            <tr>
-                              <td>
-                                <span>other value i don't know the name of</span>
+                                <span class="w-100">score (color)
+                                &nbsp; (rank)
+                                </span>
                               </td>
                             </tr>
                             <tr>
@@ -451,11 +392,7 @@
                                 <a href="#">1234</a>
                               </td>
                             </tr>
-                            <tr>
-                              <td>
-                                <span>description</span>
-                              </td>
-                            </tr>
+                            
                             <tr>
                               <td>
                                 <img width="100%" height="100%" src="x.jpg" />
@@ -491,7 +428,10 @@
                 </button>
               </div>
               <div class="modal-body">
-                ...
+                <form>
+                    <input type="text" name="tenant" />
+                    <input type="file" name="upload" />
+                </form>
               </div>
               <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
