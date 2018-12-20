@@ -9,11 +9,11 @@ curr_y = 0
 def index(name):
     return template('<b>Hello {{name}}</b>!', name=name)
 
-@route('/js/<filename>')
+@route('/js/<filename>', name='static')
 def server_static(filename):
     return static_file(filename, root='./static/js')
 
-@route('/css/<filename>')
+@route('/css/<filename>', name='static')
 def server_static(filename):
     return static_file(filename, root='./static/css')
 

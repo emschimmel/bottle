@@ -13,30 +13,36 @@
                 max-width: 100%;
             }
         </style>
-
+        <script type="text/javascript">
+            $('#uploadModal').on('shown.bs.modal', function () {
+                $('#uploadModal').trigger('focus')
+            })
+        </script>
     </head>
     <body>
 
         <div class="container m-0">
-            <div class="row">
-                <div class="bg-info p-1 col-12">
+            <div class="row p-1 bg-info">
+                <div class="col-9">
                     <a href="#" role="button" class="btn btn-sm btn-secondary active">Overview</a>
-                    <a href="#" role="button" class="btn btn-sm btn-secondary">Upload</a>
-                    <a href="#" role="button" class="btn btn-sm btn-secondary">extra</a>
-
-                  </div>
+                    <button type="button" class="btn btn-sm btn-secondary" data-toggle="modal" data-target="#uploadModal">Upload</button>
+                </div>
+                <div class="col-3">
+                    <input type="text" class="form-control form-control-sm" placeholder="search" />
+                </div>
             </div>
 
             <div class="row h-100">
-              <div class="col-2 h-100 d-inline-block" id="sidebar">
+              <div class="col-2 h-100 d-inline-block">
 
                 <div class="row">
                   <div class="col p-0">
-                     <div class="list-group">
-                        <a href="#" class="list-group-item list-group-item-action list-group-item-secondary active">1234</a>
-                        <a href="#" class="list-group-item list-group-item-action list-group-item-secondary">2345</a>
-                        <a href="#" class="list-group-item list-group-item-action list-group-item-secondary">3456</a>
-
+                     <div class="list-group"  id="item_list">
+                        <small>
+                            <a href="#" class="list-group-item list-group-item-action list-group-item-secondary p-2 active">title (1234)</a>
+                            <a href="#" class="list-group-item list-group-item-action list-group-item-secondary p-2">title (2345)</a>
+                            <a href="#" class="list-group-item list-group-item-action list-group-item-secondary p-2">title (3456)</a>
+                        </small>
                       </div>
                   </div>
                 </div>
@@ -54,17 +60,17 @@
                   </div>
                   -->
 
-                  <div class="col-3 bg-light border-right">
+                  <div class="col-3 bg-light border-right" id="selected_item">
                     <table class="table">
                         <thead>
                           <tr>
-                            <td>1234</td>
+                            <td>Title</td>
                           </tr>
                         </thead>
                         <tbody>
                           <tr>
                             <td>
-                              <span>title</span>
+                              <a href="#">1234</a>
                             </td>
                           </tr>
                           <tr>
@@ -86,19 +92,29 @@
                       </table>
                   </div>
         <!-- marker -->
-                  <div class="col-8 pre-scrollable" id="detail_pane">
+                  <div class="col-8 pre-scrollable" id="related_items">
                     <div class="row">
                       <div class="col-4 p-1">
                         <table class="table bg-light">
                           <thead>
                             <tr>
-                              <td>45298</td>
+                              <td>Title</td>
                             </tr>
                           </thead>
                           <tbody>
                             <tr>
                               <td>
-                                <span>title</span>
+                                <span>score (probably color code it)</span>
+                              </td>
+                            </tr>
+                            <tr>
+                              <td>
+                                <span>other value i don't know the name of</span>
+                              </td>
+                            </tr>
+                            <tr>
+                              <td>
+                                <a href="#">1234</a>
                               </td>
                             </tr>
                             <tr>
@@ -123,13 +139,23 @@
                         <table class="table bg-light">
                           <thead>
                             <tr>
-                              <td>45298</td>
+                              <td>Title</td>
                             </tr>
                           </thead>
                           <tbody>
                             <tr>
                               <td>
-                                <span>title</span>
+                                <span>score (probably color code it)</span>
+                              </td>
+                            </tr>
+                            <tr>
+                              <td>
+                                <span>other value i don't know the name of</span>
+                              </td>
+                            </tr>
+                            <tr>
+                              <td>
+                                <a href="#">1234</a>
                               </td>
                             </tr>
                             <tr>
@@ -151,16 +177,26 @@
                         </table>
                       </div>
                       <div class="col-4 p-1">
-                        <table class="table bg-light">
+                        						<table class="table bg-light">
                           <thead>
                             <tr>
-                              <td>45298</td>
+                              <td>Title</td>
                             </tr>
                           </thead>
                           <tbody>
                             <tr>
                               <td>
-                                <span>title</span>
+                                <span>score (probably color code it)</span>
+                              </td>
+                            </tr>
+                            <tr>
+                              <td>
+                                <span>other value i don't know the name of</span>
+                              </td>
+                            </tr>
+                            <tr>
+                              <td>
+                                <a href="#">1234</a>
                               </td>
                             </tr>
                             <tr>
@@ -188,13 +224,23 @@
                         <table class="table bg-light">
                           <thead>
                             <tr>
-                              <td>45298</td>
+                              <td>Title</td>
                             </tr>
                           </thead>
                           <tbody>
                             <tr>
                               <td>
-                                <span>title</span>
+                                <span>score (probably color code it)</span>
+                              </td>
+                            </tr>
+                            <tr>
+                              <td>
+                                <span>other value i don't know the name of</span>
+                              </td>
+                            </tr>
+                            <tr>
+                              <td>
+                                <a href="#">1234</a>
                               </td>
                             </tr>
                             <tr>
@@ -219,13 +265,23 @@
                         <table class="table bg-light">
                           <thead>
                             <tr>
-                              <td>45298</td>
+                              <td>Title</td>
                             </tr>
                           </thead>
                           <tbody>
                             <tr>
                               <td>
-                                <span>title</span>
+                                <span>score (probably color code it)</span>
+                              </td>
+                            </tr>
+                            <tr>
+                              <td>
+                                <span>other value i don't know the name of</span>
+                              </td>
+                            </tr>
+                            <tr>
+                              <td>
+                                <a href="#">1234</a>
                               </td>
                             </tr>
                             <tr>
@@ -250,13 +306,23 @@
                         <table class="table bg-light">
                           <thead>
                             <tr>
-                              <td>45298</td>
+                              <td>Title</td>
                             </tr>
                           </thead>
                           <tbody>
                             <tr>
                               <td>
-                                <span>title</span>
+                                <span>score (probably color code it)</span>
+                              </td>
+                            </tr>
+                            <tr>
+                              <td>
+                                <span>other value i don't know the name of</span>
+                              </td>
+                            </tr>
+                            <tr>
+                              <td>
+                                <a href="#">1234</a>
                               </td>
                             </tr>
                             <tr>
@@ -284,13 +350,23 @@
                         <table class="table bg-light">
                           <thead>
                             <tr>
-                              <td>45298</td>
+                              <td>Title</td>
                             </tr>
                           </thead>
                           <tbody>
                             <tr>
                               <td>
-                                <span>title</span>
+                                <span>score (probably color code it)</span>
+                              </td>
+                            </tr>
+                            <tr>
+                              <td>
+                                <span>other value i don't know the name of</span>
+                              </td>
+                            </tr>
+                            <tr>
+                              <td>
+                                <a href="#">1234</a>
                               </td>
                             </tr>
                             <tr>
@@ -315,13 +391,23 @@
                         <table class="table bg-light">
                           <thead>
                             <tr>
-                              <td>45298</td>
+                              <td>Title</td>
                             </tr>
                           </thead>
                           <tbody>
                             <tr>
                               <td>
-                                <span>title</span>
+                                <span>score (probably color code it)</span>
+                              </td>
+                            </tr>
+                            <tr>
+                              <td>
+                                <span>other value i don't know the name of</span>
+                              </td>
+                            </tr>
+                            <tr>
+                              <td>
+                                <a href="#">1234</a>
                               </td>
                             </tr>
                             <tr>
@@ -346,13 +432,23 @@
                         <table class="table bg-light">
                           <thead>
                             <tr>
-                              <td>45298</td>
+                              <td>Title</td>
                             </tr>
                           </thead>
                           <tbody>
                             <tr>
                               <td>
-                                <span>title</span>
+                                <span>score (probably color code it)</span>
+                              </td>
+                            </tr>
+                            <tr>
+                              <td>
+                                <span>other value i don't know the name of</span>
+                              </td>
+                            </tr>
+                            <tr>
+                              <td>
+                                <a href="#">1234</a>
                               </td>
                             </tr>
                             <tr>
@@ -384,6 +480,26 @@
             </div>
           </div>
 
+        <!-- Modal -->
+        <div class="modal fade" id="uploadModal" tabindex="-1" role="dialog" aria-labelledby="uploadModalLabel" aria-hidden="true">
+          <div class="modal-dialog" role="document">
+            <div class="modal-content">
+              <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Modal title</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                  <span aria-hidden="true">&times;</span>
+                </button>
+              </div>
+              <div class="modal-body">
+                ...
+              </div>
+              <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-primary">Save changes</button>
+              </div>
+            </div>
+          </div>
+        </div>
 
     </body>
 </html>
