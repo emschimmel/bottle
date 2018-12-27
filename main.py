@@ -9,13 +9,16 @@ curr_y = 0
 def index(name):
     return template('<b>Hello {{name}}</b>!', name=name)
 
+
 @route('/js/<filename>', name='static')
 def server_static(filename):
     return static_file(filename, root='./static/js')
 
+
 @route('/css/<filename>', name='static')
 def server_static(filename):
     return static_file(filename, root='./static/css')
+
 
 @route('/main')
 @view('main_field')
@@ -30,6 +33,7 @@ def main_field():
     stats['curr_y'] = curr_y
     stats['request'] = request
     return stats
+
 
 @route('/_click_tile')
 def click_tile():

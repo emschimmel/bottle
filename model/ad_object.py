@@ -11,24 +11,23 @@ class AdObject(object):
     title = ""
     price = ""
 
+    loaded = False
+
     def set_initial_data(self, id, rank, score):
         self.id = id
         self.rank = rank
         self.score = score
 
-    # def __repr__(self):
-    #     return "({id}, {url}, {title})".format(id=self.id, url=self.url, title=self.title)
-    #
-    # def __str__(self):
-    #     return "({id}, {url}, {title})".format(id=self.id, url=self.url, title=self.title)
+    def set_enriched_data(self, url, img_url, title, price):
+        self.url = url
+        self.img_url = img_url
+        self.title = title
+        self.price = price
+        self.loaded = True
 
+    def __repr__(self):
+        return "({id}, {url}, {title})".format(id=self.id, url=self.url, title=self.title)
 
-class RecommandationObject(object):
-    addObject = AdObject()
-    recommondations = []
+    def __str__(self):
+        return "(id={id}, url={url}, title={title}, price={price}, img_url={img_url}, loaded={loaded})".format(id=self.id, url=self.url, title=self.title, price=self.price, img_url=self.img_url, loaded=self.loaded)
 
-    def set_parent_data(self, id):
-        self.addObject.id = id
-
-    def add_recommondation(self, recommandation):
-        self.recommondations.append(recommandation)
