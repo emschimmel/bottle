@@ -1,7 +1,7 @@
 import pandas
 
 from model.ad_object import AdObject
-from enrich_data import EnrichData
+from model.tenant_enum import TenantConfig
 import pickle
 
 
@@ -20,10 +20,13 @@ class ParseCsv():
         return self.uploaded_csv_data
 
     def ad_id_overview(self, search_string):
-        if search_string is not "":
-            return list(self.uploaded_csv_data['ad_id'].unique().filter(like=search_string))
-        else:
-            return list(self.uploaded_csv_data['ad_id'].unique())
+        try:
+            if search_string is not "":
+                return list(self.uploaded_csv_data['ad_id'].filter(like=search_string, axis=0).unique())
+            else:
+                return list(self.uploaded_csv_data['ad_id'].unique())
+        except:
+            return list()
 
     def get_ad_by_id(self, tenant, ad_id):
         result = AdObject()
@@ -34,9 +37,12 @@ class ParseCsv():
             result.set_enriched_data(url=enriched_result.url,
                                      img_url=enriched_result.img_url,
                                      title=enriched_result.title,
-                                     price=enriched_result.price)
+                                     price=enriched_result.price,
+                                     loaded=enriched_result.loaded,
+                                     error=enriched_result.error)
         else:
             self.enriched_data_for_id(tenant=tenant, ad_id=ad_id)
+            print("result ready")
         return result
 
     def get_recommenders_by_parent_id(self, tenant, ad_id):
@@ -51,17 +57,21 @@ class ParseCsv():
                 result.set_enriched_data(url=enriched_result.url,
                                          img_url=enriched_result.img_url,
                                          title=enriched_result.title,
-                                         price=enriched_result.price)
+                                         price=enriched_result.price,
+                                         loaded=enriched_result.loaded,
+                                         error=enriched_result.error)
             else:
+                # todo: move this to a non blocking thread
                 self.enriched_data_for_id(tenant=tenant, ad_id=row[2])
             result_list.append(result)
         return result_list
 
     def enriched_data_for_id(self, tenant, ad_id):
-        data = EnrichData().start_for_id(tenant=tenant, ad_id=ad_id)
+        data = TenantConfig().startForId(tenant=tenant, id=ad_id)
+        print(data)
         if data.loaded:
             self.enriched_data.update({ad_id: data})
-            self.save_enriched_data()
+            # self.save_enriched_data()
 
     CONFIG_PATH = "config"
     PARSED_FILE_SUFFIX = "dump"
