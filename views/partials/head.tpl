@@ -10,5 +10,8 @@
         .container {
             max-width: 100%;
         }
+        .recommendation thead td:first-child {
+            height: 80px;
+        }
     </style>
 </head>

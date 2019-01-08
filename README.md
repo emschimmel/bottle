@@ -25,13 +25,13 @@ Extra pip packages needed:
 #### Hard requirements
 - √ cold start error. Handle exception in tenant enum?
 - √ make search box working in the DF
-- dump enriched data to file
+- √ dump enriched data to file
 - dump upload variables + state variables to file
-- restore dumped data
+- √ restore dumped data
 - restore state from file
 - fix order in which adds are scraped
 - fix upload -> redirect to index without reload.
-- fix 2dehands scrapper
+- √ fix 2dehands scrapper
 
 ### Medium requirements
 - kijiji scrapper

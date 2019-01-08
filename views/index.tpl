@@ -44,7 +44,7 @@
                       </div>
                       -->
 
-                      <div class="col-3 bg-light border-right" id="selected_item">
+                      <div class="col-3 bg-light border-right pre-scrollable" id="selected_item">
                         % include('partials/selected_item_partial.tpl')
                       </div>
                       <div class="col-8 pre-scrollable" id="related_items">

@@ -1,4 +1,4 @@
-<table class="table bg-light">
+<table class="table bg-light recommendation">
   <thead>
     <tr>
       <td>
