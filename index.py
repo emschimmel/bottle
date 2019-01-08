@@ -1,30 +1,17 @@
 import os
 from bottle import route, run, template, view, static_file, request, redirect, post, get
 from data_frame import ParseCsv
-from model.tenant_enum import TenantConfig
 from model.ad_object import AdObject
+from model.config_object import FileName, SystemConfig
 import math
-
-####################################
-# Static config
-####################################
-CONFIG_PATH = "config"
-ORIGINAL_FILE_SUFFIX = "original"
-PARSED_FILE_SUFFIX = "dump"
-FILE_NAME_DUMP = "{path}/{suffix}.json".format(path=CONFIG_PATH,
-                                                   suffix=PARSED_FILE_SUFFIX)
-FILE_NAME_ORIGINAL = "{path}/{suffix}.csv".format(path=CONFIG_PATH,
-                                                   suffix=ORIGINAL_FILE_SUFFIX)
-SELECTABLE_PAGE_AMOUNTS = [10, 50, 100]
 
 ####################################
 # State config
 ####################################
-SUPPORTED_TENANTS = TenantConfig().getTenantList()
 overview_data = dict()
 search_string = ""
 selected_item = 0
-tenant = SUPPORTED_TENANTS[0]
+tenant = SystemConfig.supported_tenants()[0]
 
 current_page = 0
 amount_pages = 1
@@ -103,14 +90,14 @@ def __page_bar_list():
 def __process_original_file():
     global search_string
 
-    df.restore(FILE_NAME_ORIGINAL)
+    df.restore(FileName.original_file_name())
     search_string = ""
     # EnrichData(df).process(tenant)
 
 
 def __draw_index():
     # maybe we need a beter check here
-    if os.path.exists(FILE_NAME_ORIGINAL):
+    if os.path.exists(FileName.original_file_name()):
         ad_list = __update_item_list()
         if len(ad_list) is 0:
             return __draw_index_search_data()
@@ -125,7 +112,7 @@ def __draw_index():
 
         # pagination
         view['max_per_page'] = max_per_page
-        view['selectable_page_amounts'] = SELECTABLE_PAGE_AMOUNTS
+        view['selectable_page_amounts'] = SystemConfig.selectable_amounts()
         view['page_bar'] = __page_bar_list()
         view['current_page'] = current_page
 
@@ -220,7 +207,7 @@ def change_amount_per_page(amount):
 @view('upload')
 def view_upload():
     view = dict()
-    view['tenant_list'] = SUPPORTED_TENANTS
+    view['tenant_list'] = SystemConfig.supported_tenants()
     return view
 
 
@@ -232,9 +219,9 @@ def do_upload():
     # use_all = request.files.get('use_all')
     # start = request.files.get('start')
     # end = request.files.get('end')
-    if not os.path.exists(CONFIG_PATH):
-        os.makedirs(CONFIG_PATH)
-    upload.save(FILE_NAME_ORIGINAL, overwrite=True)
+    if not os.path.exists(FileName.config_path()):
+        os.makedirs(FileName.config_path())
+    upload.save(FileName.original_file_name(), overwrite=True)
 
     __process_original_file()
     print("yay, done")
@@ -251,11 +238,9 @@ def do_search():
 # On server start
 ####################################
 
-if os.path.exists(FILE_NAME_DUMP):
-    # df.restore(FILE_NAME_DUMP)
+if os.path.exists(FileName.dump_file_name()):
     df.load_enriched_data()
-else:
-    if os.path.exists(FILE_NAME_ORIGINAL):
-        __process_original_file()
+if os.path.exists(FileName.original_file_name()):
+    __process_original_file()
 
 run(host='localhost', port=8084)
