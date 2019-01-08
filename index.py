@@ -2,7 +2,7 @@ import os
 from bottle import route, run, template, view, static_file, request, redirect, post, get
 from data_frame import ParseCsv
 from model.tenant_enum import TenantConfig
-import model.ad_object
+from model.ad_object import AdObject
 import math
 
 ####################################
@@ -81,8 +81,8 @@ def __update_item_list():
     output = []
     if len(paged_output) > 0:
         output = paged_output[current_page]
-
         if selected_item not in output:
+            print("set selected_item")
             selected_item = output[0] if len(output)>0 else 0
 
     return output

@@ -23,12 +23,15 @@ Extra pip packages needed:
 ### TODO
 
 #### Hard requirements
-√ cold start error. Handle exception in tenant enum?
-√ make search box working in the DF
+- √ cold start error. Handle exception in tenant enum?
+- √ make search box working in the DF
 - dump enriched data to file
+- dump upload variables + state variables to file
 - restore dumped data
+- restore state from file
 - fix order in which adds are scraped
-- make default 2de hands restorable
+- fix upload -> redirect to index without reload.
+- fix 2dehands scrapper
 
 ### Medium requirements
 - kijiji scrapper
@@ -37,17 +40,18 @@ Extra pip packages needed:
 - build docker container
 - update README
 - dev guide
-√ remove main
+- √ remove main
 
 #### Soft requirements
-√ pagination
+- √ pagination
 - progress bars for scrappers
 - make filters
 - filters in upload window
 - busybox when uploading
 - More verb Ui
+- handle config nicer
 
 #### Improvements
-√ split index.tpl in partials
+- √ split index.tpl in partials
 - make index.py stateless
 - make search faster

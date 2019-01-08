@@ -11,7 +11,7 @@ class ParseCsv():
     # enriched_data = pandas.DataFrame()
 
     def restore(self, file_name):
-        self.uploaded_csv_data = pandas.read_csv(file_name)
+        self.uploaded_csv_data = pandas.read_csv(file_name, dtype={'ad_id':str})
         self.uploaded_csv_data = self.uploaded_csv_data.drop_duplicates()
 
     def save_data(self, file_name):
@@ -70,8 +70,9 @@ class ParseCsv():
     def enriched_data_for_id(self, tenant, ad_id):
         data = TenantConfig().startForId(tenant=tenant, id=ad_id)
         print(data)
-        if data.loaded:
-            self.enriched_data.update({ad_id: data})
+        if data is not None:
+            if data.loaded:
+                self.enriched_data.update({ad_id: data})
             # self.save_enriched_data()
 
     CONFIG_PATH = "config"
