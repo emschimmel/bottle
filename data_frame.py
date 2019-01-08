@@ -73,20 +73,30 @@ class ParseCsv():
         if data is not None:
             if data.loaded:
                 self.enriched_data.update({ad_id: data})
-            # self.save_enriched_data()
+            self.save_enriched_data()
 
     CONFIG_PATH = "config"
     PARSED_FILE_SUFFIX = "dump"
+    STATE_FILE_SUFFIX = "state"
     FILE_NAME_DUMP = "{path}/{suffix}.json".format(path=CONFIG_PATH,
                                                    suffix=PARSED_FILE_SUFFIX)
+    FILE_NAME_STATE = "{path}/{suffix}.json".format(path=CONFIG_PATH,
+                                                   suffix=STATE_FILE_SUFFIX)
 
     def load_enriched_data(self):
-        # with open(self.FILE_NAME_DUMP, 'rb') as f:
-        #     self.enriched_data = pickle.load(f)
+        with open(self.FILE_NAME_DUMP, 'rb') as f:
+            self.enriched_data = pickle.load(f)
         pass
-
 
     def save_enriched_data(self):
         with open(self.FILE_NAME_DUMP, 'wb') as f:
             pickle.dump(self.enriched_data, f, protocol=pickle.HIGHEST_PROTOCOL)
 
+    def load_config_data(self):
+        with open(self.FILE_NAME_STATE, 'rb') as f:
+            self.enriched_data = pickle.load(f)
+        pass
+
+    def save_config_data(self):
+        with open(self.FILE_NAME_STATE, 'wb') as f:
+            pickle.dump(self.enriched_data, f, protocol=pickle.HIGHEST_PROTOCOL)

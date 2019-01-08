@@ -79,5 +79,5 @@ class EnrichDataTweedeHands():
                     object.img_url = "/"+imgUrl
         return object
 #
-EnrichDataTweedeHands().start_for_id(ad_id="478237791", tenant="2dehands")
+# EnrichDataTweedeHands().start_for_id(ad_id="478237791", tenant="2dehands")
 # EnrichDataTweedeHands().start_for_id(ad_id="471726179", tenant="2dehands")
