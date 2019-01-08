@@ -1,28 +1,16 @@
 <html>
-    <head>
-        <meta charset="utf-8" />
-        <title>upload</title>
-        <script type="text/javascript" src="/js/jquery-3.3.1.min.js"></script>
-        <link href="/css/bootstrap.css" rel="stylesheet">
-        <style type="text/css">
-            .pre-scrollable {
-                max-height: 740px;
-            }
-            .container {
-                max-width: 100%;
-            }
-        </style>
-    </head>
+    % include('partials/head.tpl')
     <body>
         <div class="container m-0">
             <div class="row p-1 bg-info">
                 <div class="col-9">
                     <a href="/" role="button" class="btn btn-sm btn-secondary">Overview</a>
                     <a href="/upload" role="button" class="btn btn-sm btn-secondary active">Upload</a>
-                    <!-- <button type="button" class="btn btn-sm btn-secondary" data-toggle="modal" data-target="#uploadModal">Upload</button> -->
                 </div>
                 <div class="col-3">
-                    <input type="text" class="form-control form-control-sm" placeholder="search" />
+                    <div class="collapse show" id="search_box">
+                        <input type="text" disabled class="form-control form-control-sm collapse show" placeholder="can't search during upload" id="search" value="" />
+                    </div>
                 </div>
             </div>
 
@@ -64,7 +52,7 @@
                             </form>
                           </div>
                           <div class="modal-footer">
-                            <button type="submit" class="btn btn-primary">Upload</button>
+                            <button type="submit" id="upload_button" class="btn btn-primary collapse show">Upload</button>
                           </div>
                         </div>
                       </div>
@@ -73,5 +61,13 @@
               </div>
             </div>
         </div>
+         <script type="text/javascript">
+            // block upload button after click
+            var searchTimeout = null;
+            $('#upload_button').click(function() {
+                $('#upload_button').hide()
+            })
+
+        </script>
     </body>
 </html>
