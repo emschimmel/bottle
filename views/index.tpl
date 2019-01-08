@@ -63,6 +63,13 @@
                             </div>
                         % end
                       % end
+                      % if not_loaded:
+                        <script type="text/javascript">
+                            var reloadTimeout = setTimeout(function() {
+                                location.reload()
+                              }, 1000);
+                        </script>
+                      % end
                 </div>
                 % else:
                 <div class="row">

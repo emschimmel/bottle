@@ -127,9 +127,10 @@ def __draw_index():
             view['selected_item_pane_img_url'] = selected_ad.img_url
             view['selected_item_pane_url'] = selected_ad.url
             view['selected_item_pane_price'] = selected_ad.price
-
+            recommendations = df.get_recommenders_by_parent_id(tenant, selected_item)
+            view['not_loaded'] = len([not_loaded.loaded for not_loaded in recommendations if not not_loaded.loaded])>0
             #recommenders pane
-            view['recommendations'] = df.get_recommenders_by_parent_id(tenant, selected_item)
+            view['recommendations'] = recommendations
 
         #fallback
         view['no_data'] = False
