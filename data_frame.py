@@ -18,13 +18,19 @@ class ParseCsv():
     def save_data(self, file_name):
         self.uploaded_csv_data.to_csv(file_name)
 
+    def amount_adds(self):
+        return len(self.uploaded_csv_data['ad_id'].unique())+len(self.uploaded_csv_data['recommended_ad_id'].unique())
+
+    def amount_enriched(self):
+        return len(self.enriched_data)
+
     def overview_data(self):
         return self.uploaded_csv_data
 
     def ad_id_overview(self, search_string):
         try:
             if search_string is not "":
-                return list(self.uploaded_csv_data['ad_id'].filter(like=search_string, axis=0).unique())
+                return list(self.uploaded_csv_data['ad_id'].filter(like=search_string, axis='ad_id').unique())
             else:
                 return list(self.uploaded_csv_data['ad_id'].unique())
         except:

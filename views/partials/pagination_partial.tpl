@@ -46,6 +46,13 @@
         </select>
         per page.
     </span>
+    <script type="text/javascript">
+
+        // onchange amount adds per page
+        function changeAmountPerPage(val){
+            $.ajax({url: "_amount_per_page/"+val, success: function(data){ location.reload();}});
+        }
+    </script>
 
   </div>
 </div>

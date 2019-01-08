@@ -8,7 +8,6 @@ import math
 ####################################
 # State config
 ####################################
-overview_data = dict()
 search_string = ""
 selected_item = 0
 tenant = SystemConfig.supported_tenants()[0]
@@ -157,6 +156,19 @@ def __draw_index_search_data():
     return view
 
 
+def __draw_config_controller():
+    view = dict()
+    view['tenant'] = tenant
+    view['tenant_list'] = SystemConfig.supported_tenants()
+    view['search_string'] = search_string
+    view['selected_item'] = selected_item
+    view['current_page'] = current_page
+    view['max_per_page'] = max_per_page
+    view['selectable_page_amounts'] = SystemConfig.selectable_amounts()
+    view['amount_todo'] = df.amount_adds()
+    view['amount_done'] = df.amount_enriched()
+    return view
+
 ####################################
 # public routes
 ####################################
@@ -204,6 +216,30 @@ def change_amount_per_page(amount):
     max_per_page = amount
 
 
+@get('/config')
+@view('config')
+def config_control():
+    return __draw_config_controller()
+
+
+@post('/config')
+def save_config():
+    return __draw_config_controller()
+
+
+@post('/_start_scrape')
+def start_scrape():
+    return __draw_config_controller()
+
+@post('/_stop_scrape')
+def stop_scrape():
+    return __draw_config_controller()
+
+@post('/original')
+def reduse_original():
+    return __draw_config_controller()
+
+
 @get('/upload')
 @view('upload')
 def view_upload():
@@ -231,7 +267,6 @@ def do_upload():
 
 @post('/search')
 def do_search():
-    global overview_data
     global search_string
     search_string = request.forms.get('search')
 

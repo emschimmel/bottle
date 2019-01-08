@@ -29,9 +29,11 @@ Extra pip packages needed:
 - dump upload variables + state variables to file
 - √ restore dumped data
 - restore state from file
-- fix order in which adds are scraped
+- √ fix order in which adds are scraped
 - fix upload -> redirect to index without reload.
 - √ fix 2dehands scrapper
+- search box broke
+- add config screen
 
 ### Medium requirements
 - kijiji scrapper
@@ -50,6 +52,7 @@ Extra pip packages needed:
 - busybox when uploading
 - More verb Ui
 - handle config nicer
+- selected item set? -> adjust page number
 
 #### Improvements
 - √ split index.tpl in partials

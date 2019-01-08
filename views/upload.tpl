@@ -6,6 +6,7 @@
                 <div class="col-9">
                     <a href="/" role="button" class="btn btn-sm btn-secondary">Overview</a>
                     <a href="/upload" role="button" class="btn btn-sm btn-secondary active">Upload</a>
+                    <a href="/config" role="button" class="btn btn-sm btn-secondary">Config</a>
                 </div>
                 <div class="col-3">
                     <div class="collapse show" id="search_box">
@@ -21,7 +22,6 @@
                       <div class="modal-dialog" role="document">
                         <div class="modal-content">
                           <div class="modal-body">
-                            <form>
                                 <div class="form-group">
                                     <label for="tenant">Tenant</label>
                                     <select name="tenant" id="tenant" class="form-control" placeholder="Select Tenant">
@@ -49,7 +49,6 @@
                                 </div>
                                 -->
 
-                            </form>
                           </div>
                           <div class="modal-footer">
                             <button type="submit" id="upload_button" class="btn btn-primary collapse show">Upload</button>
@@ -63,7 +62,6 @@
         </div>
          <script type="text/javascript">
             // block upload button after click
-            var searchTimeout = null;
             $('#upload_button').click(function() {
                 $('#upload_button').hide()
             })

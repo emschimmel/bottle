@@ -12,10 +12,6 @@
 </div>
 
 <script type="text/javascript">
-    // onchange amount adds per page
-    function changeAmountPerPage(val){
-        $.ajax({url: "_amount_per_page/"+val, success: function(data){ location.reload();}});
-    }
 
     // onkeyup search. Will delay so you can type
     var searchTimeout = null;

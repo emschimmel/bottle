@@ -10,6 +10,7 @@
                 <div class="col-9">
                     <a href="/" role="button" class="btn btn-sm btn-secondary active">Overview</a>
                     <a href="/upload" role="button" class="btn btn-sm btn-secondary">Upload</a>
+                    <a href="/config" role="button" class="btn btn-sm btn-secondary">Config</a>
                     <span>current tenant: {{tenant}}</span>
                 </div>
                 <div class="col-3">
