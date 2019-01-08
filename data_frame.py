@@ -12,6 +12,7 @@ class ParseCsv():
 
     def restore(self, file_name):
         self.uploaded_csv_data = pandas.read_csv(file_name)
+        self.uploaded_csv_data = self.uploaded_csv_data.drop_duplicates()
 
     def save_data(self, file_name):
         self.uploaded_csv_data.to_csv(file_name)

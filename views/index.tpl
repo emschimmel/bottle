@@ -241,6 +241,11 @@
                             Selected add page unavailable is unavailable at the tenant
                         % else:
                             Loading...
+                        <script type="text/javascript">
+                            var reloadTimeout = setTimeout(function() {
+                                location.reload()
+                              }, 2000);
+                        </script>
                         % end
                         </span>
                     </div>
@@ -296,8 +301,6 @@
                 searchTimeout = null;
 
                 $.ajax({url: "_search/"+$('#search')[0].value, success: function(data){ location.reload();}});
-                //ajax code
-
               }, 500);
             })
 
