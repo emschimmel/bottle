@@ -18,7 +18,7 @@ class TenantEnum(Enum):
         return self.scrapper
 
     def startForId(self, ad_id):
-        return self.scrapper().start_for_id(ad_id=ad_id, tenant=self.name)
+        return self.scrapper().start_for_id(ad_id=ad_id, tenant=self.tenant)
 
     def getName(self):
         return self.tenant

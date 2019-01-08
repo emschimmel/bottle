@@ -1,9 +1,12 @@
 import os
+from json import loads
+
 from model.ad_object import AdObject
 from bs4 import BeautifulSoup
 import requests
 import urllib.request as urllib
 import certifi
+import re
 
 
 class EnrichDataTweedeHands():
@@ -20,23 +23,33 @@ class EnrichDataTweedeHands():
         object.url = url
 
         try:
-            html.find('div', {"class": "error-404-background"})
-            print("Page returns a 404")
-            object.loaded = True
-            object.error = True
+            error = html.find('div', {"class": "error-404-background"})
+            if error:
+                print("Page returns a 404")
+                object.loaded = True
+                object.error = True
         except Exception:
             print("Page is availale")
 
+        if not object.error:
             try:
-                object.price = html.find('span', itemprop="price").getText().strip()
+                json_text = html.find("script", text=re.compile("data-datalayer-content-json"))['data-datalayer-content-json']
+                json_data = loads(json_text)
+                price = json_data[0]['a']['prc']['amt']
+                if not price:
+                    price = html.find('span', itemprop="price").getText().strip()
+                object.price = price
+                object.loaded = True
             except Exception as e:
                 print("price not found")
                 print(e)
 
             title = False
             try:
-                title = html.find('h1', itemprop="name").getText().strip()
+                title = html.find('meta', property="og:title")
+                title = title["content"] if title else html.find('h1', itemprop="name").getText().strip()
                 object.title = title
+                object.loaded = True
             except Exception as e:
                 print("title not found")
                 print(e)
@@ -45,7 +58,8 @@ class EnrichDataTweedeHands():
                 imgUrl = "img/{tenant}/{id}.jpg".format(tenant=tenant, id=ad_id)
                 if not os.path.exists(imgUrl):
                     try:
-                        imgFromSite = html.find('img', alt=title)['src']
+                        imgFromSite = html.find('meta', property="og:image")
+                        imgFromSite = imgFromSite["content"] if imgFromSite else html.find('img', alt=title)['src']
                         IMG_PATH = "img/{tenant}".format(tenant=tenant)
                         if not os.path.exists(IMG_PATH):
                             os.makedirs(IMG_PATH)
@@ -64,5 +78,5 @@ class EnrichDataTweedeHands():
                     object.img_url = "/"+imgUrl
         return object
 #
-# EnrichData().start_for_id(ad_id="478237791")
-# EnrichData().start_for_id(ad_id="471726179")
+EnrichDataTweedeHands().start_for_id(ad_id="478237791", tenant="2dehands")
+# EnrichDataTweedeHands().start_for_id(ad_id="471726179", tenant="2dehands")

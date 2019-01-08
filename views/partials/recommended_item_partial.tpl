@@ -33,7 +33,7 @@
     <tr>
       <td>
           % if recommendation.loaded is True:
-            <img width="100%" height="100%" src="{{recommendation.img_url}}" />
+            <img width="100%" height="250px" src="{{recommendation.img_url}}" />
           % else:
             <span>Loading...</span>
           % end

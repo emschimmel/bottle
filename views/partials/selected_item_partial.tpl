@@ -12,7 +12,7 @@
       </tr>
       <tr>
         <td>
-          <img width="100%" height="100%" src="{{selected_item_pane_img_url}}" />
+          <img width="100%" height="50%" src="{{selected_item_pane_img_url}}" />
         </td>
       </tr>
       <tr>
