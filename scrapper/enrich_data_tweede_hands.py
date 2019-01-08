@@ -60,14 +60,15 @@ class EnrichDataTweedeHands():
                     try:
                         imgFromSite = html.find('meta', property="og:image")
                         imgFromSite = imgFromSite["content"] if imgFromSite else html.find('img', alt=title)['src']
-                        IMG_PATH = "img/{tenant}".format(tenant=tenant)
-                        if not os.path.exists(IMG_PATH):
-                            os.makedirs(IMG_PATH)
-                        with urllib.urlopen(imgFromSite, cafile=certifi.where()) as response, open(imgUrl, 'wb') as out_file:
-                            data = response.read()  # a `bytes` object
-                            out_file.write(data)
-                            object.img_url = "/"+imgUrl
-                            object.loaded = True
+                        if not imgFromSite.endswith('.svg'):
+                            IMG_PATH = "img/{tenant}".format(tenant=tenant)
+                            if not os.path.exists(IMG_PATH):
+                                os.makedirs(IMG_PATH)
+                            with urllib.urlopen(imgFromSite, cafile=certifi.where()) as response, open(imgUrl, 'wb') as out_file:
+                                data = response.read()  # a `bytes` object
+                                out_file.write(data)
+                                object.img_url = "/"+imgUrl
+                        object.loaded = True
                     except Exception as e:
                         object.img_url = ""
                         print("image not found")
