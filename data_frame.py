@@ -103,8 +103,6 @@ class ParseCsv():
         if data is not None:
             if data.loaded:
                 self.enriched_data.update({ad_id: data})
-        print("data")
-        print(data)
 
     def __enriched_data_for_id_with_recommendations(self, tenant, ad_id):
         self.__enriched_data_for_id_without_save(tenant=tenant, ad_id=ad_id)
