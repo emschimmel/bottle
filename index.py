@@ -39,6 +39,10 @@ def server_static(filename):
 def server_static(filename):
     return static_file(filename, root='./static/css')
 
+@route('/static/img/<filename>', name='static')
+def server_static(filename):
+    return static_file(filename, root='./static/img')
+
 @route('/img/<subdir>/<filename>', name='static')
 def server_static(subdir, filename):
     return static_file(filename, root='./img/{subdir}'.format(subdir=subdir))
@@ -229,11 +233,13 @@ def save_config():
 
 @post('/_start_scrape')
 def start_scrape():
-    return __draw_config_controller()
-
-@post('/_stop_scrape')
-def stop_scrape():
-    return __draw_config_controller()
+    if request.forms.get('use_all'):
+        df.start_all(tenant=tenant)
+    else:
+        df.start_for_criteria(tenant=tenant,
+                              amount=request.forms.get('amount'),
+                              start=request.forms.get('start'),
+                              end=request.forms.get('end'))
 
 @post('/original')
 def reduse_original():

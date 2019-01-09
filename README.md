@@ -43,6 +43,7 @@ Extra pip packages needed:
 - update README
 - dev guide
 - √ remove main
+- modify original csv
 
 #### Soft requirements
 - √ pagination

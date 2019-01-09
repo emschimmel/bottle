@@ -63,7 +63,7 @@
                                     <select>
                                 </div>
                                 <div class="form-group row ml-0 mr-0 justify-content-end">
-                                    <button type="submit" id="start_button" class="btn btn-primary collapse show">Save</button>
+                                    <button type="submit" id="save_button" class="btn btn-primary collapse show">Save</button>
                                 </div>
                             </form>
                          </div>
@@ -72,7 +72,7 @@
 
                     <div class="col-4 p-1">
                         <div class="border h-100 p-1">
-                            <form action="/scrape" method="post" enctype="multipart/form-data">
+                            <form action="/scrape" method="post" id="scrape_form" enctype="multipart/form-data">
                                 <div class="form-group row ml-0 mr-0">
                                     <span class="alert alert-primary col-12">Pre-load data into the application</span>
                                 </div>
@@ -87,20 +87,20 @@
                                     <input type="checkbox" checked name="use_all" id="use_all" class="form-control col-6" placeholder="start all"  onchange="document.getElementById('start').disabled = this.checked;document.getElementById('end').disabled = this.checked;;document.getElementById('amount').disabled = this.checked;" />
                                 </div>
                                 <div class="form-group row ml-0 mr-0">
-                                    <label for="start" class="col-6">Start</label>
-                                    <input type="number" disabled name="start" id="start" class="form-control col-6" placeholder="Start id" />
+                                    <label for="start" class="col-6">Start id</label>
+                                    <input type="text" disabled name="start" id="start" class="form-control col-6" placeholder="Start id" />
                                 </div>
                                 <div class="form-group row ml-0 mr-0">
-                                    <label for="end" class="col-6">End</label>
-                                    <input type="number" disabled name="end" id="end" class="form-control col-6" placeholder="End id" />
+                                    <label for="end" class="col-6">End id</label>
+                                    <input type="text" disabled name="end" id="end" class="form-control col-6" placeholder="End id" />
                                 </div>
                                 <div class="form-group row ml-0 mr-0">
-                                    <label for="end" class="col-6">Amount</label>
-                                    <input type="number" disabled name="amount" id="amount" class="form-control col-6" placeholder="Amount" />
+                                    <label for="amount" class="col-6">Amount</label>
+                                    <input type="number" disabled name="amount" id="amount" class="form-control col-6" placeholder="Amount" aria-describedby="amountHelp" />
+                                    <small id="amountHelp" class="form-text text-muted">The amount if based on adds to scrape within the optional start id/end id range. If none provided, the whole range will be used.</small>
                                 </div>
                                 <div class="form-group row ml-0 mr-0 justify-content-end">
-                                    <span class="col-6 collapse hide" id="warning">Reloading the browser will not stop the prosess</span>
-                                    <button type="button" id="stop_button" class="btn btn-primary collapse hide">Stop</button>
+                                    <span class="collapse hide" id="warning">Reloading the browser will not stop the prosess</span>
                                     <button type="button" id="start_button" class="btn btn-primary collapse show">Start</button>
                                 </div>
                             </form>
@@ -113,7 +113,7 @@
                                     <span class="alert alert-primary col-12">Use only items where data we have</span>
                                 </div>
                                 <div class="form-group row ml-0 mr-0 justify-content-end">
-                                    <button type="button" id="start_button" class="btn btn-primary collapse show">Modify original csv file</button>
+                                    <button type="button" id="modify_csv_button" class="btn btn-primary collapse show">Modify original csv file</button>
                                 </div>
                             </form>
                          </div>
@@ -123,21 +123,13 @@
               </div>
             </div>
         </div>
-         <script type="text/javascript">
+        <script type="text/javascript">
             $('#start_button').click(function() {
+                var form = $('#scrape_form')
                 $('#warning').show()
                 $('#start_button').hide()
-                $('#stop_button').show()
-                $.ajax({url: "_start_scrape/"});
-
-            })
-            $('#stop_button').click(function() {
-                $('#warning').hide()
-                $('#start_button').show()
-                $('#stop_button').hide()
-                $.ajax({url: "_stop_scrape/"});
-            })
-
+                $.ajax({type: "POST", url: "_start_scrape", data:form.serialize()});
+            });
         </script>
     </body>
 </html>
