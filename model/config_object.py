@@ -1,29 +1,29 @@
 from model.tenant_enum import TenantConfig
+import configparser
+import ast
 
 
 class ConfigObject(object):
+    config_file = "config/state_config.ini"
+    parser = configparser.RawConfigParser()
+    parser.read(config_file)
 
-
-    SUPPORTED_TENANTS = TenantConfig().getTenantList()
     CONFIG_PATH = "config"
-    ORIGINAL_FILE_SUFFIX = "original"
-    PARSED_FILE_SUFFIX = "dump"
-    STATE_FILE_SUFFIX = "state"
-    SELECTABLE_PAGE_AMOUNTS = [10, 50, 100]
+    ORIGINAL_FILE_SUFFIX = parser.get('SystemConfig', 'original_file_suffix', fallback='original')
+    PARSED_FILE_SUFFIX = parser.get('SystemConfig', 'parsed_file_suffix', fallback='dump')
+    SELECTABLE_PAGE_AMOUNTS = ast.literal_eval(parser.get('SystemConfig', 'selectable_page_amounts', fallback="[10, 50, 100]"))
 
     ####################################
     # State config
     ####################################
-    overview_data = dict()
-    search_string = ""
-    selected_item = 0
-    tenant = SUPPORTED_TENANTS[0] # "2dehands"
+    search_string = parser.get('UserConfig', 'search_string', fallback="")
+    selected_item = parser.get('UserConfig', 'selected_item', fallback="0")
+    tenant = parser.get('UserConfig', 'tenant', fallback=TenantConfig().getTenantList()[0]) # "2dehands"
 
-    current_page = 0
-    max_per_page = 50
+    max_per_page = parser.getint('UserConfig', 'max_per_page', fallback=50)
 
 
-class FileName():
+class FileName(ConfigObject):
 
     @staticmethod
     def config_path():
@@ -34,31 +34,46 @@ class FileName():
         return "{path}/{suffix}.json".format(path=ConfigObject.CONFIG_PATH, suffix=ConfigObject.PARSED_FILE_SUFFIX)
 
     @staticmethod
-    def state_file_name():
-        return "{path}/{suffix}.json".format(path=ConfigObject.CONFIG_PATH, suffix=ConfigObject.STATE_FILE_SUFFIX)
-
-    @staticmethod
     def original_file_name():
         return "{path}/{suffix}.csv".format(path=ConfigObject.CONFIG_PATH, suffix=ConfigObject.ORIGINAL_FILE_SUFFIX)
 
 
-class SystemConfig():
+class SystemConfig(ConfigObject):
 
     @staticmethod
     def supported_tenants():
-        return ConfigObject.SUPPORTED_TENANTS
+        return TenantConfig().getTenantList()
 
     @ staticmethod
     def selectable_amounts():
         return ConfigObject.SELECTABLE_PAGE_AMOUNTS
 
 
-class State():
+class State(ConfigObject):
 
     @staticmethod
     def saved_config():
         return ConfigObject
 
-    # load state
+    def set_variables(self, tenant, search_string, selected_item, max_per_page):
+        ConfigObject.tenant = tenant
+        ConfigObject.search_string = search_string
+        ConfigObject.selected_item = selected_item
+        ConfigObject.max_per_page = max_per_page
 
     # store state
+    def store_state(self):
+        parser = configparser.RawConfigParser()
+        parser.add_section('UserConfig')
+        parser.set('UserConfig', 'tenant', ConfigObject.tenant)
+        parser.set('UserConfig', 'search_string', ConfigObject.search_string)
+        parser.set('UserConfig', 'selected_item', ConfigObject.selected_item)
+        parser.set('UserConfig', 'max_per_page', ConfigObject.max_per_page)
+        parser.add_section('SystemConfig')
+        parser.set('SystemConfig', 'original_file_suffix', ConfigObject.ORIGINAL_FILE_SUFFIX)
+        parser.set('SystemConfig', 'parsed_file_suffix', ConfigObject.PARSED_FILE_SUFFIX)
+        parser.set('SystemConfig', 'selectable_page_amounts', ConfigObject.SELECTABLE_PAGE_AMOUNTS)
+
+        with open(ConfigObject.config_file, 'w') as file:
+            # json.dump(self.config, file)
+            parser.write(file)

@@ -2,25 +2,25 @@ import os
 from bottle import route, run, template, view, static_file, request, redirect, post, get
 from data_frame import ParseCsv
 from model.ad_object import AdObject
-from model.config_object import FileName, SystemConfig
+from model.config_object import FileName, SystemConfig, State
 import math
+
+####################################
+# Instances
+####################################
+df = ParseCsv()
+state = State()
 
 ####################################
 # State config
 ####################################
-search_string = ""
-selected_item = 0
-tenant = SystemConfig.supported_tenants()[0]
+search_string = state.search_string
+selected_item = state.selected_item
+tenant = state.tenant
 
-current_page = 0
+current_page = None
+max_per_page = state.max_per_page
 amount_pages = 1
-max_per_page = 50
-
-####################################
-# Datasource instance
-####################################
-df = ParseCsv()
-
 
 ####################################
 # Static loaders
@@ -61,18 +61,18 @@ def __update_item_list():
     global current_page
 
     full_output = df.ad_id_overview(search_string)
-    print("full_output length {l}".format(l=len(full_output)))
-
     paged_output = [full_output[i:i + max_per_page] for i in range(0, len(full_output), max_per_page)]
-    amount_pages = math.ceil(len(paged_output) / max_per_page)
-    if amount_pages < current_page:
-        current_page = 0
+    amount_pages = len(paged_output)
+
+    if current_page is None:
+        current_page = math.floor(full_output.index(selected_item)/max_per_page) if selected_item in full_output else 0
+    print("full_output length {l}".format(l=len(full_output)))
 
     output = []
     if len(paged_output) > 0:
         output = paged_output[current_page]
-        if selected_item not in output:
-            print("set selected_item")
+        print("set selected_item")
+        if selected_item is None:
             selected_item = output[0] if len(output)>0 else 0
 
     return output
@@ -83,7 +83,7 @@ def __page_bar_list():
     sub_set.add(0)
     sub_set.add(amount_pages)
     sub_set.add(current_page)
-    start = current_page-2 if current_page-2 >0 else 1
+    start = current_page-2 if current_page is not None and current_page-2 >0 else 1
     for e in range(start, start+5 if start+5 < amount_pages else amount_pages):
         sub_set.add(e)
 
@@ -95,7 +95,6 @@ def __process_original_file():
 
     df.restore(FileName.original_file_name())
     search_string = ""
-    # EnrichData(df).process(tenant)
 
 
 def __draw_index():
@@ -195,7 +194,9 @@ def open_item(ad_id):
 @view('index')
 def open_page(page):
     global current_page
+    global selected_item
 
+    selected_item = None
     current_page = page
     return redirect('/')
 
@@ -227,9 +228,23 @@ def config_control():
 
 
 @post('/config')
+@view('config')
 def save_config():
-    return __draw_config_controller()
+    global tenant
+    global search_string
+    global selected_item
+    global max_per_page
 
+    tenant = request.forms.get('tenant')
+    search_string = request.forms.get('search_string')
+    selected_item = request.forms.get('selected_item')
+    max_per_page = int(request.forms.get('max_per_page'))
+    state.set_variables(tenant=tenant,
+                        search_string=search_string,
+                        selected_item=selected_item,
+                        max_per_page=max_per_page)
+    state.store_state()
+    return __draw_config_controller()
 
 @post('/_start_scrape')
 def start_scrape():
@@ -243,6 +258,7 @@ def start_scrape():
 
 @post('/original')
 def reduse_original():
+    df.reduce_uploaded_csv_data()
     return __draw_config_controller()
 
 

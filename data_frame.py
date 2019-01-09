@@ -75,6 +75,22 @@ class ParseCsv():
         return len(self.enriched_data)
 
     ############################################
+    # modify original csv file
+    ############################################
+
+    def reduce_uploaded_csv_data(self):
+        parent_ids = self.uploaded_csv_data['ad_id'].unique()
+        for id in parent_ids:
+            if id not in self.enriched_data:
+                self.uploaded_csv_data = self.uploaded_csv_data[self.uploaded_csv_data['ad_id'] != id]
+        recommendation_ids = self.uploaded_csv_data['recommended_ad_id'].unique()
+        for id in recommendation_ids:
+            if id not in self.enriched_data:
+                self.uploaded_csv_data = self.uploaded_csv_data[self.uploaded_csv_data['recommended_ad_id'] != id]
+        self.save_data(FileName.original_file_name())
+
+
+    ############################################
     # used thread
     ############################################
 
@@ -87,6 +103,8 @@ class ParseCsv():
         if data is not None:
             if data.loaded:
                 self.enriched_data.update({ad_id: data})
+        print("data")
+        print(data)
 
     def __enriched_data_for_id_with_recommendations(self, tenant, ad_id):
         self.__enriched_data_for_id_without_save(tenant=tenant, ad_id=ad_id)

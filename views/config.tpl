@@ -31,7 +31,7 @@
                                     <select name="tenant" id="tenant" class="form-control col-6" placeholder="Select Tenant">
                                       % for tenant_item in tenant_list:
                                         <option value="{{tenant_item}}"
-                                        % if tenant is tenant_item:
+                                        % if tenant == tenant_item:
                                             selected
                                         % end
                                         >{{tenant_item}}</option>
@@ -47,15 +47,11 @@
                                     <input type="text" name="selected_item" id="selected_item" class="form-control col-6" placeholder="default selected item" value="{{selected_item}}" />
                                 </div>
                                 <div class="form-group row ml-0 mr-0">
-                                    <label for="current_page" class="col-6">Default current page</label>
-                                    <input type="text" name="current_page" id="current_page" class="form-control col-6" placeholder="default current page" value="{{current_page}}" />
-                                </div>
-                                <div class="form-group row ml-0 mr-0">
-                                    <label for="max_per_page" class="col-6">Default current page</label>
+                                    <label for="max_per_page" class="col-6">Default amount per page</label>
                                     <select name="max_per_page" id="max_per_page" class="form-control col-6" placeholder="Select Tenant">
                                       % for selectable_amount in selectable_page_amounts:
                                         <option value="{{selectable_amount}}"
-                                        % if max_per_page is selectable_amount:
+                                        % if max_per_page is int(selectable_amount):
                                             selected
                                         % end
                                         >{{selectable_amount}}</option>
@@ -100,8 +96,12 @@
                                     <small id="amountHelp" class="form-text text-muted">The amount if based on adds to scrape within the optional start id/end id range. If none provided, the whole range will be used.</small>
                                 </div>
                                 <div class="form-group row ml-0 mr-0 justify-content-end">
-                                    <span class="collapse hide" id="warning">Reloading the browser will not stop the prosess</span>
-                                    <button type="button" id="start_button" class="btn btn-primary collapse show">Start</button>
+                                    % if (amount_done / amount_todo * 100) <100:
+                                        <span class="collapse hide" id="warning">Reloading the browser will not stop the prosess</span>
+                                        <button type="button" id="start_button" class="btn btn-primary collapse show">Start</button>
+                                    % else:
+                                        <span class="collapse hide" id="warning">All data available</span>
+                                    % end
                                 </div>
                             </form>
                         </div>
@@ -113,7 +113,7 @@
                                     <span class="alert alert-primary col-12">Use only items where data we have</span>
                                 </div>
                                 <div class="form-group row ml-0 mr-0 justify-content-end">
-                                    <button type="button" id="modify_csv_button" class="btn btn-primary collapse show">Modify original csv file</button>
+                                    <button type="submit" id="modify_csv_button" class="btn btn-primary collapse show">Modify original csv file</button>
                                 </div>
                             </form>
                          </div>

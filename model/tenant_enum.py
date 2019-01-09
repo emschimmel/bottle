@@ -31,7 +31,7 @@ class TenantConfig():
 
     def startForId(self, tenant, id):
         for e in TenantEnum:
-            if e.tenant is tenant:
+            if e.tenant == tenant:
                 return e.startForId(id)
         # return (e.startForId(id) for e in TenantEnum if e.tenant is tenant)
 
