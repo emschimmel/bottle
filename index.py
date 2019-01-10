@@ -259,7 +259,6 @@ def start_scrape():
     if request.forms.get('use_all'):
         df.start_all()
     else:
-        print(request.forms)
         df.start_for_criteria(amount=request.forms.get('amount'),
                               start=request.forms.get('start'),
                               end=request.forms.get('end'))

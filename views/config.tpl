@@ -85,14 +85,9 @@
                                 <div class="form-group row ml-0 mr-0">
                                     <span class="col-6">Total to do</span>
                                     <div class="col-6 progress p-0">
-                                      <div class="progress-bar bg-info" style="width: {{(amount_done / amount_todo * 100)}}%" role="progressbar" aria-valuenow="{{amount_done}}" aria-valuemin="0" aria-valuemax="{{amount_todo}}">{{round(amount_done / amount_todo * 100)}}%</div>
+                                      <div class="progress-bar bg-info" style="width: {{(amount_done / amount_todo * 100)}}%" role="progressbar" aria-valuenow="{{amount_done}}" aria-valuemin="0" aria-valuemax="{{amount_todo}}" aria-describedby="progresHelp">{{round(amount_done / amount_todo * 100)}}%</div>
                                     </div>
-
-                                </div>
-                                <div class="form-group row ml-0 mr-0">
-                                    <span class="col-6 offset-6 p-0">
-                                        {{amount_done}} / {{amount_todo}}
-                                    </span>
+                                    <small id="progresHelp" class="offset-6 form-text text-muted">{{amount_done}} / {{amount_todo}}</small>
                                 </div>
                                 <div class="form-group row ml-0 mr-0">
                                     <label for="use_all" class="col-6">Use whole file</label>
