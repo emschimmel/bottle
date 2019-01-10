@@ -69,11 +69,16 @@ class DataActions(DataFrame):
     ############################################
     @staticmethod
     def amount_adds():
-        return len(DataFrame.uploaded_csv_data['ad_id'].unique())+len(DataFrame.uploaded_csv_data['recommended_ad_id'].unique())
+        return len(DataFrame.uploaded_csv_data['ad_id'].unique())
 
     @staticmethod
     def amount_enriched():
-        return len(DataFrame.enriched_data)
+        count = 0
+        all = DataFrame.uploaded_csv_data['ad_id'].unique()
+        for id in all:
+            if id in DataFrame.enriched_data:
+                count += 1
+        return count
 
     ############################################
     # modify original csv file

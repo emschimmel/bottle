@@ -85,8 +85,14 @@
                                 <div class="form-group row ml-0 mr-0">
                                     <span class="col-6">Total to do</span>
                                     <div class="col-6 progress p-0">
-                                      <div class="progress-bar bg-info" style="width: {{(amount_done / amount_todo * 100)}}%" role="progressbar" aria-valuenow="{{amount_done}}" aria-valuemin="0" aria-valuemax="{{amount_todo}}"></div>
+                                      <div class="progress-bar bg-info" style="width: {{(amount_done / amount_todo * 100)}}%" role="progressbar" aria-valuenow="{{amount_done}}" aria-valuemin="0" aria-valuemax="{{amount_todo}}">{{round(amount_done / amount_todo * 100)}}%</div>
                                     </div>
+
+                                </div>
+                                <div class="form-group row ml-0 mr-0">
+                                    <span class="col-6 offset-6 p-0">
+                                        {{amount_done}} / {{amount_todo}}
+                                    </span>
                                 </div>
                                 <div class="form-group row ml-0 mr-0">
                                     <label for="use_all" class="col-6">Use whole file</label>
@@ -103,7 +109,7 @@
                                 <div class="form-group row ml-0 mr-0">
                                     <label for="amount" class="col-6">Amount</label>
                                     <input type="number" disabled name="amount" id="amount" class="form-control col-6" placeholder="Amount" aria-describedby="amountHelp" />
-                                    <small id="amountHelp" class="form-text text-muted">The amount if based on adds to scrape within the optional start id/end id range. If none provided, the whole range will be used.</small>
+                                    <small id="amountHelp" class="form-text text-muted pl-3">The amount is based on adds to scrape within the optional start id/end id range. <br />If none provided, the whole range will be used. Amount ads will also scrape the recommended adds.</small>
                                 </div>
                                 <div class="form-group row ml-0 mr-0 justify-content-end">
                                     % if not offline_mode:
