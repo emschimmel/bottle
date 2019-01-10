@@ -1,11 +1,15 @@
 # Ui tool to visualize ad recommendations
 
-### STARTUP
+### Start
+
+The format of the csv files should be this order of fields: 
+```ad_id,recommended_ad_id,rank,score```
 
 There are 2 ways to load data into this tool.
-You can either upload it using the userinterface.
+You can either upload it using the userinterface to `upload` the csv file (only in online mode).
 
-Or you use the manual approach and put the csv file in the directory `./config/original.csv` and modify the `./config/state_config.ini` file so the right tenant is set.
+Or you use the manual approach when the application is not running. 
+Fot this put the csv file in the directory `./config/original.csv` and modify the `./config/state_config.ini` file so the right tenant is set.
 The name of the tenant should be one of the options mentioned in `./model/tenant_enum.py` since that name is used in the class switch to select the right scrapper.
 
 To start the scrape process you have to run the application. When you click an item in the overview for which no scrapped data is available, the tool will automatically try to retrieve it and reload the page.
@@ -19,15 +23,16 @@ Because we expect that the tool can be used without a connection to the internet
 Another advantage to this is that when the data is onhand, there won't be a dead link when the add is put offline in the meanwhile. 
 Those images are stored under `./img/<tenant>`.
 
-### MAINTENANCE
+### Maintenance
 
 This tool relies on how the tenants website. If they change properties, the scrapper might start failing to find fields. The `./scrapper/enrich_data_<tenant>.py` files need to be adjusted if this happens.
 
 ### RUN
 
-$python3 index.py
+Make sure to use Python3 (Python2 is NOT supported). Use the index.py file as the main.
+`$python3 index.py`
 
-url: http://localhost:8084/main
+Open this url in any browser: http://localhost:8084/main
 
 ### Install
 
@@ -50,8 +55,6 @@ Extra pip packages needed:
 - marktplaats scrapper http://marktplaats.nl/adId
 - denmark dba scrapper
 - build docker container
-- update README
-- dev guide
 - modify original csv
 
 #### Soft requirements

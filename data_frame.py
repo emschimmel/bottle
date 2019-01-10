@@ -60,7 +60,7 @@ class DataActions(DataFrame):
                                      price=enriched_result.price,
                                      loaded=enriched_result.loaded,
                                      error=enriched_result.error)
-        else:
+        elif not State.offline_mode:
             self.__enriched_data_for_id(ad_id=ad_id)
         return result
 

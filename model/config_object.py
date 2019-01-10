@@ -22,6 +22,7 @@ class ConfigObject(object):
     tenant = parser.get('UserConfig', 'tenant', fallback=TenantConfig().getTenantList()[0]) # "2dehands"
 
     max_per_page = parser.getint('UserConfig', 'max_per_page', fallback=50)
+    offline_mode = parser.getboolean('UserConfig', 'offline_mode', fallback=False)
 
 
 class FileName(ConfigObject):
@@ -49,11 +50,12 @@ class State(ConfigObject):
     def saved_config():
         return ConfigObject
 
-    def set_variables(self, tenant, search_string, selected_item, max_per_page):
+    def set_variables(self, tenant, search_string, selected_item, max_per_page, offline_mode):
         ConfigObject.tenant = tenant
         ConfigObject.search_string = search_string
         ConfigObject.selected_item = selected_item
         ConfigObject.max_per_page = max_per_page
+        ConfigObject.offline_mode = offline_mode
 
     # store state
     def store_state(self):
@@ -63,6 +65,7 @@ class State(ConfigObject):
         parser.set('UserConfig', 'search_string', ConfigObject.search_string)
         parser.set('UserConfig', 'selected_item', ConfigObject.selected_item)
         parser.set('UserConfig', 'max_per_page', ConfigObject.max_per_page)
+        parser.set('UserConfig', 'offline_mode', ConfigObject.offline_mode)
         parser.add_section('SystemConfig')
         parser.set('SystemConfig', 'original_file_suffix', ConfigObject.ORIGINAL_FILE_SUFFIX)
         parser.set('SystemConfig', 'parsed_file_suffix', ConfigObject.PARSED_FILE_SUFFIX)

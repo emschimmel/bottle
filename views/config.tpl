@@ -5,7 +5,9 @@
             <div class="row p-1 bg-info">
                 <div class="col-9">
                     <a href="/" role="button" class="btn btn-sm btn-secondary">Overview</a>
+                    % if not offline_mode:
                     <a href="/upload" role="button" class="btn btn-sm btn-secondary">Upload</a>
+                    % end
                     <a href="/config" role="button" class="btn btn-sm btn-secondary active">Config</a>
                     <span>current tenant: {{tenant}}</span>
 
@@ -58,6 +60,14 @@
                                       % end
                                     <select>
                                 </div>
+                                <div class="form-group row ml-0 mr-0">
+                                    <label for="offline_mode" class="col-6">Use offline</label>
+                                    <input type="checkbox" name="offline_mode" id="offline_mode" class="form-control col-6" placeholder="offline"
+                                     % if offline_mode:
+                                        checked
+                                     % end
+                                     />
+                                </div>
                                 <div class="form-group row ml-0 mr-0 justify-content-end">
                                     <button type="submit" id="save_button" class="btn btn-primary collapse show">Save</button>
                                 </div>
@@ -96,11 +106,15 @@
                                     <small id="amountHelp" class="form-text text-muted">The amount if based on adds to scrape within the optional start id/end id range. If none provided, the whole range will be used.</small>
                                 </div>
                                 <div class="form-group row ml-0 mr-0 justify-content-end">
-                                    % if (amount_done / amount_todo * 100) <100:
-                                        <span class="collapse hide" id="warning">Reloading the browser will not stop the prosess</span>
-                                        <button type="button" id="start_button" class="btn btn-primary collapse show">Start</button>
+                                    % if not offline_mode:
+                                        % if (amount_done / amount_todo * 100) <100:
+                                            <span class="collapse hide" id="warning">Reloading the browser will not stop the prosess</span>
+                                            <button type="button" id="start_button" class="btn btn-primary collapse show">Start</button>
+                                        % else:
+                                            <span class="collapse hide" id="warning">All data available</span>
+                                        % end
                                     % else:
-                                        <span class="collapse hide" id="warning">All data available</span>
+                                        <span class="collapse hide" id="warning">Application in offline mode</span>
                                     % end
                                 </div>
                             </form>

@@ -17,6 +17,7 @@ state = State()
 search_string = state.search_string
 selected_item = state.selected_item
 tenant = state.tenant
+offline_mode = state.offline_mode
 
 current_page = None
 max_per_page = state.max_per_page
@@ -107,6 +108,7 @@ def __draw_index():
         # top pane
         view['tenant'] = tenant
         view['search_string'] = search_string
+        view['offline_mode'] = offline_mode
 
         # list pane
         view['item_list'] = ad_list
@@ -147,6 +149,7 @@ def __draw_index_no_data():
     view['search_string'] = search_string
     view['no_data'] = True
     view['no_search_data'] = False
+    view['offline_mode'] = offline_mode
     return view
 
 
@@ -168,6 +171,7 @@ def __draw_config_controller():
     view['current_page'] = current_page
     view['max_per_page'] = max_per_page
     view['selectable_page_amounts'] = State.SELECTABLE_PAGE_AMOUNTS
+    view['offline_mode'] = offline_mode
     view['amount_todo'] = df.amount_adds()
     view['amount_done'] = df.amount_enriched()
     return view
@@ -234,15 +238,19 @@ def save_config():
     global search_string
     global selected_item
     global max_per_page
+    global offline_mode
 
     tenant = request.forms.get('tenant')
     search_string = request.forms.get('search_string')
     selected_item = request.forms.get('selected_item')
+    offline_mode = True if request.forms.get('offline_mode') else False
+
     max_per_page = int(request.forms.get('max_per_page'))
     state.set_variables(tenant=tenant,
                         search_string=search_string,
                         selected_item=selected_item,
-                        max_per_page=max_per_page)
+                        max_per_page=max_per_page,
+                        offline_mode=offline_mode)
     state.store_state()
     return __draw_config_controller()
 

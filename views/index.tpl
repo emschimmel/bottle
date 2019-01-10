@@ -9,7 +9,9 @@
             <div class="row p-1 bg-info">
                 <div class="col-9">
                     <a href="/" role="button" class="btn btn-sm btn-secondary active">Overview</a>
+                    % if not offline_mode:
                     <a href="/upload" role="button" class="btn btn-sm btn-secondary">Upload</a>
+                    % end
                     <a href="/config" role="button" class="btn btn-sm btn-secondary">Config</a>
                     <span>current tenant: {{tenant}}</span>
                 </div>
@@ -64,7 +66,7 @@
                             </div>
                         % end
                       % end
-                      % if not_loaded:
+                      % if not_loaded and not offline_mode:
                         <script type="text/javascript">
                             var reloadTimeout = setTimeout(function() {
                                 location.reload()
@@ -79,12 +81,16 @@
                         % if selected_ad_error is True:
                             Selected add page unavailable is unavailable at the tenant
                         % else:
-                            Loading...
-                        <script type="text/javascript">
-                            var reloadTimeout = setTimeout(function() {
-                                location.reload()
-                              }, 2000);
-                        </script>
+                            % if not offline_mode:
+                                Loading...
+                                <script type="text/javascript">
+                                    var reloadTimeout = setTimeout(function() {
+                                        location.reload()
+                                      }, 2000);
+                                </script>
+                            % else:
+                                Data unavailable
+                            % end
                         % end
                         </span>
                     </div>
