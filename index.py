@@ -1,14 +1,14 @@
 import os
 from bottle import route, run, template, view, static_file, request, redirect, post, get
-from data_frame import ParseCsv
+from data_frame import DataActions
 from model.ad_object import AdObject
-from model.config_object import FileName, SystemConfig, State
+from model.config_object import FileName, State
 import math
 
 ####################################
 # Instances
 ####################################
-df = ParseCsv()
+df = DataActions()
 state = State()
 
 ####################################
@@ -93,7 +93,7 @@ def __page_bar_list():
 def __process_original_file():
     global search_string
 
-    df.restore(FileName.original_file_name())
+    df.restore()
     search_string = ""
 
 
@@ -114,12 +114,12 @@ def __draw_index():
 
         # pagination
         view['max_per_page'] = max_per_page
-        view['selectable_page_amounts'] = SystemConfig.selectable_amounts()
+        view['selectable_page_amounts'] = State.SELECTABLE_PAGE_AMOUNTS
         view['page_bar'] = __page_bar_list()
         view['current_page'] = current_page
 
         # ad pane
-        selected_ad = df.get_ad_by_id(tenant, selected_item)
+        selected_ad = df.get_ad_by_id(selected_item)
         view['selected_ad_complete'] = selected_ad.loaded
         view['selected_ad_error'] = selected_ad.error
 
@@ -129,7 +129,7 @@ def __draw_index():
             view['selected_item_pane_img_url'] = selected_ad.img_url
             view['selected_item_pane_url'] = selected_ad.url
             view['selected_item_pane_price'] = selected_ad.price
-            recommendations = df.get_recommenders_by_parent_id(tenant, selected_item)
+            recommendations = df.get_recommenders_by_parent_id(selected_item)
             view['not_loaded'] = len([not_loaded.loaded for not_loaded in recommendations if not not_loaded.loaded])>0
             #recommenders pane
             view['recommendations'] = recommendations
@@ -162,12 +162,12 @@ def __draw_index_search_data():
 def __draw_config_controller():
     view = dict()
     view['tenant'] = tenant
-    view['tenant_list'] = SystemConfig.supported_tenants()
+    view['tenant_list'] = State.supported_tenants()
     view['search_string'] = search_string
     view['selected_item'] = selected_item
     view['current_page'] = current_page
     view['max_per_page'] = max_per_page
-    view['selectable_page_amounts'] = SystemConfig.selectable_amounts()
+    view['selectable_page_amounts'] = State.SELECTABLE_PAGE_AMOUNTS
     view['amount_todo'] = df.amount_adds()
     view['amount_done'] = df.amount_enriched()
     return view
@@ -249,10 +249,10 @@ def save_config():
 @post('/_start_scrape')
 def start_scrape():
     if request.forms.get('use_all'):
-        df.start_all(tenant=tenant)
+        df.start_all()
     else:
-        df.start_for_criteria(tenant=tenant,
-                              amount=request.forms.get('amount'),
+        print(request.forms)
+        df.start_for_criteria(amount=request.forms.get('amount'),
                               start=request.forms.get('start'),
                               end=request.forms.get('end'))
 
@@ -266,7 +266,7 @@ def reduse_original():
 @view('upload')
 def view_upload():
     view = dict()
-    view['tenant_list'] = SystemConfig.supported_tenants()
+    view['tenant_list'] = State.supported_tenants()
     return view
 
 
@@ -281,7 +281,8 @@ def do_upload():
     if not os.path.exists(FileName.config_path()):
         os.makedirs(FileName.config_path())
     upload.save(FileName.original_file_name(), overwrite=True)
-
+    state.tenant = tenant
+    state.store_state()
     __process_original_file()
     print("yay, done")
     return redirect('/')
@@ -292,10 +293,10 @@ def do_search():
     global search_string
     search_string = request.forms.get('search')
 
+
 ####################################
 # On server start
 ####################################
-
 if os.path.exists(FileName.dump_file_name()):
     df.load_enriched_data()
 if os.path.exists(FileName.original_file_name()):

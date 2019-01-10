@@ -12,6 +12,7 @@ class ConfigObject(object):
     ORIGINAL_FILE_SUFFIX = parser.get('SystemConfig', 'original_file_suffix', fallback='original')
     PARSED_FILE_SUFFIX = parser.get('SystemConfig', 'parsed_file_suffix', fallback='dump')
     SELECTABLE_PAGE_AMOUNTS = ast.literal_eval(parser.get('SystemConfig', 'selectable_page_amounts', fallback="[10, 50, 100]"))
+    MAX_WORKERS = parser.getint('SystemConfig', 'max_workers', fallback=10)
 
     ####################################
     # State config
@@ -38,18 +39,11 @@ class FileName(ConfigObject):
         return "{path}/{suffix}.csv".format(path=ConfigObject.CONFIG_PATH, suffix=ConfigObject.ORIGINAL_FILE_SUFFIX)
 
 
-class SystemConfig(ConfigObject):
+class State(ConfigObject):
 
     @staticmethod
     def supported_tenants():
         return TenantConfig().getTenantList()
-
-    @ staticmethod
-    def selectable_amounts():
-        return ConfigObject.SELECTABLE_PAGE_AMOUNTS
-
-
-class State(ConfigObject):
 
     @staticmethod
     def saved_config():
@@ -73,6 +67,7 @@ class State(ConfigObject):
         parser.set('SystemConfig', 'original_file_suffix', ConfigObject.ORIGINAL_FILE_SUFFIX)
         parser.set('SystemConfig', 'parsed_file_suffix', ConfigObject.PARSED_FILE_SUFFIX)
         parser.set('SystemConfig', 'selectable_page_amounts', ConfigObject.SELECTABLE_PAGE_AMOUNTS)
+        parser.set('SystemConfig', 'max_workers', ConfigObject.MAX_WORKERS)
 
         with open(ConfigObject.config_file, 'w') as file:
             # json.dump(self.config, file)
