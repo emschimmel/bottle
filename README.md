@@ -25,7 +25,12 @@ Those images are stored under `./img/<tenant>`.
 
 ### Maintenance
 
-This tool relies on how the tenants website. If they change properties, the scrapper might start failing to find fields. The `./scrapper/enrich_data_<tenant>.py` files need to be adjusted if this happens.
+This tool relies on how the tenants website is made. If they change properties, the scrapper might start failing to find fields. The `./scrapper/enrich_data_<tenant>.py` files need to be adjusted if this happens.
+Documentation can be found here: https://www.crummy.com/software/BeautifulSoup/bs4/doc/
+
+### Extending
+
+If you want to extend this tool with another tenant, you have to make a scrapper class and make it have a public function def `def start_for_id(ad_id, tenant):` (see examples of 2dehands/marktplaats/kijiji), import it in `./model/tenant_enum.py` and add it to the enumeration there.
 
 ### RUN
 

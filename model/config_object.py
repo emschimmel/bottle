@@ -33,7 +33,7 @@ class FileName(ConfigObject):
 
     @staticmethod
     def dump_file_name():
-        return "{path}/{suffix}.json".format(path=ConfigObject.CONFIG_PATH, suffix=ConfigObject.PARSED_FILE_SUFFIX)
+        return "{path}/{suffix}-{tenant}.json".format(path=ConfigObject.CONFIG_PATH, suffix=ConfigObject.PARSED_FILE_SUFFIX, tenant=ConfigObject.tenant)
 
     @staticmethod
     def original_file_name():
