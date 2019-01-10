@@ -15,7 +15,6 @@ class EnrichDataMarktplaats():
 
         response = requests.get(url)
         html = BeautifulSoup(response.content, "xml")
-        print(html)
         object = AdObject()
         object.id = ad_id
         object.url = url
@@ -38,24 +37,30 @@ class EnrichDataMarktplaats():
     @staticmethod
     def __get_price(html):
         try:
-            price = html.find('meta', property="twitter:data1")
+            price = html.find('span', {'class': 'price '}).getText()
+            # price = html.find('meta', name="twitter:data1").get("content")
             return price, False
-        except:
+        except Exception as e:
+            print("price not found")
+            print(e)
             return "", True
 
     @staticmethod
     def __get_title(html):
         try:
-            title = html.find('meta', property="twitter:title")
+            title = html.find('h1', {'class':'title', 'id':'title'}).getText()
+            # title = html.find('meta', name="twitter:title").get("content")
             return title, False
-        except:
+        except Exception as e:
+            print("title not found")
+            print(e)
             return "", True
 
     @staticmethod
     def __get_img(html, tenant, id):
         img_url = "img/{tenant}/{id}.jpg".format(tenant=tenant, id=id)
         try:
-            img_from_site = html.find('meta', property="twitter:image")
+            img_from_site = html.find('meta', property="og:image").get("content")
             if not img_from_site.endswith('.svg'):
                 img_path = "img/{tenant}".format(tenant=tenant)
                 if not os.path.exists(img_path):
