@@ -31,14 +31,14 @@ class EnrichDataTweedeHands():
             print("Page is availale")
 
         if not object.error:
-            object.price, error = self.get_price(html=html)
-            object.title, error = self.get_title(html=html)
-            object.img_url, error = self.get_img(html, tenant, ad_id, object.title)
+            object.price, error = self.__get_price(html=html)
+            object.title, error = self.__get_title(html=html)
+            object.img_url, error = self.__get_img(html, tenant, ad_id, object.title)
         object.loaded = True
         return object
 
     @staticmethod
-    def get_price(html):
+    def __get_price(html):
         try:
             json_text = html.find("script", text=re.compile("data-datalayer-content-json"))[
                 'data-datalayer-content-json']
@@ -55,7 +55,7 @@ class EnrichDataTweedeHands():
             return "", True
 
     @staticmethod
-    def get_title(html):
+    def __get_title(html):
         try:
             title = html.find('meta', property="og:title")
             title = title["content"] if title else html.find('h1', itemprop="name").getText().strip()
@@ -66,7 +66,7 @@ class EnrichDataTweedeHands():
             return "", True
 
     @staticmethod
-    def get_img(html, tenant, ad_id, title):
+    def __get_img(html, tenant, ad_id, title):
         img_url = "img/{tenant}/{id}.jpg".format(tenant=tenant, id=ad_id)
         if not os.path.exists(img_url):
             try:
