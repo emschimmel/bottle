@@ -51,7 +51,6 @@ Extra pip packages needed:
 - search box broke
 
 ### Medium requirements
-- kijiji scrapper https://www.kijiji.ca/v-view-details.html?adId=1369844148
 - denmark dba scrapper
 - build docker container
 - modify original csv
