@@ -110,7 +110,7 @@
                         <div class="border h-100 p-1">
                             <form action="/original" method="post" enctype="multipart/form-data">
                                 <div class="form-group row ml-0 mr-0">
-                                    <span class="alert alert-primary col-12">Use only items where data we have</span>
+                                    <span class="alert alert-primary col-12">Use only items we have data for</span>
                                 </div>
                                 <div class="form-group row ml-0 mr-0 justify-content-end">
                                     <button type="submit" id="modify_csv_button" class="btn btn-primary collapse show">Modify original csv file</button>
