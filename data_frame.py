@@ -64,6 +64,12 @@ class DataActions(DataFrame):
             self.__enriched_data_for_id(ad_id=ad_id)
         return result
 
+    @classmethod
+    def __enriched_data_for_id(self, ad_id):
+        self.__enriched_data_for_id_without_save(ad_id=ad_id)
+        self.save_enriched_data()
+
+
     ############################################
     # used by config screen
     ############################################
@@ -98,11 +104,6 @@ class DataActions(DataFrame):
     ############################################
     # used thread
     ############################################
-    @classmethod
-    def __enriched_data_for_id(self, ad_id):
-        self.__enriched_data_for_id_without_save(ad_id=ad_id)
-        self.save_enriched_data()
-
     @staticmethod
     def __enriched_data_for_id_without_save(ad_id):
         data = TenantConfig().startForId(tenant=State.tenant, id=ad_id)
@@ -134,9 +135,9 @@ class DataActions(DataFrame):
 
     @classmethod
     def start_all(self):
-        all_ids = list(DataFrame.uploaded_csv_data['ad_id'].unique())+list(DataFrame.uploaded_csv_data['recommended_ad_id'].unique())
+        all_ids = DataFrame.uploaded_csv_data['ad_id'].unique()
         with concurrent.futures.ThreadPoolExecutor(max_workers=State.MAX_WORKERS) as executor:
-            a = {executor.submit(self.__enriched_data_for_id, id): id for id in all_ids if id not in DataFrame.enriched_data}
+            a = {executor.submit(self.__enriched_data_for_id_with_recommendations, id): id for id in all_ids if id not in DataFrame.enriched_data}
 
     ############################################
     # file actions
