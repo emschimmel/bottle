@@ -26,7 +26,11 @@
                                     <label for="tenant">Tenant</label>
                                     <select name="tenant" id="tenant" class="form-control" placeholder="Select Tenant">
                                       % for tenant in tenant_list:
-                                        <option value="{{tenant}}">{{tenant}}</option>
+                                        <option value="{{tenant}}"
+                                            % if state_tenant is tenant:
+                                                selected
+                                            % end
+                                        >{{tenant}}</option>
                                       % end
                                     <select>
                                 </div>

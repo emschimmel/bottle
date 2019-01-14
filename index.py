@@ -2,7 +2,7 @@ import os
 from bottle import route, run, template, view, static_file, request, redirect, post, get
 from data_frame import DataActions
 from model.ad_object import AdObject
-from model.config_object import FileName, State
+from model.state_config import FileName, State
 import math
 
 ####################################
@@ -49,10 +49,6 @@ def server_static(subdir, filename):
     return static_file(filename, root='./img/{subdir}'.format(subdir=subdir))
 
 
-# components to fill:
-# - item_list
-# - selected_item
-# - related_items
 ####################################
 # Private
 ####################################
@@ -176,6 +172,7 @@ def __draw_config_controller():
     view['amount_done'] = df.amount_enriched()
     return view
 
+
 ####################################
 # public routes
 ####################################
@@ -254,6 +251,7 @@ def save_config():
     state.store_state()
     return __draw_config_controller()
 
+
 @post('/_start_scrape')
 def start_scrape():
     if request.forms.get('use_all'):
@@ -262,6 +260,7 @@ def start_scrape():
         df.start_for_criteria(amount=request.forms.get('amount'),
                               start=request.forms.get('start'),
                               end=request.forms.get('end'))
+
 
 @post('/original')
 def reduse_original():
@@ -274,6 +273,7 @@ def reduse_original():
 def view_upload():
     view = dict()
     view['tenant_list'] = State.supported_tenants()
+    view['state_tenant'] = State.tenant
     return view
 
 
@@ -289,6 +289,8 @@ def do_upload():
         os.makedirs(FileName.config_path())
     upload.save(FileName.original_file_name(), overwrite=True)
     state.tenant = tenant
+    state.selected_item = ""
+    state.search_string = ""
     state.store_state()
     __process_original_file()
     print("yay, done")

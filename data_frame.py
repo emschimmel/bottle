@@ -6,7 +6,7 @@ import pandas
 from model.ad_object import AdObject
 from model.tenant_enum import TenantConfig
 import pickle
-from model.config_object import FileName, State
+from model.state_config import FileName, State
 
 
 class DataFrame():

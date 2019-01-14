@@ -9,12 +9,12 @@ import certifi
 class EnrichDataMarktplaats():
 
     @classmethod
-    def start_for_id(self, ad_id, tenant):
-        url = "http://marktplaats.nl/{id}".format(id=ad_id)
+    def start_for_id(self, ad_id, url, tenant):
+        url = url.format(id=ad_id)
         print("start for id {id} on url {url}".format(id=ad_id, url=url))
 
         response = requests.get(url)
-        html = BeautifulSoup(response.content, "xml")
+        html = BeautifulSoup(response.content, "lxml")
         object = AdObject()
         object.id = ad_id
         object.url = url
