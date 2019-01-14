@@ -10,7 +10,7 @@
                 <div class="col-9">
                     <a href="/" role="button" class="btn btn-sm btn-secondary active">Overview</a>
                     % if not offline_mode:
-                    <a href="/upload" role="button" class="btn btn-sm btn-secondary">Upload</a>
+                        <a href="/upload" role="button" class="btn btn-sm btn-secondary">Upload</a>
                     % end
                     <a href="/config" role="button" class="btn btn-sm btn-secondary">Config</a>
                     <span>current tenant: {{tenant}}</span>

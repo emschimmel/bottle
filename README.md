@@ -61,11 +61,13 @@ Extra pip packages needed:
 - modify original csv
 
 #### Soft requirements
-- progress bars for scrappers
+- progress bars for scrappers?
 - make filters
 - filters in upload window
 - busybox when uploading
 - More verb Ui
+- search for string in title?
+- enriched_data also in pandas?
 
 #### Improvements
 - make search faster

@@ -155,6 +155,7 @@ def __draw_index_search_data():
     view['search_string'] = search_string
     view['no_data'] = False
     view['no_search_data'] = True
+    view['offline_mode'] = offline_mode
     return view
 
 
@@ -295,12 +296,6 @@ def do_upload():
     __process_original_file()
     print("yay, done")
     return redirect('/')
-
-
-@post('/search')
-def do_search():
-    global search_string
-    search_string = request.forms.get('search')
 
 
 ####################################
