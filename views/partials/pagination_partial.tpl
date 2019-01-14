@@ -3,7 +3,7 @@
   <div class="col p-0">
 
     <nav aria-label="Pagination">
-      <ul class="pagination pagination-sm justify-content-center mb-1">
+      <ul class="pagination pagination-sm center mb-1">
         <li class="page-item
             % if current_page is 0:
                 disabled
