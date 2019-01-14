@@ -60,7 +60,6 @@ def __update_item_list():
     full_output = df.ad_id_overview(search_string)
     paged_output = [full_output[i:i + max_per_page] for i in range(0, len(full_output), max_per_page)]
     amount_pages = len(paged_output)
-
     if current_page is None:
         current_page = math.floor(full_output.index(selected_item)/max_per_page) if selected_item in full_output else 0
     print("full_output length {l}".format(l=len(full_output)))
@@ -68,8 +67,7 @@ def __update_item_list():
     output = []
     if len(paged_output) > 0:
         output = paged_output[current_page]
-        print("set selected_item")
-        if selected_item is None:
+        if (selected_item not in output):
             selected_item = output[0] if len(output)>0 else 0
 
     return output
@@ -78,20 +76,14 @@ def __update_item_list():
 def __page_bar_list():
     sub_set = set()
     sub_set.add(0)
-    sub_set.add(amount_pages)
+    if amount_pages > 1:
+        sub_set.add(amount_pages)
     sub_set.add(current_page)
     start = current_page-2 if current_page is not None and current_page-2 >0 else 1
     for e in range(start, start+5 if start+5 < amount_pages else amount_pages):
         sub_set.add(e)
 
     return list(sub_set)
-
-
-def __process_original_file():
-    global search_string
-
-    df.restore()
-    search_string = ""
 
 
 def __draw_index():
@@ -281,6 +273,8 @@ def view_upload():
 @post('/upload')
 def do_upload():
     global tenant
+    global search_string
+
     tenant = request.forms.get('tenant')
     upload = request.files.get('upload')
     # use_all = request.files.get('use_all')
@@ -293,7 +287,8 @@ def do_upload():
     state.selected_item = ""
     state.search_string = ""
     state.store_state()
-    __process_original_file()
+
+    df.restore()
     print("yay, done")
     return redirect('/')
 
@@ -304,6 +299,9 @@ def do_upload():
 if os.path.exists(FileName.dump_file_name()):
     df.load_enriched_data()
 if os.path.exists(FileName.original_file_name()):
-    __process_original_file()
+    df.restore()
+
+
+
 
 run(host='localhost', port=8084)

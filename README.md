@@ -53,7 +53,7 @@ Extra pip packages needed:
 
 #### Hard requirements
 - fix upload -> redirect to index without reload.
-- search box broke
+- check pagination
 
 ### Medium requirements
 - denmark dba scrapper
@@ -70,5 +70,4 @@ Extra pip packages needed:
 - enriched_data also in pandas?
 
 #### Improvements
-- make search faster
 - make modify original csv faster

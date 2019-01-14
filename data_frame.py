@@ -25,7 +25,7 @@ class DataActions(DataFrame):
     def ad_id_overview(search_string=""):
         try:
             if search_string is not "":
-                return list(DataFrame.uploaded_csv_data['ad_id'].filter(like=search_string, axis='ad_id').unique())
+                return list(DataFrame.uploaded_csv_data[DataFrame.uploaded_csv_data['ad_id'].str.contains(search_string)]['ad_id'].unique())
             else:
                 return list(DataFrame.uploaded_csv_data['ad_id'].unique())
         except:
