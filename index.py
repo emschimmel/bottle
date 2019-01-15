@@ -280,6 +280,69 @@ def reduse_original():
     return __draw_config_controller()
 
 
+rows = [AdObject()]
+insert_ad_id = ""
+insert_tenant = State.tenant
+
+
+@get('/insert')
+@view('insert')
+def view_insert():
+    view = dict()
+    view['tenant_list'] = State.supported_tenants()
+    view['tenant'] = State.tenant
+    view['insert_tenant'] = insert_tenant
+    view['insert_ad_id'] = insert_ad_id
+    view['insert_rows'] = rows
+    return view
+
+
+@post('/insert')
+def do_insert():
+    global rows
+    global selected_item
+
+    __set_insert_form_data()
+    # store item
+
+    # set selected_item
+    # set tenant
+
+    rows = [AdObject()]
+    print("yay, done")
+    return redirect('/')
+
+
+@post('/_add_insert_row')
+def add_insert_row():
+    global rows
+
+    __set_insert_form_data()
+
+    new_row = AdObject()
+    new_row.rank=len(rows)
+    rows.append(new_row)
+
+
+@post('/_remove_insert_row/<row_id:int>')
+def remove_insert_row(row_id):
+    global rows
+
+    __set_insert_form_data()
+
+    del rows[row_id]
+    for index, row in enumerate(rows):
+        row.rank = index
+
+
+def __set_insert_form_data():
+    global insert_ad_id
+    global insert_tenant
+
+    insert_ad_id = request.forms.get('ad_id')
+    insert_tenant = request.forms.get('tenant')
+
+
 @get('/upload')
 @view('upload')
 def view_upload():

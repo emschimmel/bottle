@@ -14,7 +14,8 @@
                     % end
                     ">Overview</a>
                     % if not offline_mode:
-                        <a href="/upload" role="button" class="btn btn-sm btn-secondary">Upload</a>
+                        <a href="/insert" role="button" class="btn btn-sm btn-secondary">Insert</a>
+                        <a href="/upload" role="button" class="btn btn-sm btn-secondary">Upload CSV</a>
                     % end
                     <a href="/config" role="button" class="btn btn-sm btn-secondary">Config</a>
                     <span>current tenant: {{tenant}}</span>

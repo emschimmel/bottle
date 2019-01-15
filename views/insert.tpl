@@ -5,8 +5,8 @@
             <div class="row p-1 bg-info">
                 <div class="col-9">
                     <a href="/" role="button" class="btn btn-sm btn-secondary">Overview</a>
-                    <a href="/insert" role="button" class="btn btn-sm btn-secondary">Insert</a>
-                    <a href="/upload" role="button" class="btn btn-sm btn-secondary active">Upload CSV</a>
+                    <a href="/insert" role="button" class="btn btn-sm btn-secondary active">Insert</a>
+                    <a href="/upload" role="button" class="btn btn-sm btn-secondary">Upload CSV</a>
                     <a href="/config" role="button" class="btn btn-sm btn-secondary">Config</a>
                 </div>
                 <div class="col-3">
@@ -18,7 +18,7 @@
 
             <div class="row h-100">
               <div class="col-12 h-100 d-inline-block">
-                <form action="/upload" method="post" enctype="multipart/form-data">
+                <form action="/insert" method="post" id="insert_form">
                     <div>
                       <div class="modal-dialog" role="document">
                         <div class="modal-content">
@@ -28,35 +28,31 @@
                                     <select name="tenant" id="tenant" class="form-control" placeholder="Select Tenant">
                                       % for tenant in tenant_list:
                                         <option value="{{tenant}}"
-                                            % if state_tenant is tenant:
+                                            % if insert_tenant is tenant:
                                                 selected
                                             % end
                                         >{{tenant}}</option>
                                       % end
                                     <select>
                                 </div>
+
                                 <div class="form-group">
-                                    <label for="upload">CSV file</label>
-                                    <input type="file" name="upload" id="upload" class="form-control" placeholder="Select file" />
+                                    <label for="start">Ad_id</label>
+                                    <input type="text" name="ad_id" id="ad_id" class="form-control" placeholder="ad_id" value="{{insert_ad_id}}" />
                                 </div>
-                                <!--
-                                <div class="form-group">
-                                    <label for="use_all">Use whole file</label>
-                                    <input type="checkbox" name="use_all" id="use_all" class="form-control" placeholder="Use all"  onchange="document.getElementById('start').disabled = !this.checked;document.getElementById('end').disabled = !this.checked;" />
+                                <div class="form-group d-flex justify-content-between">
+                                    <span>Recommendations</span>
+                                    <a id="add_row" class="btn btn-secondary btn-sm text-white"> Add </a>
                                 </div>
-                                <div class="form-group">
-                                    <label for="start">Start</label>
-                                    <input type="number" name="start" id="start" class="form-control" placeholder="Start" />
+                                <div id="repeat_form">
+                                    % for row in insert_rows:
+                                        % include('partials/add_row.tpl', content=row, enable_remove=len(insert_rows)>1)
+                                    % end
                                 </div>
-                                <div class="form-group">
-                                    <label for="end">End</label>
-                                    <input type="number" name="end" id="end" class="form-control" placeholder="End" />
-                                </div>
-                                -->
 
                           </div>
                           <div class="modal-footer">
-                            <button type="submit" id="upload_button" class="btn btn-primary collapse show">Upload</button>
+                            <button type="submit" id="insert_button" class="btn btn-primary collapse show">Insert</button>
                           </div>
                         </div>
                       </div>
@@ -65,12 +61,19 @@
               </div>
             </div>
         </div>
-         <script type="text/javascript">
-            // block upload button after click
-            $('#upload_button').click(function() {
-                $('#upload_button').hide()
-            })
-
+        <script type="text/javascript">
+            $(function() {
+              $("#add_row").on("click",function(e) {
+                console.log("clicked")
+                $.post(
+                    "/_add_insert_row",
+                    $("#insert_form").serialize(),
+                    function(data) {
+                        location.reload();
+                    }
+                );
+              });
+            });
         </script>
     </body>
 </html>

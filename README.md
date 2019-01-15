@@ -63,6 +63,7 @@ Extra pip packages needed:
 ### Medium requirements
 - build docker container
 - modify original csv
+- index stateless
 
 #### Soft requirements
 - progress bars for scrappers?
