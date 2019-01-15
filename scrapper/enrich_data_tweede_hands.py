@@ -34,14 +34,16 @@ class EnrichDataTweedeHands():
 
         if not object.error:
             object.title, error = self.__get_title(html=html)
-            warning = None
+            expired = None
             try:
-                warning = html.find('div', {"data-component": "expired-view-item"})
+                expired = html.find('div', {"data-component": "expired-view-item"})
             except Exception:
                 print("error determining if the add is available")
-            if warning is None:
+            if expired is None:
                 object.price, error = self.__get_price(html=html)
                 object.img_url, error = self.__get_img(html, tenant, ad_id, object.title)
+            else:
+                object.expired = True
         object.loaded = True
         return object
 

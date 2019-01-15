@@ -59,7 +59,7 @@ def __update_item_list():
 
     full_output = df.ad_id_overview(search_string)
     paged_output = [full_output[i:i + max_per_page] for i in range(0, len(full_output), max_per_page)]
-    amount_pages = len(paged_output)
+    amount_pages = len(paged_output)-1
     if current_page is None:
         current_page = math.floor(full_output.index(selected_item)/max_per_page) if selected_item in full_output else 0
     print("full_output length {l}".format(l=len(full_output)))
@@ -298,8 +298,4 @@ if os.path.exists(FileName.dump_file_name()):
     df.load_enriched_data()
 if os.path.exists(FileName.original_file_name()):
     df.restore()
-
-
-
-
 run(host='localhost', port=8084)

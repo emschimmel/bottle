@@ -59,7 +59,10 @@ class DataActions(DataFrame):
                                      title=enriched_result.title,
                                      price=enriched_result.price,
                                      loaded=enriched_result.loaded,
-                                     error=enriched_result.error)
+                                     error=enriched_result.error,
+                                     expired=enriched_result.expired,
+                                     l1=enriched_result.l1,
+                                     l2=enriched_result.l2)
         elif not State.offline_mode:
             self.__enriched_data_for_id(ad_id=ad_id)
         return result
@@ -97,14 +100,7 @@ class DataActions(DataFrame):
     ############################################
     @classmethod
     def reduce_uploaded_csv_data(self):
-        parent_ids = DataFrame.uploaded_csv_data['ad_id'].unique()
-        for id in parent_ids:
-            if id not in DataFrame.enriched_data:
-                DataFrame.uploaded_csv_data = DataFrame.uploaded_csv_data[DataFrame.uploaded_csv_data['ad_id'] != id]
-        recommendation_ids = DataFrame.uploaded_csv_data['recommended_ad_id'].unique()
-        for id in recommendation_ids:
-            if id not in DataFrame.enriched_data:
-                DataFrame.uploaded_csv_data = DataFrame.uploaded_csv_data[DataFrame.uploaded_csv_data['recommended_ad_id'] != id]
+        DataFrame.uploaded_csv_data = list(DataFrame.uploaded_csv_data[DataFrame.uploaded_csv_data['ad_id'] in DataFrame.enriched_data and DataFrame.uploaded_csv_data['recommended_ad_id'] in DataFrame.enriched_data])
         self.save_data()
 
     ############################################

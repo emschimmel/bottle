@@ -3,7 +3,7 @@
     % if no_data is True:
         disabled
     % end
-    class="form-control form-control-sm collapse show" placeholder="not yet working search" id="search" value="{{search_string}}" />
+    class="form-control form-control-sm collapse show" placeholder="search for ad id" id="search" value="{{search_string}}" />
 </div>
 <div class="collapse hide" id="search_wait">
     <div class="progress">

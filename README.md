@@ -52,6 +52,11 @@ Extra pip packages needed:
 ### TODO
 
 #### Hard requirements
+- √ last page bug
+- show if the add is expired
+- also show the l1 and l2
+- update button on page
+- share a specific id
 
 ### Medium requirements
 - build docker container
