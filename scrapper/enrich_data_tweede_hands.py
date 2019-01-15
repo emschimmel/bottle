@@ -18,11 +18,9 @@ class EnrichDataTweedeHands():
 
         response = requests.get(url)
         html = BeautifulSoup(response.content, "lxml")
-        # print(html)
         object = AdObject()
         object.id = ad_id
         object.url = url
-        object.img_url = "static/img/no_data.png"
 
         try:
             error = html.find('div', {"class": "error-404-background"})
@@ -34,6 +32,7 @@ class EnrichDataTweedeHands():
 
         if not object.error:
             object.title, error = self.__get_title(html=html)
+            object.categories, error = self.__get_categories(html=html)
             expired = None
             try:
                 expired = html.find('div', {"data-component": "expired-view-item"})
@@ -46,6 +45,22 @@ class EnrichDataTweedeHands():
                 object.expired = True
         object.loaded = True
         return object
+
+    @staticmethod
+    def __get_categories(html):
+        categories = list()
+        try:
+            json_text = html.find("script", text=re.compile("data-datalayer-content-json"))[
+                'data-datalayer-content-json']
+            json_data = loads(json_text)
+            for key in sorted(json_data[0]['c'].keys()):
+                if key is not 'c':
+                    categories.append(json_data[0]['c'][key]['id'])
+            return categories, False
+        except Exception as e:
+            print("categories not found")
+            print(e)
+            return categories, True
 
     @staticmethod
     def __get_price(html):
@@ -95,7 +110,8 @@ class EnrichDataTweedeHands():
                 return "static/img/no_data.png", True
         return "/" + img_url, False
 
-# EnrichDataTweedeHands().start_for_id(ad_id="478237791", tenant="2dehands")
-# EnrichDataTweedeHands().start_for_id(ad_id="471726179", tenant="2dehands")
-# EnrichDataTweedeHands().start_for_id(ad_id="482616171", tenant="2dehands")
-# EnrichDataTweedeHands().start_for_id(ad_id="456307202", tenant="2dehands")
+# EnrichDataTweedeHands().start_for_id(ad_id="4816171", url="https://www.2dehands.be/{id}.html", tenant="2dehands")
+# EnrichDataTweedeHands().start_for_id(ad_id="478237791", url="https://www.2dehands.be/{id}.html", tenant="2dehands")
+# EnrichDataTweedeHands().start_for_id(ad_id="471726179", url="https://www.2dehands.be/{id}.html", tenant="2dehands")
+# EnrichDataTweedeHands().start_for_id(ad_id="482616171", url="https://www.2dehands.be/{id}.html", tenant="2dehands")
+# EnrichDataTweedeHands().start_for_id(ad_id="456307202", url="https://www.2dehands.be/{id}.html", tenant="2dehands")

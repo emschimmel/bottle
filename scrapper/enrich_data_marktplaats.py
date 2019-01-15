@@ -76,6 +76,6 @@ class EnrichDataMarktplaats():
 
 
 
-# EnrichDataMarktplaats().start_for_id(ad_id="a1262510063", tenant="marktplaats")
-# EnrichDataMarktplaats().start_for_id(ad_id="m1362515546", tenant="marktplaats")
-# EnrichDataMarktplaats().start_for_id(ad_id="m1399515546", tenant="marktplaats")
+# EnrichDataMarktplaats().start_for_id(ad_id="a1262510063", url="http://marktplaats.nl/{id}", tenant="Marktplaats")
+# EnrichDataMarktplaats().start_for_id(ad_id="m1362515546", url="http://marktplaats.nl/{id}", tenant="Marktplaats")
+# EnrichDataMarktplaats().start_for_id(ad_id="m1399515546", url="http://marktplaats.nl/{id}", tenant="Marktplaats")

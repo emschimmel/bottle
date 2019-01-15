@@ -54,7 +54,7 @@ Extra pip packages needed:
 #### Hard requirements
 - √ last page bug
 - show if the add is expired
-- also show the l1 and l2
+- also show the categories
 - update button on page
 - share a specific id
 
@@ -73,6 +73,12 @@ Extra pip packages needed:
 
 #### Improvements
 - make modify original csv faster
+
+#### Maintenance
+- categories marktplaats
+- expired marktplaats
+- categories kijiji
+- expired kijiji
 
 ### Imposible requirements
 - denmark dba scrapper

@@ -22,3 +22,5 @@ class EnrichDataDBA():
         object.error = True
         object.loaded = True
         return object
+
+# EnrichDataDBA().start_for_id(ad_id="a1262510063", url="https://www.dba.dk/id-{id}", tenant="Dba")

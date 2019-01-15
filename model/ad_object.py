@@ -7,7 +7,7 @@ class AdObject(object):
     rank = 0
 
     url = ""
-    img_url = ""
+    img_url = "static/img/no_data.png"
     title = ""
     price = ""
 
@@ -15,15 +15,14 @@ class AdObject(object):
     error = False
     expired = False
 
-    l1 = ""
-    l2 = ""
+    categories = []
 
     def set_initial_data(self, id, rank, score):
         self.id = id
         self.rank = rank
         self.score = score
 
-    def set_enriched_data(self, url, img_url, title, price, loaded, error, expired, l1, l2):
+    def set_enriched_data(self, url, img_url, title, price, loaded, error, expired, categories):
         self.url = url
         self.img_url = img_url
         self.title = title
@@ -31,8 +30,7 @@ class AdObject(object):
         self.loaded = loaded
         self.error = error
         self.expired = expired
-        self.l1 = l1
-        self.l2 = l2
+        self.categories = categories
 
     def __repr__(self):
         return "({id}, {url}, {title})".format(id=self.id, url=self.url, title=self.title)

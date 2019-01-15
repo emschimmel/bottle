@@ -73,6 +73,6 @@ class EnrichDataKijiji():
             return "static/img/no_data.png", True
         return "/" + img_url, False
 
-# EnrichDataKijiji().start_for_id(ad_id="1369844148", tenant="kijiji")
-# EnrichDataKijiji().start_for_id(ad_id="1408605635", tenant="kijiji")
-# EnrichDataKijiji().start_for_id(ad_id="1406837982", tenant="kijiji")
+# EnrichDataKijiji().start_for_id(ad_id="1369844148", url="https://www.kijiji.ca/v-view-details.html?adId={id}", tenant="Kijiji")
+# EnrichDataKijiji().start_for_id(ad_id="1408605635", url="https://www.kijiji.ca/v-view-details.html?adId={id}", tenant="Kijiji")
+# EnrichDataKijiji().start_for_id(ad_id="1406837982", url="https://www.kijiji.ca/v-view-details.html?adId={id}", tenant="Kijiji")
