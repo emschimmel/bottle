@@ -85,7 +85,7 @@
                                 <div class="form-group row ml-0 mr-0">
                                     <span class="col-6">Total to do</span>
                                     <div class="col-6 progress p-0">
-                                      <div class="progress-bar bg-info" style="width: {{(amount_done / amount_todo * 100)}}%" role="progressbar" aria-valuenow="{{amount_done}}" aria-valuemin="0" aria-valuemax="{{amount_todo}}" aria-describedby="progresHelp">{{round(amount_done / amount_todo * 100)}}%</div>
+                                      <div class="progress-bar bg-info" style="width: {{100 if amount_todo is 0 else (amount_done / amount_todo * 100)}}%" role="progressbar" aria-valuenow="{{amount_done}}" aria-valuemin="0" aria-valuemax="{{amount_todo}}" aria-describedby="progresHelp">{{100 if amount_todo is 0 else round(amount_done / amount_todo * 100)}}%</div>
                                     </div>
                                     <small id="progresHelp" class="offset-6 form-text text-muted">{{amount_done}} / {{amount_todo}}</small>
                                 </div>
@@ -108,7 +108,7 @@
                                 </div>
                                 <div class="form-group row ml-0 mr-0 justify-content-end">
                                     % if not offline_mode:
-                                        % if (amount_done / amount_todo * 100) <100:
+                                        % if amount_todo>0 and (amount_done / amount_todo * 100) <100:
                                             <span class="collapse hide" id="warning">Reloading the browser will not stop the prosess</span>
                                             <button type="button" id="start_button" class="btn btn-primary collapse show">Start</button>
                                         % else:

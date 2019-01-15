@@ -75,15 +75,21 @@ class DataActions(DataFrame):
     ############################################
     @staticmethod
     def amount_adds():
-        return len(DataFrame.uploaded_csv_data['ad_id'].unique())
+        try:
+            return len(DataFrame.uploaded_csv_data['ad_id'].unique())
+        except:
+            return 0
 
     @staticmethod
     def amount_enriched():
         count = 0
-        all = DataFrame.uploaded_csv_data['ad_id'].unique()
-        for id in all:
-            if id in DataFrame.enriched_data:
-                count += 1
+        try:
+            all = DataFrame.uploaded_csv_data['ad_id'].unique()
+            for id in all:
+                if id in DataFrame.enriched_data:
+                    count += 1
+        except:
+            pass
         return count
 
     ############################################

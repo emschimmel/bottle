@@ -53,10 +53,8 @@ Extra pip packages needed:
 
 #### Hard requirements
 - fix upload -> redirect to index without reload.
-- check pagination
 
 ### Medium requirements
-- denmark dba scrapper
 - build docker container
 - modify original csv
 
@@ -71,3 +69,6 @@ Extra pip packages needed:
 
 #### Improvements
 - make modify original csv faster
+
+### Imposible requirements
+- denmark dba scrapper
