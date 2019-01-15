@@ -53,10 +53,12 @@ Extra pip packages needed:
 
 #### Hard requirements
 - √ last page bug
-- show if the add is expired
-- also show the categories
-- update button on page
-- share a specific id
+- √ show if the add is expired
+- √ also show the categories
+- √ update button on page
+- √ share a specific id
+- export json
+- add item manual
 
 ### Medium requirements
 - build docker container

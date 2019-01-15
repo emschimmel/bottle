@@ -8,19 +8,33 @@
 
             <div class="row p-1 bg-info">
                 <div class="col-9">
-                    <a href="/" role="button" class="btn btn-sm btn-secondary active">Overview</a>
+                    <a href="/" role="button" class="btn btn-sm btn-secondary
+                    % if all_data:
+                        active
+                    % end
+                    ">Overview</a>
                     % if not offline_mode:
                         <a href="/upload" role="button" class="btn btn-sm btn-secondary">Upload</a>
                     % end
                     <a href="/config" role="button" class="btn btn-sm btn-secondary">Config</a>
                     <span>current tenant: {{tenant}}</span>
                 </div>
+                % if all_data:
                 <div class="col-3">
                     % include('partials/search_partial.tpl')
                 </div>
+                % else:
+                <div class="col-3">
+                    <div class="collapse show" id="search_box">
+                        <input type="text" disabled class="form-control form-control-sm collapse show" placeholder="can't search during upload" id="search" value="" />
+                    </div>
+                </div>
+                % end
             </div>
             % if no_data is False and no_search_data is False:
                 <div class="row h-100">
+                  % if all_data:
+
                   <div class="col-2 h-100 d-inline-block">
 
 
@@ -32,8 +46,9 @@
                     </div>
                     % include('partials/pagination_partial.tpl')
 
-
                   </div>
+                  % end
+
                   <div class="col border-1">
                     % if selected_ad_complete is True and selected_ad_error is False:
 

@@ -107,7 +107,7 @@ class EnrichDataTweedeHands():
             except Exception as e:
                 print("image not found")
                 print(e)
-                return "static/img/no_data.png", True
+                return "/static/img/no_data.png", True
         return "/" + img_url, False
 
 # EnrichDataTweedeHands().start_for_id(ad_id="4816171", url="https://www.2dehands.be/{id}.html", tenant="2dehands")

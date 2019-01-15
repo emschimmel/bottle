@@ -7,7 +7,7 @@ class AdObject(object):
     rank = 0
 
     url = ""
-    img_url = "static/img/no_data.png"
+    img_url = "/static/img/no_data.png"
     title = ""
     price = ""
 

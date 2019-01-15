@@ -67,6 +67,14 @@ class DataActions(DataFrame):
         return result
 
     @classmethod
+    def reload(self, ad_id):
+        print(DataFrame.enriched_data[ad_id])
+        del DataFrame.enriched_data[ad_id]
+        recommenders = list(DataFrame.uploaded_csv_data[DataFrame.uploaded_csv_data['ad_id']==ad_id]['recommended_ad_id'].unique())
+        for recommender_id in recommenders:
+            del DataFrame.enriched_data[recommender_id]
+
+    @classmethod
     def __enriched_data_for_id(self, ad_id):
         self.__enriched_data_for_id_without_save(ad_id=ad_id)
         self.save_enriched_data()
@@ -99,7 +107,7 @@ class DataActions(DataFrame):
     ############################################
     @classmethod
     def reduce_uploaded_csv_data(self):
-        DataFrame.uploaded_csv_data = list(DataFrame.uploaded_csv_data[DataFrame.uploaded_csv_data['ad_id'] in DataFrame.enriched_data and DataFrame.uploaded_csv_data['recommended_ad_id'] in DataFrame.enriched_data])
+        DataFrame.uploaded_csv_data = DataFrame.uploaded_csv_data[DataFrame.uploaded_csv_data['ad_id'] in DataFrame.enriched_data and DataFrame.uploaded_csv_data['recommended_ad_id'] in DataFrame.enriched_data]
         self.save_data()
 
     ############################################

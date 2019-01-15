@@ -85,27 +85,31 @@ def __page_bar_list():
     return list(sorted(sub_set))
 
 
-def __draw_index():
+def __draw_index(all=True):
     # maybe we need a beter check here
     if os.path.exists(FileName.original_file_name()):
-        ad_list = __update_item_list()
-        if len(ad_list) is 0:
-            return __draw_index_search_data()
         view = dict()
+
+        if all:
+            ad_list = __update_item_list()
+            if len(ad_list) is 0:
+                return __draw_index_search_data()
+            # list pane
+            view['selected_item'] = selected_item
+            view['item_list'] = ad_list
+
+            # pagination
+            view['max_per_page'] = max_per_page
+            view['selectable_page_amounts'] = State.SELECTABLE_PAGE_AMOUNTS
+            view['page_bar'] = __page_bar_list()
+            view['current_page'] = current_page
+
+        view['all_data'] = all
+
         # top pane
         view['tenant'] = tenant
         view['search_string'] = search_string
         view['offline_mode'] = offline_mode
-
-        # list pane
-        view['item_list'] = ad_list
-        view['selected_item'] = selected_item
-
-        # pagination
-        view['max_per_page'] = max_per_page
-        view['selectable_page_amounts'] = State.SELECTABLE_PAGE_AMOUNTS
-        view['page_bar'] = __page_bar_list()
-        view['current_page'] = current_page
 
         # ad pane
         selected_ad = df.get_ad_by_id(selected_item)
@@ -113,11 +117,7 @@ def __draw_index():
         view['selected_ad_error'] = selected_ad.error
 
         if selected_ad.loaded and not selected_ad.error:
-            view['selected_item_pane_title'] = selected_ad.title
-            view['selected_item_pane_id'] = selected_ad.id
-            view['selected_item_pane_img_url'] = selected_ad.img_url
-            view['selected_item_pane_url'] = selected_ad.url
-            view['selected_item_pane_price'] = selected_ad.price
+            view['selected_ad'] = selected_ad
             recommendations = df.get_recommenders_by_parent_id(selected_item)
             view['not_loaded'] = len([not_loaded.loaded for not_loaded in recommendations if not not_loaded.loaded])>0
             #recommenders pane
@@ -211,6 +211,27 @@ def change_amount_per_page(amount):
 
     current_page = 0
     max_per_page = amount
+
+
+@get('/_reload/<ad_id>')
+@get('/share/_reload/<ad_id>')
+def reload(ad_id):
+    df.reload(ad_id)
+
+
+@get('/export/<ad_id>')
+def export(ad_id):
+    pass
+
+
+@get('/share/<ad_id>')
+@view('index')
+def share(ad_id):
+    global selected_item
+
+    selected_item = ad_id
+    print(ad_id)
+    return __draw_index(all=False)
 
 
 @get('/config')

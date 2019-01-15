@@ -1,7 +1,7 @@
 <table class="table bg-light recommendation">
   <thead>
     <tr>
-      <td>
+      <th>
       <span>
           % if recommendation.loaded is True:
           {{recommendation.title}}
@@ -9,10 +9,21 @@
           Loading...
           % end
       </span>
-      </td>
+      </th>
     </tr>
   </thead>
   <tbody>
+    <tr>
+      <td>
+        <span>
+        % if recommendation.loaded is True:
+            Categories: {{" > ".join(recommendation.categories)}}
+        % else:
+          Loading...
+        % end
+        </span>
+      </td>
+    </tr>
     <tr>
       <td style="background-color:hsl({{(1-recommendation.score)*150}},100%,50%)">
         <span class="w-100">{{recommendation.score}}
@@ -29,7 +40,18 @@
           % end
       </td>
     </tr>
+    <tr>
+      <td>
+        <span>
+            % if recommendation.loaded is True:
+                price: {{recommendation.price}}
+            % else:
+                Loading...
+            % end
 
+        </span>
+      </td>
+    </tr>
     <tr>
       <td>
           % if recommendation.loaded is True:
@@ -41,16 +63,11 @@
       </td>
     </tr>
     <tr>
-      <td>
-        <span>
-            % if recommendation.loaded is True:
-                {{recommendation.price}}
-            % else:
-                Loading...
+        <td>
+            % if recommendation.expired:
+            <span class="alert alert-danger d-inline-block w-100 m-0">Expired</span>
             % end
-
-        </span>
-      </td>
+        </td>
     </tr>
   </tbody>
 </table>
