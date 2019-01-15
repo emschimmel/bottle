@@ -82,8 +82,6 @@ def __page_bar_list():
     start = current_page-2 if current_page is not None and current_page-2 >0 else 1
     for e in range(start, start+5 if start+5 < amount_pages else amount_pages):
         sub_set.add(e)
-        print(sub_set)
-    print(sorted(sub_set))
     return list(sorted(sub_set))
 
 
@@ -199,7 +197,6 @@ def open_page(page):
 @get('/_search/<search_phrase>')
 @get('/_search/')
 def search(search_phrase=""):
-    print(search_phrase)
     global search_string
     global current_page
 

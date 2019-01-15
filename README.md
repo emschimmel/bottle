@@ -52,7 +52,6 @@ Extra pip packages needed:
 ### TODO
 
 #### Hard requirements
-- fix upload -> redirect to index without reload.
 
 ### Medium requirements
 - build docker container
