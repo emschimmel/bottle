@@ -9,14 +9,14 @@ import pickle
 from model.state_config import FileName, State
 
 
-class DataFrame():
+class DataFrameObject():
 
     uploaded_csv_data = pandas.DataFrame()
     enriched_data = dict()
     # enriched_data = pandas.DataFrame()
 
 
-class DataActions(DataFrame):
+class DataActions(DataFrameObject):
 
     ############################################
     # used by overview screen
@@ -25,9 +25,9 @@ class DataActions(DataFrame):
     def ad_id_overview(search_string=""):
         try:
             if search_string is not "":
-                return list(DataFrame.uploaded_csv_data[DataFrame.uploaded_csv_data['ad_id'].str.contains(search_string)]['ad_id'].unique())
+                return list(DataFrameObject.uploaded_csv_data[DataFrameObject.uploaded_csv_data['ad_id'].str.contains(search_string)]['ad_id'].unique())
             else:
-                return list(DataFrame.uploaded_csv_data['ad_id'].unique())
+                return list(DataFrameObject.uploaded_csv_data['ad_id'].unique())
         except:
             return list()
 
@@ -42,7 +42,7 @@ class DataActions(DataFrame):
     def get_recommenders_by_parent_id(self, ad_id):
         # ad_object
         result_list = []
-        for row in DataFrame.uploaded_csv_data.loc[DataFrame.uploaded_csv_data['ad_id'] == ad_id].itertuples():
+        for row in DataFrameObject.uploaded_csv_data.loc[DataFrameObject.uploaded_csv_data['ad_id'] == ad_id].itertuples():
             result = AdObject()
             result.set_initial_data(row[2], row[3], row[4])
             result = self.set_enriched_data(row[2], result)
@@ -51,8 +51,8 @@ class DataActions(DataFrame):
 
     @classmethod
     def set_enriched_data(self, ad_id, result):
-        if ad_id in DataFrame.enriched_data:
-            enriched_result = DataFrame.enriched_data[ad_id]
+        if ad_id in DataFrameObject.enriched_data:
+            enriched_result = DataFrameObject.enriched_data[ad_id]
             print("enriched_result {}".format(enriched_result))
             result.set_enriched_data(url=enriched_result.url,
                                      img_url=enriched_result.img_url,
@@ -68,11 +68,11 @@ class DataActions(DataFrame):
 
     @classmethod
     def reload(self, ad_id):
-        print(DataFrame.enriched_data[ad_id])
-        del DataFrame.enriched_data[ad_id]
-        recommenders = list(DataFrame.uploaded_csv_data[DataFrame.uploaded_csv_data['ad_id']==ad_id]['recommended_ad_id'].unique())
+        print(DataFrameObject.enriched_data[ad_id])
+        del DataFrameObject.enriched_data[ad_id]
+        recommenders = list(DataFrameObject.uploaded_csv_data[DataFrameObject.uploaded_csv_data['ad_id'] == ad_id]['recommended_ad_id'].unique())
         for recommender_id in recommenders:
-            del DataFrame.enriched_data[recommender_id]
+            del DataFrameObject.enriched_data[recommender_id]
 
     @classmethod
     def __enriched_data_for_id(self, ad_id):
@@ -86,7 +86,7 @@ class DataActions(DataFrame):
     @staticmethod
     def amount_adds():
         try:
-            return len(DataFrame.uploaded_csv_data['ad_id'].unique())
+            return len(DataFrameObject.uploaded_csv_data['ad_id'].unique())
         except:
             return 0
 
@@ -94,9 +94,9 @@ class DataActions(DataFrame):
     def amount_enriched():
         count = 0
         try:
-            all = DataFrame.uploaded_csv_data['ad_id'].unique()
+            all = DataFrameObject.uploaded_csv_data['ad_id'].unique()
             for id in all:
-                if id in DataFrame.enriched_data:
+                if id in DataFrameObject.enriched_data:
                     count += 1
         except:
             pass
@@ -107,7 +107,15 @@ class DataActions(DataFrame):
     ############################################
     @classmethod
     def reduce_uploaded_csv_data(self):
-        DataFrame.uploaded_csv_data = DataFrame.uploaded_csv_data[DataFrame.uploaded_csv_data['ad_id'] in DataFrame.enriched_data and DataFrame.uploaded_csv_data['recommended_ad_id'] in DataFrame.enriched_data]
+        DataFrameObject.uploaded_csv_data = DataFrameObject.uploaded_csv_data[DataFrameObject.uploaded_csv_data['ad_id'] in DataFrameObject.enriched_data and DataFrameObject.uploaded_csv_data['recommended_ad_id'] in DataFrameObject.enriched_data]
+        self.save_data()
+
+    @classmethod
+    def insert_single_row(self, ad_id, recommendation_list):
+        for item in recommendation_list:
+            row = [ad_id, item.id, item.rank, int(item.score)]
+            # DataFrame.uploaded_csv_data.append(pandas.DataFrame([row], columns=DataFrame.uploaded_csv_data.columns))
+            DataFrameObject.uploaded_csv_data.append(pandas.DataFrame([row], columns=DataFrameObject.uploaded_csv_data.columns))
         self.save_data()
 
     ############################################
@@ -118,19 +126,19 @@ class DataActions(DataFrame):
         data = TenantConfig().startForId(tenant=State.tenant, id=ad_id)
         if data is not None:
             if data.loaded:
-                DataFrame.enriched_data.update({ad_id: data})
+                DataFrameObject.enriched_data.update({ad_id: data})
 
     @classmethod
     def __enriched_data_for_id_with_recommendations(self, ad_id):
         self.__enriched_data_for_id_without_save(ad_id=ad_id)
-        for row in DataFrame.uploaded_csv_data.loc[DataFrame.uploaded_csv_data['ad_id'] == ad_id].itertuples():
-            if row[2] not in DataFrame.enriched_data:
+        for row in DataFrameObject.uploaded_csv_data.loc[DataFrameObject.uploaded_csv_data['ad_id'] == ad_id].itertuples():
+            if row[2] not in DataFrameObject.enriched_data:
                 self.__enriched_data_for_id_without_save(ad_id=row[2])
         self.save_enriched_data()
 
     @classmethod
     def start_for_criteria(self, amount, start, end):
-        all_ids = [id for id in list(DataFrame.uploaded_csv_data['ad_id'].unique()) if id not in DataFrame.enriched_data]
+        all_ids = [id for id in list(DataFrameObject.uploaded_csv_data['ad_id'].unique()) if id not in DataFrameObject.enriched_data]
         if start or end:
             if not start:
                 start = True
@@ -144,9 +152,9 @@ class DataActions(DataFrame):
 
     @classmethod
     def start_all(self):
-        all_ids = DataFrame.uploaded_csv_data['ad_id'].unique()
+        all_ids = DataFrameObject.uploaded_csv_data['ad_id'].unique()
         with concurrent.futures.ThreadPoolExecutor(max_workers=State.MAX_WORKERS) as executor:
-            a = {executor.submit(self.__enriched_data_for_id_with_recommendations, id): id for id in all_ids if id not in DataFrame.enriched_data}
+            a = {executor.submit(self.__enriched_data_for_id_with_recommendations, id): id for id in all_ids if id not in DataFrameObject.enriched_data}
 
     ############################################
     # file actions
@@ -154,19 +162,19 @@ class DataActions(DataFrame):
 
     @staticmethod
     def restore():
-        DataFrame.uploaded_csv_data = pandas.read_csv(FileName.original_file_name(), dtype={'ad_id':str})
-        DataFrame.uploaded_csv_data = DataFrame.uploaded_csv_data.drop_duplicates()
+        DataFrameObject.uploaded_csv_data = pandas.read_csv(FileName.original_file_name(), dtype={'ad_id':str, 'recommended_ad_id':str})
 
     @staticmethod
     def save_data():
-        DataFrame.uploaded_csv_data.to_csv(FileName.original_file_name())
+        DataFrameObject.uploaded_csv_data.to_csv(FileName.original_file_name(), index=False)
+        DataFrameObject.uploaded_csv_data = pandas.read_csv(FileName.original_file_name(), dtype={'ad_id':str, 'recommended_ad_id':str})
 
     @staticmethod
     def load_enriched_data():
         with open(FileName.dump_file_name(), 'rb') as f:
-            DataFrame.enriched_data = pickle.load(f)
+            DataFrameObject.enriched_data = pickle.load(f)
 
     @staticmethod
     def save_enriched_data():
         with open(FileName.dump_file_name(), 'wb') as f:
-            pickle.dump(DataFrame.enriched_data, f, protocol=pickle.HIGHEST_PROTOCOL)
+            pickle.dump(DataFrameObject.enriched_data, f, protocol=pickle.HIGHEST_PROTOCOL)

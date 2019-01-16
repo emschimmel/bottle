@@ -25,7 +25,7 @@
       </td>
     </tr>
     <tr>
-      <td style="background-color:hsl({{(1-recommendation.score)*150}},100%,50%)">
+      <td style="background-color:hsl({{(1-float(recommendation.score))*150}},100%,50%)">
         <span class="w-100">{{recommendation.score}}
         &nbsp; ({{recommendation.rank}})
         </span>

@@ -55,13 +55,18 @@ def __update_item_list():
     global selected_item
     global current_page
 
+    print("a")
+    print(df.get_ad_by_id(selected_item))
     full_output = df.ad_id_overview(search_string)
+    print("b")
+
+    print(selected_item in full_output)
+
     paged_output = [full_output[i:i + max_per_page] for i in range(0, len(full_output), max_per_page)]
     amount_pages = len(paged_output)-1
     if current_page is None:
         current_page = math.floor(full_output.index(selected_item)/max_per_page) if selected_item in full_output else 0
     print("full_output length {l}".format(l=len(full_output)))
-
     output = []
     if len(paged_output) > 0:
         output = paged_output[current_page]
@@ -135,6 +140,7 @@ def __draw_index_no_data():
     view['search_string'] = search_string
     view['no_data'] = True
     view['no_search_data'] = False
+    view['all_data'] = True
     view['offline_mode'] = offline_mode
     return view
 
@@ -145,6 +151,7 @@ def __draw_index_search_data():
     view['search_string'] = search_string
     view['no_data'] = False
     view['no_search_data'] = True
+    view['all_data'] = True
     view['offline_mode'] = offline_mode
     return view
 
@@ -295,17 +302,22 @@ def view_insert():
 @post('/insert')
 def do_insert():
     global rows
-    global selected_item
+    global tenant
+    global insert_ad_id
 
     __set_insert_form_data()
-    # store item
 
-    # set selected_item
-    # set tenant
+    for row in rows:
+        if not row.validate_for_csv():
+            rows.remove(row)
+    df.insert_single_row(insert_ad_id, rows)
 
+    State.tenant = insert_tenant
+    tenant = insert_tenant
+    selected_item = insert_ad_id
+    insert_ad_id = ""
     rows = [AdObject()]
-    print("yay, done")
-    return redirect('/')
+    return redirect('/_open_item/'+selected_item)
 
 
 @post('/_add_insert_row')
@@ -315,8 +327,8 @@ def add_insert_row():
     __set_insert_form_data()
 
     new_row = AdObject()
-    new_row.rank=len(rows)
-    rows.append(new_row)
+    new_row.rank=len(rows)+1
+    rows.insert(len(rows), new_row)
 
 
 @post('/_remove_insert_row/<row_id:int>')
@@ -327,16 +339,22 @@ def remove_insert_row(row_id):
 
     del rows[row_id]
     for index, row in enumerate(rows):
-        row.rank = index
+        row.rank = index+1
 
 
 def __set_insert_form_data():
     global insert_ad_id
     global insert_tenant
+    global rows
 
-    insert_ad_id = request.forms.get('ad_id')
-    insert_tenant = request.forms.get('tenant')
-
+    for key in request.forms.keys():
+        if key == 'ad_id':
+            insert_ad_id = request.forms.get('ad_id')
+        elif key == 'tenant':
+            insert_tenant = request.forms.get('tenant')
+        else:
+            key_for_row, rank = key.split('_', 1)
+            setattr(rows[int(rank)], key_for_row, request.forms.get(key))
 
 @get('/upload')
 @view('upload')

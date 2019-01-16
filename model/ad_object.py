@@ -2,9 +2,9 @@
 
 class AdObject(object):
 
-    id = 0
+    id = ""
     score = 0
-    rank = 0
+    rank = 1
 
     url = ""
     img_url = "/static/img/no_data.png"
@@ -31,6 +31,9 @@ class AdObject(object):
         self.error = error
         self.expired = expired
         self.categories = categories
+
+    def validate_for_csv(self):
+        return self.rank and self.score and self.score
 
     def __repr__(self):
         return "({id}, {url}, {title})".format(id=self.id, url=self.url, title=self.title)
