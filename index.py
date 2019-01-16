@@ -22,7 +22,7 @@ offline_mode = state.offline_mode
 current_page = None
 max_per_page = state.max_per_page
 
-insert_perference = State.insert_perference
+insert_preference = State.insert_preference
 input_options = ["CSV", "RAW", "FORM"]
 
 ####################################
@@ -167,7 +167,7 @@ def __draw_config_controller():
     view['amount_todo'] = df.amount_adds()
     view['amount_done'] = df.amount_enriched()
     view['input_options'] = input_options
-    view['insert_perference'] = insert_perference
+    view['insert_preference'] = insert_preference
     return view
 
 
@@ -245,13 +245,13 @@ def save_config():
     global selected_item
     global max_per_page
     global offline_mode
-    global insert_perference
+    global insert_preference
 
     tenant = request.forms.get('tenant')
     search_string = request.forms.get('search_string')
     selected_item = request.forms.get('selected_item')
     offline_mode = True if request.forms.get('offline_mode') else False
-    insert_perference = request.forms.get('insert_perference')
+    insert_preference = request.forms.get('insert_preference')
 
     max_per_page = int(request.forms.get('max_per_page'))
     state.set_variables(tenant=tenant,
@@ -259,7 +259,7 @@ def save_config():
                         selected_item=selected_item,
                         max_per_page=max_per_page,
                         offline_mode=offline_mode,
-                        insert_preference=insert_perference)
+                        insert_preference=insert_preference)
     state.store_state()
     return __draw_config_controller()
 
@@ -293,14 +293,14 @@ def view_insert():
     view['insert_tenant'] = insert_tenant
     view['insert_ad_id'] = insert_ad_id
     view['insert_rows'] = rows
-    view['insert_perference'] = insert_perference
+    view['insert_preference'] = insert_preference
     return view
 
 @get('/_switch_input_format/<perference>')
 def switch_input_format(perference):
-    global insert_perference
+    global insert_preference
 
-    insert_perference = perference
+    insert_preference = perference
     redirect("/insert")
 
 

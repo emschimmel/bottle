@@ -18,6 +18,8 @@ The name of the tenant should be one of the options mentioned in `./model/tenant
 
 To start the scrape process you have to run the application. When you click an item in the overview for which no scrapped data is available, the tool will automatically try to retrieve it and reload the page.
 You can also start a bulk mode in the config screen under `Pre-load data into the application`.
+This process via a Python threadpool and can only be interrupted by ctr+c twice. 
+But be carefull. Since this proceess is also writing to disc, the `./config/dump-<tenant>.json` file might contain zero bites when killing the application when the new data is not written, than the scrapped data is gone.
 
 When preparing for a demo, you might want to select a specific range of id's the system has using the `Pre-load data into the application` and after that shrink the csv file so it only contains the id's you have data for using `Modify original csv file`.
 When you want to use the current state (for example for demo) and make sure it has that state when you start the application, you can save it in the config screen. This will adjust the `./config/state_config.ini` for you. 
@@ -70,7 +72,6 @@ Extra pip packages needed:
 - modify original csv
 - index stateless
 
-#### Soft requirements
 - progress bars for scrappers?
 - make filters
 - filters/ranges in upload window

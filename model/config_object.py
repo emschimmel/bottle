@@ -39,4 +39,4 @@ class ConfigObject(object):
     max_per_page = parser.getint('UserConfig', 'max_per_page', fallback=50)
     offline_mode = parser.getboolean('UserConfig', 'offline_mode', fallback=False)
 
-    insert_perference = parser.get('UserConfig', 'insert_perference', fallback="CSV")
+    insert_preference = parser.get('UserConfig', 'insert_preference', fallback="CSV")

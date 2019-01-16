@@ -69,11 +69,11 @@
                                      />
                                 </div>
                                 <div class="form-group row ml-0 mr-0">
-                                    <label for="insert_perference" class="col-6">Input preference</label>
-                                    <select name="insert_perference" id="insert_perference" class="form-control col-6" placeholder="Select input preference">
+                                    <label for="insert_preference" class="col-6">Input preference</label>
+                                    <select name="insert_preference" id="insert_preference" class="form-control col-6" placeholder="Select input preference">
                                       % for item in input_options:
                                         <option value="{{item}}"
-                                        % if item == insert_perference:
+                                        % if item == insert_preference:
                                             selected
                                         % end
                                         >{{item}}</option>

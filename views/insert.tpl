@@ -22,24 +22,24 @@
                     <div class="modal-content">
                         <ul class="nav nav-tabs bg-light">
                           <li class="nav-item"><a href="/_switch_input_format/CSV" class="nav-link text-secondary
-                          % if insert_perference == "CSV":
+                          % if insert_preference == "CSV":
                           text-dark active
                           % end
                           ">Upload CSV</a></li>
                           <li class="nav-item"><a href="/_switch_input_format/FORM" class="nav-link text-secondary
-                          % if insert_perference == "FORM":
+                          % if insert_preference == "FORM":
                           text-dark active
                           % end
                           ">Form input</a></li>
                           <li class="nav-item"><a href="/_switch_input_format/RAW" class="nav-link text-secondary
-                          % if insert_perference == "RAW":
+                          % if insert_preference == "RAW":
                           text-dark active
                           % end
                           ">Raw input</a></li>
                         </ul>
-                        % if insert_perference == "FORM":
+                        % if insert_preference == "FORM":
                             % include('partials/input_form_partial.tpl')
-                        % elif insert_perference == "RAW":
+                        % elif insert_preference == "RAW":
                             % include('partials/input_raw_partial.tpl')
                         % else:
                             % include('partials/upload_csv_partial.tpl')
