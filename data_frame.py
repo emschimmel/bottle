@@ -22,7 +22,7 @@ class DataActions(DataFrameObject):
     # used by overview screen
     ############################################
     @staticmethod
-    def ad_id_overview(search_string=""):
+    def __ad_id_overview(search_string=""):
         try:
             if search_string is not "":
                 return list(DataFrameObject.uploaded_csv_data[DataFrameObject.uploaded_csv_data['ad_id'].str.contains(search_string)]['ad_id'].unique())
@@ -30,6 +30,13 @@ class DataActions(DataFrameObject):
                 return list(DataFrameObject.uploaded_csv_data['ad_id'].unique())
         except:
             return list()
+
+    @classmethod
+    def ad_id_overview(self, search_string, offline_mode):
+        if offline_mode:
+            return [id for id in self.__ad_id_overview(search_string=search_string) if id in DataFrameObject.enriched_data]
+        else:
+            return self.__ad_id_overview(search_string=search_string)
 
     @classmethod
     def get_ad_by_id(self, ad_id):

@@ -58,7 +58,7 @@ def __update_item_list():
     global selected_item
     global current_page
 
-    full_output = df.ad_id_overview(search_string)
+    full_output = df.ad_id_overview(search_string=search_string, offline_mode=offline_mode)
 
     paged_output = [full_output[i:i + max_per_page] for i in range(0, len(full_output), max_per_page)]
     amount_pages = len(paged_output)-1

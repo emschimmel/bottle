@@ -4,9 +4,11 @@
       <th>
       <span class="text">
           % if recommendation.loaded is True:
-          {{recommendation.title}}
+            {{recommendation.title}}
+          % elif not offline_mode:
+            Loading...
           % else:
-          Loading...
+            &nbsp;
           % end
       </span>
       </th>
@@ -17,9 +19,11 @@
       <td>
         <span class="text">
         % if recommendation.loaded is True:
-            Categories: {{" > ".join(recommendation.categories)}}
-        % else:
+          Categories: {{" > ".join(recommendation.categories)}}
+        % elif not offline_mode:
           Loading...
+        % else:
+          &nbsp;
         % end
         </span>
       </td>
@@ -45,8 +49,10 @@
         <span>
             % if recommendation.loaded is True:
                 price: {{recommendation.price}}
-            % else:
+            % elif not offline_mode:
                 Loading...
+            % else:
+                &nbsp;
             % end
 
         </span>
@@ -54,18 +60,21 @@
     </tr>
     <tr>
       <td>
-          % if recommendation.loaded is True:
+          % if recommendation.loaded is True or offline_mode:
             <img width="100%" height="250px" src="{{recommendation.img_url}}" />
-          % else:
-            <span>Loading...</span>
+          % elif not offline_mode:
+            Loading...
           % end
-
       </td>
     </tr>
     <tr>
         <td>
             % if recommendation.expired:
                 <span class="alert alert-danger d-inline-block w-100 text m-0">Expired</span>
+            % elif not offline_mode:
+                <span class="alert alert-info d-inline-block w-100 text m-0">Loading</span>
+            % elif recommendation.loaded is False and offline_mode:
+                <span class="alert alert-danger d-inline-block w-100 text m-0">Data unavailable</span>
             % else:
                 <span class="text"> &nbsp;</span>
             % end
