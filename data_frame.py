@@ -61,7 +61,8 @@ class DataActions(DataFrameObject):
                                      loaded=enriched_result.loaded,
                                      error=enriched_result.error,
                                      expired=enriched_result.expired,
-                                     categories=enriched_result.categories)
+                                     categories=enriched_result.categories,
+                                     enriched_at=enriched_result.enriched_at)
         elif not State.offline_mode:
             self.__enriched_data_for_id(ad_id=ad_id)
         return result

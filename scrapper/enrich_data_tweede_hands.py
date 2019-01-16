@@ -21,6 +21,7 @@ class EnrichDataTweedeHands():
         object = AdObject()
         object.id = ad_id
         object.url = url
+        object.set_enriched_moment()
 
         try:
             error = html.find('div', {"class": "error-404-background"})

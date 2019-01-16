@@ -71,5 +71,10 @@
             % end
         </td>
     </tr>
+    <tr>
+        <td>
+            <small>Collected at: {{recommendation.get_enriched_moment()}}</small>
+        </td>
+      </tr>
   </tbody>
 </table>
