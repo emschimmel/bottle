@@ -55,12 +55,7 @@ def __update_item_list():
     global selected_item
     global current_page
 
-    print("a")
-    print(df.get_ad_by_id(selected_item))
     full_output = df.ad_id_overview(search_string)
-    print("b")
-
-    print(selected_item in full_output)
 
     paged_output = [full_output[i:i + max_per_page] for i in range(0, len(full_output), max_per_page)]
     amount_pages = len(paged_output)-1
@@ -223,11 +218,6 @@ def change_amount_per_page(amount):
 @get('/share/_reload/<ad_id>')
 def reload(ad_id):
     df.reload(ad_id)
-
-
-@get('/export/<ad_id>')
-def export(ad_id):
-    pass
 
 
 @get('/share/<ad_id>')

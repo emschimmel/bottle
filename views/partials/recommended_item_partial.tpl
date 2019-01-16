@@ -2,7 +2,7 @@
   <thead>
     <tr>
       <th>
-      <span>
+      <span class="text">
           % if recommendation.loaded is True:
           {{recommendation.title}}
           % else:
@@ -15,7 +15,7 @@
   <tbody>
     <tr>
       <td>
-        <span>
+        <span class="text">
         % if recommendation.loaded is True:
             Categories: {{" > ".join(recommendation.categories)}}
         % else:
@@ -65,7 +65,9 @@
     <tr>
         <td>
             % if recommendation.expired:
-            <span class="alert alert-danger d-inline-block w-100 m-0">Expired</span>
+                <span class="alert alert-danger d-inline-block w-100 m-0">Expired</span>
+            % else:
+                <span> $nbsp;</span>
             % end
         </td>
     </tr>

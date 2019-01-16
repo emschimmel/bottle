@@ -13,5 +13,12 @@
         .recommendation thead td:first-child {
             height: 80px;
         }
+        .text {
+            flex-direction: column;
+            height: 40px;
+            display: flex;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
     </style>
 </head>

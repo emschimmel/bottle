@@ -57,8 +57,7 @@ Extra pip packages needed:
 - √ also show the categories
 - √ update button on page
 - √ share a specific id
-- export json
-- add item manual
+- add item manual (save the csv)
 
 ### Medium requirements
 - build docker container

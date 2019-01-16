@@ -1,13 +1,17 @@
 <table class="table">
     <thead>
       <tr>
-        <th>{{selected_ad.title}}</th>
+        <th>
+            <span class="text">
+                {{selected_ad.title}}
+            </span>
+        </th>
       </tr>
     </thead>
     <tbody>
       <tr>
         <td>
-          <span>Categories: {{" > ".join(selected_ad.categories)}}</span>
+          <span class="text">Categories: {{" > ".join(selected_ad.categories)}}</span>
         </td>
       </tr>
       <tr>
@@ -35,9 +39,8 @@
       <tr>
         <td class="d-flex justify-content-center">
             <a href="#" onclick='reload({{selected_ad.id}})' role="button" class="btn btn-secondary btn-sm mr-2">Reload</button>
-            <a href="/export/{{selected_ad.id}}" role="button" class="btn btn-secondary btn-sm mr-2">Export</button>
             % if all_data:
-            <a href="/share/{{selected_ad.id}}" role="button" class="btn btn-secondary btn-sm">Share</button>
+                <a href="/share/{{selected_ad.id}}" role="button" class="btn btn-secondary btn-sm">Share</button>
             % end
         </td>
       </tr>
