@@ -119,6 +119,13 @@ class DataActions(DataFrameObject):
             DataFrameObject.uploaded_csv_data.append(pandas.DataFrame([row], columns=DataFrameObject.uploaded_csv_data.columns))
         self.save_data()
 
+    @classmethod
+    def insert_multi_row(self, raw_collection):
+        for row_item in raw_collection:
+            row = row_item.split(',')
+            DataFrameObject.uploaded_csv_data.append(pandas.DataFrame([row], columns=DataFrameObject.uploaded_csv_data.columns))
+        self.save_data()
+
     ############################################
     # used thread
     ############################################

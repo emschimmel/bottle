@@ -6,8 +6,7 @@
                 <div class="col-9">
                     <a href="/" role="button" class="btn btn-sm btn-secondary">Overview</a>
                     % if not offline_mode:
-                        <a href="/insert" role="button" class="btn btn-sm btn-secondary">Insert</a>
-                        <a href="/upload" role="button" class="btn btn-sm btn-secondary">Upload CSV</a>
+                        <a href="/insert" role="button" class="btn btn-sm btn-secondary">Insert data</a>
                     % end
                     <a href="/config" role="button" class="btn btn-sm btn-secondary active">Config</a>
                     <span>current tenant: {{tenant}}</span>
@@ -69,6 +68,19 @@
                                      % end
                                      />
                                 </div>
+                                <div class="form-group row ml-0 mr-0">
+                                    <label for="insert_perference" class="col-6">Input preference</label>
+                                    <select name="insert_perference" id="insert_perference" class="form-control col-6" placeholder="Select input preference">
+                                      % for item in input_options:
+                                        <option value="{{item}}"
+                                        % if item == insert_perference:
+                                            selected
+                                        % end
+                                        >{{item}}</option>
+                                      % end
+                                    <select>
+                                </div>
+
                                 <div class="form-group row ml-0 mr-0 justify-content-end">
                                     <button type="submit" id="save_button" class="btn btn-primary collapse show">Save</button>
                                 </div>

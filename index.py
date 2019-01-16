@@ -22,6 +22,9 @@ offline_mode = state.offline_mode
 current_page = None
 max_per_page = state.max_per_page
 
+insert_perference = State.insert_perference
+input_options = ["CSV", "RAW", "FORM"]
+
 ####################################
 # Static loaders
 ####################################
@@ -163,6 +166,8 @@ def __draw_config_controller():
     view['offline_mode'] = offline_mode
     view['amount_todo'] = df.amount_adds()
     view['amount_done'] = df.amount_enriched()
+    view['input_options'] = input_options
+    view['insert_perference'] = insert_perference
     return view
 
 
@@ -240,18 +245,21 @@ def save_config():
     global selected_item
     global max_per_page
     global offline_mode
+    global insert_perference
 
     tenant = request.forms.get('tenant')
     search_string = request.forms.get('search_string')
     selected_item = request.forms.get('selected_item')
     offline_mode = True if request.forms.get('offline_mode') else False
+    insert_perference = request.forms.get('insert_perference')
 
     max_per_page = int(request.forms.get('max_per_page'))
     state.set_variables(tenant=tenant,
                         search_string=search_string,
                         selected_item=selected_item,
                         max_per_page=max_per_page,
-                        offline_mode=offline_mode)
+                        offline_mode=offline_mode,
+                        insert_preference=insert_perference)
     state.store_state()
     return __draw_config_controller()
 
@@ -276,7 +284,6 @@ rows = [AdObject()]
 insert_ad_id = ""
 insert_tenant = State.tenant
 
-
 @get('/insert')
 @view('insert')
 def view_insert():
@@ -286,28 +293,15 @@ def view_insert():
     view['insert_tenant'] = insert_tenant
     view['insert_ad_id'] = insert_ad_id
     view['insert_rows'] = rows
+    view['insert_perference'] = insert_perference
     return view
 
+@get('/_switch_input_format/<perference>')
+def switch_input_format(perference):
+    global insert_perference
 
-@post('/insert')
-def do_insert():
-    global rows
-    global tenant
-    global insert_ad_id
-
-    __set_insert_form_data()
-
-    for row in rows:
-        if not row.validate_for_csv():
-            rows.remove(row)
-    df.insert_single_row(insert_ad_id, rows)
-
-    State.tenant = insert_tenant
-    tenant = insert_tenant
-    selected_item = insert_ad_id
-    insert_ad_id = ""
-    rows = [AdObject()]
-    return redirect('/_open_item/'+selected_item)
+    insert_perference = perference
+    redirect("/insert")
 
 
 @post('/_add_insert_row')
@@ -346,13 +340,45 @@ def __set_insert_form_data():
             key_for_row, rank = key.split('_', 1)
             setattr(rows[int(rank)], key_for_row, request.forms.get(key))
 
-@get('/upload')
-@view('upload')
-def view_upload():
-    view = dict()
-    view['tenant_list'] = State.supported_tenants()
-    view['state_tenant'] = State.tenant
-    return view
+
+@post('/insert')
+def do_insert():
+    global rows
+    global tenant
+    global insert_ad_id
+
+    __set_insert_form_data()
+
+    for row in rows:
+        if not row.validate_for_csv():
+            rows.remove(row)
+    df.insert_single_row(insert_ad_id, rows)
+
+    tenant = insert_tenant
+    selected_item = insert_ad_id
+    insert_ad_id = ""
+    rows = [AdObject()]
+
+    state.tenant = tenant
+    state.selected_item = ""
+    state.search_string = ""
+    state.store_state()
+    return redirect('/_open_item/'+selected_item)
+
+
+@post('/insert_raw')
+def do_insert_raw():
+    global tenant
+
+    tenant = request.forms.get('tenant')
+    raw_collection = [l.replace('\r', '').replace(' ', '') for l in request.forms.get('input_raw').split("\n") if l]
+    df.insert_multi_row(raw_collection)
+
+    state.tenant = tenant
+    state.selected_item = ""
+    state.search_string = ""
+    state.store_state()
+    return redirect('/')
 
 
 @post('/upload')

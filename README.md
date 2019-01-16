@@ -5,10 +5,14 @@
 The format of the csv files should be this order of fields: 
 ```ad_id,recommended_ad_id,rank,score```
 
-There are 2 ways to load data into this tool.
-You can either upload it using the userinterface to `upload` the csv file (only in online mode).
+There are 4 ways to load data into this tool.
+- insert via a the form
+- insert via the raw input form
+- upload a csv file using the userinterface
+- place a csv file manually in a specific directory
 
-Or you use the manual approach when the application is not running. 
+The forms to do this are under `Insert data` and are only visible when `Use offline` is disabled.
+The fastest way to feed the data is to go for the manual approach when the application is not running. 
 Fot this put the csv file in the directory `./config/original.csv` and modify the `./config/state_config.ini` file so the right tenant is set.
 The name of the tenant should be one of the options mentioned in `./model/tenant_enum.py` since that name is used in the class switch to select the right scrapper.
 
@@ -57,7 +61,9 @@ Extra pip packages needed:
 - √ also show the categories
 - √ update button on page
 - √ share a specific id
-- add item manual (save the csv)
+- add item manual (single and multi) (save the csv)
+- √ combine insert + upload
+- √ store insert preference in config
 
 ### Medium requirements
 - build docker container
@@ -67,7 +73,7 @@ Extra pip packages needed:
 #### Soft requirements
 - progress bars for scrappers?
 - make filters
-- filters in upload window
+- filters/ranges in upload window
 - busybox when uploading
 - More verb Ui
 - search for string in title?

@@ -33,12 +33,13 @@ class State(ConfigObject):
         return ConfigObject
 
     @staticmethod
-    def set_variables(tenant, search_string, selected_item, max_per_page, offline_mode):
+    def set_variables(tenant, search_string, selected_item, max_per_page, offline_mode, insert_preference):
         ConfigObject.tenant = tenant
         ConfigObject.search_string = search_string
         ConfigObject.selected_item = selected_item
         ConfigObject.max_per_page = max_per_page
         ConfigObject.offline_mode = offline_mode
+        ConfigObject.insert_perference = insert_preference
 
     @staticmethod
     def store_state():
@@ -49,6 +50,7 @@ class State(ConfigObject):
         parser.set('UserConfig', 'selected_item', ConfigObject.selected_item)
         parser.set('UserConfig', 'max_per_page', ConfigObject.max_per_page)
         parser.set('UserConfig', 'offline_mode', ConfigObject.offline_mode)
+        parser.set('UserConfig', 'insert_perference', ConfigObject.insert_perference)
         parser.add_section('SystemConfig')
         parser.set('SystemConfig', 'original_file_suffix', ConfigObject.ORIGINAL_FILE_SUFFIX)
         parser.set('SystemConfig', 'parsed_file_suffix', ConfigObject.PARSED_FILE_SUFFIX)
