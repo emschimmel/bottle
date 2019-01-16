@@ -65,9 +65,9 @@
     <tr>
         <td>
             % if recommendation.expired:
-                <span class="alert alert-danger d-inline-block w-100 m-0">Expired</span>
+                <span class="alert alert-danger d-inline-block w-100 text m-0">Expired</span>
             % else:
-                <span> $nbsp;</span>
+                <span class="text"> &nbsp;</span>
             % end
         </td>
     </tr>
