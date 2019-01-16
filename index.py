@@ -21,7 +21,6 @@ offline_mode = state.offline_mode
 
 current_page = None
 max_per_page = state.max_per_page
-amount_pages = 1
 
 ####################################
 # Static loaders
@@ -54,7 +53,6 @@ def server_static(subdir, filename):
 ####################################
 def __update_item_list():
     global selected_item
-    global amount_pages
     global current_page
 
     full_output = df.ad_id_overview(search_string)
@@ -70,10 +68,10 @@ def __update_item_list():
         if (selected_item not in output):
             selected_item = output[0] if len(output)>0 else 0
 
-    return output
+    return output, amount_pages, current_page
 
 
-def __page_bar_list():
+def __page_bar_list(amount_pages, current_page):
     sub_set = set()
     sub_set.add(0)
     if amount_pages > 1:
@@ -85,23 +83,24 @@ def __page_bar_list():
     return list(sorted(sub_set))
 
 
-def __draw_index(all=True):
+def __draw_index(all=True, ad_id=selected_item):
     # maybe we need a beter check here
     if os.path.exists(FileName.original_file_name()):
         view = dict()
 
         if all:
-            ad_list = __update_item_list()
+            ad_list, amount_pages, current_page = __update_item_list()
+            ad_id = selected_item
             if len(ad_list) is 0:
                 return __draw_index_search_data()
             # list pane
-            view['selected_item'] = selected_item
+            view['selected_item'] = ad_id
             view['item_list'] = ad_list
 
             # pagination
             view['max_per_page'] = max_per_page
             view['selectable_page_amounts'] = State.SELECTABLE_PAGE_AMOUNTS
-            view['page_bar'] = __page_bar_list()
+            view['page_bar'] = __page_bar_list(amount_pages=amount_pages, current_page=current_page)
             view['current_page'] = current_page
 
         view['all_data'] = all
@@ -112,13 +111,13 @@ def __draw_index(all=True):
         view['offline_mode'] = offline_mode
 
         # ad pane
-        selected_ad = df.get_ad_by_id(selected_item)
+        selected_ad = df.get_ad_by_id(ad_id)
         view['selected_ad_complete'] = selected_ad.loaded
         view['selected_ad_error'] = selected_ad.error
 
         if selected_ad.loaded and not selected_ad.error:
             view['selected_ad'] = selected_ad
-            recommendations = df.get_recommenders_by_parent_id(selected_item)
+            recommendations = df.get_recommenders_by_parent_id(ad_id)
             view['not_loaded'] = len([not_loaded.loaded for not_loaded in recommendations if not not_loaded.loaded])>0
             #recommenders pane
             view['recommendations'] = recommendations
@@ -227,11 +226,7 @@ def export(ad_id):
 @get('/share/<ad_id>')
 @view('index')
 def share(ad_id):
-    global selected_item
-
-    selected_item = ad_id
-    print(ad_id)
-    return __draw_index(all=False)
+    return __draw_index(all=False, ad_id=ad_id)
 
 
 @get('/config')
