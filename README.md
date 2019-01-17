@@ -80,7 +80,6 @@ You can install them with `$pip3 install -r requirements.txt`. Pycharm will also
 - filters/ranges in upload window
 - busybox when uploading
 - More verb Ui
-- search for string in title?
 - enriched_data also in pandas?
 
 #### Improvements

@@ -34,6 +34,8 @@ class ConfigObject(object):
     # State config
     ####################################
     search_string = parser.get('UserConfig', 'search_string', fallback="")
+    filter_string = parser.get('UserConfig', 'filter_string', fallback="")
+
     selected_item = parser.get('UserConfig', 'selected_item', fallback="0")
     tenant = parser.get('UserConfig', 'tenant', fallback="2dehands")
 

@@ -47,6 +47,7 @@ class State(ConfigObject):
         parser.add_section('UserConfig')
         parser.set('UserConfig', 'tenant', ConfigObject.tenant)
         parser.set('UserConfig', 'search_string', ConfigObject.search_string)
+        parser.set('UserConfig', 'filter_string', ConfigObject.filter_string)
         parser.set('UserConfig', 'selected_item', ConfigObject.selected_item)
         parser.set('UserConfig', 'max_per_page', ConfigObject.max_per_page)
         parser.set('UserConfig', 'offline_mode', ConfigObject.offline_mode)

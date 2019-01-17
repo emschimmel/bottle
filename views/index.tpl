@@ -2,12 +2,9 @@
 <html>
     % include('partials/head.tpl')
     <body>
-
         <div class="container m-0">
-
-
             <div class="row p-1 bg-info">
-                <div class="col-9">
+                <div class="col-6">
                     <a href="/" role="button" class="btn btn-sm btn-secondary
                     % if all_data:
                         active
@@ -22,15 +19,12 @@
                     <span>current tenant: {{tenant}}</span>
                 </div>
                 % if all_data:
-                <div class="col-3">
-                    % include('partials/overview/search_partial.tpl')
-                </div>
-                % else:
-                <div class="col-3">
-                    <div class="collapse show" id="search_box">
-                        <input type="text" disabled class="form-control form-control-sm collapse show" placeholder="can't search during upload" id="search" value="" />
+                    <div class="col-3">
+                        % include('partials/overview/title_filter_partial.tpl')
                     </div>
-                </div>
+                    <div class="col-3">
+                        % include('partials/overview/search_partial.tpl')
+                    </div>
                 % end
             </div>
             % if no_data is False and no_search_data is False:

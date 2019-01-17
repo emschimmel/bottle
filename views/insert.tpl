@@ -9,7 +9,6 @@
                     <a href="/scrape" role="button" class="btn btn-sm btn-secondary">Enrich data</a>
                     <a href="/config" role="button" class="btn btn-sm btn-secondary">Config</a>
                 </div>
-
             </div>
 
             <div class="row h-100">

@@ -15,6 +15,7 @@ state = State()
 # State config
 ####################################
 search_string = state.search_string
+filter_string = state.filter_string
 selected_item = state.selected_item
 tenant = state.tenant
 offline_mode = state.offline_mode
@@ -24,6 +25,7 @@ max_per_page = state.max_per_page
 
 insert_preference = State.insert_preference
 input_options = ["CSV", "RAW", "FORM"]
+
 
 ####################################
 # Static loaders
@@ -58,7 +60,7 @@ def __update_item_list():
     global selected_item
     global current_page
 
-    full_output = df.ad_id_overview(search_string=search_string, offline_mode=offline_mode)
+    full_output = df.ad_id_overview(search_string=search_string, filter_string=filter_string, offline_mode=offline_mode)
 
     paged_output = [full_output[i:i + max_per_page] for i in range(0, len(full_output), max_per_page)]
     amount_pages = len(paged_output)-1
@@ -110,6 +112,7 @@ def __draw_index(all=True, ad_id=selected_item):
 
         # top pane
         view['tenant'] = tenant
+        view['filter_string'] = filter_string
         view['search_string'] = search_string
         view['offline_mode'] = offline_mode
 
@@ -136,6 +139,7 @@ def __draw_index_no_data():
     view = dict()
     view['tenant'] = tenant
     view['search_string'] = search_string
+    view['filter_string'] = filter_string
     view['no_data'] = True
     view['no_search_data'] = False
     view['all_data'] = True
@@ -147,6 +151,7 @@ def __draw_index_search_data():
     view = dict()
     view['tenant'] = tenant
     view['search_string'] = search_string
+    view['filter_string'] = filter_string
     view['no_data'] = False
     view['no_search_data'] = True
     view['all_data'] = True
@@ -158,8 +163,8 @@ def __draw_config_controller():
     view = dict()
     view['tenant'] = tenant
     view['tenant_list'] = State.supported_tenants()
-    view['search_string'] = search_string
     view['selected_item'] = selected_item
+    view['search_string'] = search_string
     view['current_page'] = current_page
     view['max_per_page'] = max_per_page
     view['selectable_page_amounts'] = State.SELECTABLE_PAGE_AMOUNTS
@@ -172,9 +177,19 @@ def __draw_config_controller():
 def __draw_scrape_controller():
     view = dict()
     view['tenant'] = tenant
-    view['search_string'] = search_string
     view['amount_todo'] = df.amount_adds()
     view['amount_done'] = df.amount_enriched()
+    return view
+
+
+def __draw_insert_controller():
+    view = dict()
+    view['tenant_list'] = State.supported_tenants()
+    view['tenant'] = State.tenant
+    view['insert_tenant'] = insert_tenant
+    view['insert_ad_id'] = insert_ad_id
+    view['insert_rows'] = rows
+    view['insert_preference'] = insert_preference
     return view
 
 
@@ -221,6 +236,16 @@ def search(search_phrase=""):
     search_string = search_phrase
 
 
+@get('/_filter/<filter_phrase>')
+@get('/_filter/')
+def search(filter_phrase=""):
+    global filter_string
+    global current_page
+
+    current_page = 0
+    filter_string = filter_phrase
+
+
 @get('/_amount_per_page/<amount:int>')
 def change_amount_per_page(amount):
     global max_per_page
@@ -241,11 +266,10 @@ def reload(ad_id):
 def share(ad_id):
     return __draw_index(all=False, ad_id=ad_id)
 
+
 ####################################
 # Config
 ####################################
-
-
 @get('/config')
 @view('config')
 def config_control():
@@ -282,7 +306,6 @@ def save_config():
 ####################################
 # Scrape
 ####################################
-
 @get('/scrape')
 @view('scrape')
 def config_control():
@@ -310,14 +333,7 @@ insert_tenant = State.tenant
 @get('/insert')
 @view('insert')
 def view_insert():
-    view = dict()
-    view['tenant_list'] = State.supported_tenants()
-    view['tenant'] = State.tenant
-    view['insert_tenant'] = insert_tenant
-    view['insert_ad_id'] = insert_ad_id
-    view['insert_rows'] = rows
-    view['insert_preference'] = insert_preference
-    return view
+    return __draw_insert_controller()
 
 @get('/_switch_input_format/<perference>')
 def switch_input_format(perference):

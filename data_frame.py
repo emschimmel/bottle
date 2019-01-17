@@ -29,9 +29,6 @@ class DataFrameObject():
 
 class DataActions(DataFrameObject):
 
-    process_pool = Pool(State.MAX_WORKERS)
-    save_interval = State.SAVE_INTERVAL
-
     ############################################
     # used by overview screen
     ############################################
@@ -46,11 +43,15 @@ class DataActions(DataFrameObject):
             return list()
 
     @classmethod
-    def ad_id_overview(self, search_string, offline_mode):
+    def ad_id_overview(self, search_string, filter_string, offline_mode):
         if offline_mode:
-            return [id for id in self.__ad_id_overview(search_string=search_string) if id in DataFrameObject.enriched_data]
+            ad_id_list = [id for id in self.__ad_id_overview(search_string=search_string) if id in DataFrameObject.enriched_data]
         else:
-            return self.__ad_id_overview(search_string=search_string)
+            ad_id_list = self.__ad_id_overview(search_string=search_string)
+        if filter_string:
+            print(filter_string)
+            ad_id_list = [id for id in ad_id_list if id in DataFrameObject.enriched_data and filter_string in DataFrameObject.enriched_data[id].title]
+        return ad_id_list
 
     @classmethod
     def get_ad_by_id(self, ad_id):
@@ -167,14 +168,15 @@ class DataActions(DataFrameObject):
 
     @classmethod
     def __start_processes_for_list(self, all_ids):
-        for i in range(0, len(all_ids), self.save_interval):
+        pool = Pool(State.MAX_WORKERS)
+        for i in range(0, len(all_ids), State.SAVE_INTERVAL):
             chunk_with_recommenders = list()
-            for ad_id in all_ids[i:i +self.save_interval]:
+            for ad_id in all_ids[i:i +State.SAVE_INTERVAL]:
 
                 chunk_with_recommenders.append(ad_id)
                 chunk_with_recommenders.extend([row[2] for row in DataFrameObject.uploaded_csv_data.loc[DataFrameObject.uploaded_csv_data['ad_id'] == ad_id].itertuples() if row[2] not in DataFrameObject.enriched_data])
             print("processing {amount} before saving".format(amount=str(len(chunk_with_recommenders))))
-            self.process_pool.map_async(func=start_enrich_process, chunksize=10, iterable=chunk_with_recommenders,
+            pool.map_async(func=start_enrich_process, chunksize=10, iterable=chunk_with_recommenders,
                                    callback=callback_enrich_process)
 
 
