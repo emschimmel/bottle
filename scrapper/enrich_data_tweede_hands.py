@@ -106,7 +106,7 @@ class EnrichDataTweedeHands():
                         data = response.read()  # a `bytes` object
                         out_file.write(data)
             except Exception as e:
-                print("image not found for {id}".format(id=id))
+                print("image not found for {id}".format(id=ad_id))
                 print(e)
                 return "/static/img/no_data.png", True
         return "/" + img_url, False
