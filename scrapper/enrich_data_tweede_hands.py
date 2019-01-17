@@ -14,7 +14,7 @@ class EnrichDataTweedeHands():
     @classmethod
     def start_for_id(self, ad_id, url, tenant):
         url = url.format(id=ad_id)
-        print("start for id {id} on url {url}".format(id=ad_id, url=url))
+        # print("start for id {id} on url {url}".format(id=ad_id, url=url))
 
         response = requests.get(url)
         html = BeautifulSoup(response.content, "lxml")
@@ -26,21 +26,21 @@ class EnrichDataTweedeHands():
         try:
             error = html.find('div', {"class": "error-404-background"})
             if error:
-                print("Page returns a 404")
+                print("Page returns a 404 for {url}".format(url=url))
                 object.error = True
         except Exception:
-            print("Page is availale")
+            pass
 
         if not object.error:
-            object.title, error = self.__get_title(html=html)
-            object.categories, error = self.__get_categories(html=html)
+            object.title, error = self.__get_title(html=html, id=ad_id)
+            object.categories, error = self.__get_categories(html=html, id=ad_id)
             expired = None
             try:
                 expired = html.find('div', {"data-component": "expired-view-item"})
             except Exception:
-                print("error determining if the add is available")
+                print("error determining if the add is expired for {url}".format(url=url))
             if expired is None:
-                object.price, error = self.__get_price(html=html)
+                object.price, error = self.__get_price(html=html, id=ad_id)
                 object.img_url, error = self.__get_img(html, tenant, ad_id, object.title)
             else:
                 object.expired = True
@@ -48,7 +48,7 @@ class EnrichDataTweedeHands():
         return object
 
     @staticmethod
-    def __get_categories(html):
+    def __get_categories(html, id):
         categories = list()
         try:
             json_text = html.find("script", text=re.compile("data-datalayer-content-json"))[
@@ -59,12 +59,12 @@ class EnrichDataTweedeHands():
                     categories.append(json_data[0]['c'][key]['id'])
             return categories, False
         except Exception as e:
-            print("categories not found")
+            print("categories not found for {id}".format(id=id))
             print(e)
             return categories, True
 
     @staticmethod
-    def __get_price(html):
+    def __get_price(html, id):
         try:
             json_text = html.find("script", text=re.compile("data-datalayer-content-json"))[
                 'data-datalayer-content-json']
@@ -76,18 +76,18 @@ class EnrichDataTweedeHands():
                 price = html.find('span', itemprop="price").getText().strip()
             return price, False
         except Exception as e:
-            print("price not found")
+            print("price not found for {id}".format(id=id))
             print(e)
             return "", True
 
     @staticmethod
-    def __get_title(html):
+    def __get_title(html, id):
         try:
             title = html.find('meta', property="og:title")
             title = title["content"] if title else html.find('h1', itemprop="name").getText().strip()
             return title, False
         except Exception as e:
-            print("title not found")
+            print("title not found for {id}".format(id=id))
             print(e)
             return "", True
 
@@ -106,7 +106,7 @@ class EnrichDataTweedeHands():
                         data = response.read()  # a `bytes` object
                         out_file.write(data)
             except Exception as e:
-                print("image not found")
+                print("image not found for {id}".format(id=id))
                 print(e)
                 return "/static/img/no_data.png", True
         return "/" + img_url, False

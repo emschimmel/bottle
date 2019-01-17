@@ -424,6 +424,8 @@ def do_insert_raw():
 def do_upload():
     global tenant
     global search_string
+    global filter_string
+    global current_page
 
     tenant = request.forms.get('tenant')
     upload = request.files.get('upload')
@@ -433,9 +435,11 @@ def do_upload():
     if not os.path.exists(FileName.config_path()):
         os.makedirs(FileName.config_path())
     upload.save(FileName.original_file_name(), overwrite=True)
+    current_page = 0
     state.tenant = tenant
     state.selected_item = ""
     state.search_string = ""
+    state.filter_string = ""
     state.store_state()
 
     df.restore()

@@ -22,37 +22,37 @@ class EnrichDataMarktplaats():
         try:
             error = html.find('body', {'data-ga-page-view-url': '/404'})
             if error:
-                print("Page returns a 404")
+                print("Page returns a 404 for {url}".format(url=url))
                 object.error = True
         except Exception:
-            print("Page is availale")
+            pass
 
         if not object.error:
-            object.price, error = self.__get_price(html=html)
-            object.title, error = self.__get_title(html=html)
+            object.price, error = self.__get_price(html=html, id=ad_id)
+            object.title, error = self.__get_title(html=html, id=ad_id)
             object.img_url, error = self.__get_img(html, tenant, ad_id)
         object.loaded = True
         return object
 
     @staticmethod
-    def __get_price(html):
+    def __get_price(html, id):
         try:
             price = html.find('span', {'class': 'price '}).getText()
             # price = html.find('meta', name="twitter:data1").get("content")
             return price, False
         except Exception as e:
-            print("price not found")
+            print("price not found for {id}".format(id=id))
             print(e)
             return "", True
 
     @staticmethod
-    def __get_title(html):
+    def __get_title(html, id):
         try:
             title = html.find('h1', {'class':'title', 'id':'title'}).getText()
             # title = html.find('meta', name="twitter:title").get("content")
             return title, False
         except Exception as e:
-            print("title not found")
+            print("title not found for {id}".format(id=id))
             print(e)
             return "", True
 
@@ -69,7 +69,7 @@ class EnrichDataMarktplaats():
                     data = response.read()  # a `bytes` object
                     out_file.write(data)
         except Exception as e:
-            print("image not found")
+            print("image not found for {id}".format(id=id))
             print(e)
             return "static/img/no_data.png", True
         return "/" + img_url, False

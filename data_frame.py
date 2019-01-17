@@ -75,7 +75,7 @@ class DataActions(DataFrameObject):
     def set_enriched_data(self, ad_id, result):
         if ad_id in DataFrameObject.enriched_data:
             enriched_result = DataFrameObject.enriched_data[ad_id]
-            print("enriched_result {}".format(enriched_result))
+            # print("enriched_result {}".format(enriched_result))
             result.set_enriched_data(url=enriched_result.url,
                                      img_url=enriched_result.img_url,
                                      title=enriched_result.title,
@@ -86,16 +86,13 @@ class DataActions(DataFrameObject):
                                      categories=enriched_result.categories,
                                      enriched_at=enriched_result.enriched_at)
         elif not State.offline_mode:
-            self.__enriched_data_for_id(ad_id=ad_id)
+            print("Retrieving dat for ad id {id}".format(id=ad_id))
+            data = TenantConfig().startForId(tenant=State.tenant, id=ad_id)
+            if data is not None:
+                if data.loaded:
+                    DataFrameObject.enriched_data.update({ad_id: data})
+            self.save_enriched_data()
         return result
-
-    @classmethod
-    def __enriched_data_for_id(self, ad_id):
-        data = TenantConfig().startForId(tenant=State.tenant, id=ad_id)
-        if data is not None:
-            if data.loaded:
-                DataFrameObject.enriched_data.update({ad_id: data})
-        self.save_enriched_data()
 
     @classmethod
     def reload(self, ad_id):

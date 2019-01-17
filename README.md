@@ -78,7 +78,6 @@ You can install them with `$pip3 install -r requirements.txt`. Pycharm will also
 - progress bars for scrappers?
 - make filters
 - filters/ranges in upload window
-- busybox when uploading
 - More verb Ui
 - enriched_data also in pandas?
 

@@ -33,6 +33,14 @@
 
     </div>
     <div class="modal-footer">
+        <span class="collapse hide" id="waiting">Uploading ...</span>
         <button type="submit" id="upload_button" class="btn btn-primary collapse show">Upload</button>
     </div>
 </form>
+
+<script type="text/javascript">
+    $('#upload_button').click(function() {
+        $('#waiting').show()
+        $('#upload_button').hide()
+    });
+</script>
