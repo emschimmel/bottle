@@ -8,6 +8,17 @@ from model.tenant_enum import TenantConfig
 import pickle
 from model.state_config import FileName, State
 
+from multiprocessing import Process, Pool
+
+def start_enrich_process(ad_id):
+    return TenantConfig().startForId(tenant=State.tenant, id=ad_id)
+
+def callback_enrich_process(data):
+    for item in data:
+        if item.loaded:
+            DataActions.enriched_data.update({item.id: item})
+    DataActions.save_enriched_data()
+
 
 class DataFrameObject():
 
@@ -17,6 +28,9 @@ class DataFrameObject():
 
 
 class DataActions(DataFrameObject):
+
+    process_pool = Pool(State.MAX_WORKERS)
+    save_interval = State.SAVE_INTERVAL
 
     ############################################
     # used by overview screen
@@ -75,17 +89,20 @@ class DataActions(DataFrameObject):
         return result
 
     @classmethod
+    def __enriched_data_for_id(self, ad_id):
+        data = TenantConfig().startForId(tenant=State.tenant, id=ad_id)
+        if data is not None:
+            if data.loaded:
+                DataFrameObject.enriched_data.update({ad_id: data})
+        self.save_enriched_data()
+
+    @classmethod
     def reload(self, ad_id):
         print(DataFrameObject.enriched_data[ad_id])
         del DataFrameObject.enriched_data[ad_id]
         recommenders = list(DataFrameObject.uploaded_csv_data[DataFrameObject.uploaded_csv_data['ad_id'] == ad_id]['recommended_ad_id'].unique())
         for recommender_id in recommenders:
             del DataFrameObject.enriched_data[recommender_id]
-
-    @classmethod
-    def __enriched_data_for_id(self, ad_id):
-        self.__enriched_data_for_id_without_save(ad_id=ad_id)
-        self.save_enriched_data()
 
 
     ############################################
@@ -128,21 +145,6 @@ class DataActions(DataFrameObject):
     ############################################
     # used thread
     ############################################
-    @staticmethod
-    def __enriched_data_for_id_without_save(ad_id):
-        data = TenantConfig().startForId(tenant=State.tenant, id=ad_id)
-        if data is not None:
-            if data.loaded:
-                DataFrameObject.enriched_data.update({ad_id: data})
-
-    @classmethod
-    def __enriched_data_for_id_with_recommendations(self, ad_id):
-        self.__enriched_data_for_id_without_save(ad_id=ad_id)
-        for row in DataFrameObject.uploaded_csv_data.loc[DataFrameObject.uploaded_csv_data['ad_id'] == ad_id].itertuples():
-            if row[2] not in DataFrameObject.enriched_data:
-                self.__enriched_data_for_id_without_save(ad_id=row[2])
-        self.save_enriched_data()
-
     @classmethod
     def start_for_criteria(self, amount, start, end):
         all_ids = [id for id in list(DataFrameObject.uploaded_csv_data['ad_id'].unique()) if id not in DataFrameObject.enriched_data]
@@ -152,21 +154,33 @@ class DataActions(DataFrameObject):
             if not end:
                 end = True
             all_ids = [id for id in all_ids if id >= start and id <= end]
-        if not amount:
-            amount = len(all_ids)
-        with concurrent.futures.ThreadPoolExecutor(max_workers=State.MAX_WORKERS) as executor:
-            a = {executor.submit(self.__enriched_data_for_id_with_recommendations, id): id for id in all_ids[:int(amount)]}
+        if amount:
+            all_ids = all_ids[:int(amount)]
+
+        self.__start_processes_for_list(all_ids)
 
     @classmethod
     def start_all(self):
         all_ids = DataFrameObject.uploaded_csv_data['ad_id'].unique()
-        with concurrent.futures.ThreadPoolExecutor(max_workers=State.MAX_WORKERS) as executor:
-            a = {executor.submit(self.__enriched_data_for_id_with_recommendations, id): id for id in all_ids if id not in DataFrameObject.enriched_data}
+        all_ids = [id for id in all_ids if id not in DataFrameObject.enriched_data]
+        self.__start_processes_for_list(all_ids)
+
+    @classmethod
+    def __start_processes_for_list(self, all_ids):
+        for i in range(0, len(all_ids), self.save_interval):
+            chunk_with_recommenders = list()
+            for ad_id in all_ids[i:i +self.save_interval]:
+
+                chunk_with_recommenders.append(ad_id)
+                chunk_with_recommenders.extend([row[2] for row in DataFrameObject.uploaded_csv_data.loc[DataFrameObject.uploaded_csv_data['ad_id'] == ad_id].itertuples() if row[2] not in DataFrameObject.enriched_data])
+            print("processing {amount} before saving".format(amount=str(len(chunk_with_recommenders))))
+            self.process_pool.map_async(func=start_enrich_process, chunksize=10, iterable=chunk_with_recommenders,
+                                   callback=callback_enrich_process)
+
 
     ############################################
     # file actions
     ############################################
-
     @staticmethod
     def restore():
         DataFrameObject.uploaded_csv_data = pandas.read_csv(FileName.original_file_name(), dtype={'ad_id':str, 'recommended_ad_id':str})

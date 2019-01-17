@@ -19,8 +19,9 @@ The name of the tenant should be one of the options mentioned in `./model/tenant
 To start the scrape process you have to run the application. When you click an item in the overview for which no scrapped data is available, the tool will automatically try to retrieve it and reload the page.
 You can also start a bulk mode in by using `Enrich data` screen. When you use the `use whole file` set to on, it will try to scrape data it doesn't already have for the whole csv file. This process will take a lot of time!
 When preparing for a demo, you might want to select a specific range of id's the system has using the `Enrich data` screen to configure the range and or amount the application should retrieve. 
-The enrich data process uses a Python threadpool and can only be interrupted by ctr+c twice. 
-But be carefull. Since this proceess is also writing to disc, the `./config/dump-<tenant>.json` file might contain zero bites when killing the application when the new data is not written, than the scrapped data is gone.
+The enrich data process uses a Python multiprocess pool and can only be interrupted by ctr+c twice. 
+But be carefull. Since this proceess is also writing to disc, the `./config/dump-<tenant>.json` file might contain zero bites when killing the application when the new data is not written, than the scrapped data is gone. 
+To increase the time between the file saves, you can increase the `save_interval`. This number means the amount of ads processed (not counting it's recommendations) before the process saves to file. Increasing reduces the io and makes the process faster, but when interupting, more data will be lost.
 
 When you set the application to `use offline` in the `Config` screen, you will only see adds in the overview it has data for.
 When you want to use the current state (for example for demo) and make sure it has that state when you start the application, you can save it in the `config` screen. This will adjust the `./config/state_config.ini` for you (or create it if it is not present). 

@@ -28,6 +28,7 @@ class ConfigObject(object):
     PARSED_FILE_SUFFIX = parser.get('SystemConfig', 'parsed_file_suffix', fallback='dump')
     SELECTABLE_PAGE_AMOUNTS = ast.literal_eval(parser.get('SystemConfig', 'selectable_page_amounts', fallback="[10, 50, 100]"))
     MAX_WORKERS = parser.getint('SystemConfig', 'max_workers', fallback=10)
+    SAVE_INTERVAL = parser.getint('SystemConfig', 'save_interval', fallback=20)
 
     ####################################
     # State config

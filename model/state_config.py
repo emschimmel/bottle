@@ -56,6 +56,7 @@ class State(ConfigObject):
         parser.set('SystemConfig', 'parsed_file_suffix', ConfigObject.PARSED_FILE_SUFFIX)
         parser.set('SystemConfig', 'selectable_page_amounts', ConfigObject.SELECTABLE_PAGE_AMOUNTS)
         parser.set('SystemConfig', 'max_workers', ConfigObject.MAX_WORKERS)
+        parser.set('SystemConfig', 'save_interval', ConfigObject.SAVE_INTERVAL)
         parser.add_section('TenantConfig')
         parser.set('TenantConfig', 'enable_dba', ConfigObject.DBA)
         parser.set('TenantConfig', 'enable_tweedehands', ConfigObject.TWEEDE_HANDS)
