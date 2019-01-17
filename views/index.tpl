@@ -90,7 +90,7 @@
                     <div class="col-12 ml-2 pr-0 mt-3">
                         <span class="alert alert-danger d-block mr-5">
                         % if selected_ad_error is True:
-                            Selected add page unavailable is unavailable at the tenant
+                            Selected add is unavailable at the tenant (404)
                         % else:
                             % if not offline_mode:
                                 Loading...
