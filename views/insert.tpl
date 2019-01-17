@@ -9,11 +9,7 @@
                     <a href="/scrape" role="button" class="btn btn-sm btn-secondary">Enrich data</a>
                     <a href="/config" role="button" class="btn btn-sm btn-secondary">Config</a>
                 </div>
-                <div class="col-3">
-                    <div class="collapse show" id="search_box">
-                        <input type="text" disabled class="form-control form-control-sm collapse show" placeholder="can't search during insert" id="search" value="" />
-                    </div>
-                </div>
+
             </div>
 
             <div class="row h-100">

@@ -70,14 +70,7 @@ You can install them with `$pip3 install -r requirements.txt`. Pycharm will also
 ### TODO
 
 #### Hard requirements
-- √ last page bug
-- √ show if the add is expired
-- √ also show the categories
-- √ update button on page
-- √ share a specific id
 - add item manual (single and multi) (save the csv)
-- √ combine insert + upload
-- √ store insert preference in config
 
 ### Medium requirements
 - build docker container

@@ -11,11 +11,7 @@
                     <span>current tenant: {{tenant}}</span>
 
                 </div>
-                <div class="col-3">
-                    <div class="collapse show" id="search_box">
-                        <input type="text" disabled class="form-control form-control-sm collapse show" placeholder="can't search during config" id="search" value="" />
-                    </div>
-                </div>
+
             </div>
 
             <div class="row h-100">
