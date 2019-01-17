@@ -110,14 +110,6 @@ class DataActions(DataFrameObject):
             pass
         return count
 
-    ############################################
-    # modify original csv file
-    ############################################
-    @classmethod
-    def reduce_uploaded_csv_data(self):
-        DataFrameObject.uploaded_csv_data = DataFrameObject.uploaded_csv_data[DataFrameObject.uploaded_csv_data['ad_id'] in DataFrameObject.enriched_data and DataFrameObject.uploaded_csv_data['recommended_ad_id'] in DataFrameObject.enriched_data]
-        self.save_data()
-
     @classmethod
     def insert_single_row(self, ad_id, recommendation_list):
         for item in recommendation_list:

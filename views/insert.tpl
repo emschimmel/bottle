@@ -6,6 +6,7 @@
                 <div class="col-9">
                     <a href="/" role="button" class="btn btn-sm btn-secondary">Overview</a>
                     <a href="/insert" role="button" class="btn btn-sm btn-secondary active">Insert data</a>
+                    <a href="/scrape" role="button" class="btn btn-sm btn-secondary">Enrich data</a>
                     <a href="/config" role="button" class="btn btn-sm btn-secondary">Config</a>
                 </div>
                 <div class="col-3">
@@ -38,11 +39,11 @@
                           ">Raw input</a></li>
                         </ul>
                         % if insert_preference == "FORM":
-                            % include('partials/input_form_partial.tpl')
+                            % include('partials/insert/input_form_partial.tpl')
                         % elif insert_preference == "RAW":
-                            % include('partials/input_raw_partial.tpl')
+                            % include('partials/insert/input_raw_partial.tpl')
                         % else:
-                            % include('partials/upload_csv_partial.tpl')
+                            % include('partials/insert/upload_csv_partial.tpl')
                         % end
 
                     </div>

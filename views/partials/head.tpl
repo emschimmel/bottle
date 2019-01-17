@@ -20,5 +20,8 @@
             overflow: hidden;
             text-overflow: ellipsis;
         }
+        .modal-dialog {
+            max-width: 75%!important;
+        }
     </style>
 </head>

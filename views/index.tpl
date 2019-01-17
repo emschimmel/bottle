@@ -15,13 +15,15 @@
                     ">Overview</a>
                     % if not offline_mode:
                         <a href="/insert" role="button" class="btn btn-sm btn-secondary">Insert data</a>
+                        <a href="/scrape" role="button" class="btn btn-sm btn-secondary">Enrich data</a>
+
                     % end
                     <a href="/config" role="button" class="btn btn-sm btn-secondary">Config</a>
                     <span>current tenant: {{tenant}}</span>
                 </div>
                 % if all_data:
                 <div class="col-3">
-                    % include('partials/search_partial.tpl')
+                    % include('partials/overview/search_partial.tpl')
                 </div>
                 % else:
                 <div class="col-3">
@@ -40,11 +42,11 @@
 
                     <div class="row">
                       <div class="col p-0 pre-scrollable">
-                        % include('partials/item_list_partial.tpl')
+                        % include('partials/overview/item_list_partial.tpl')
 
                       </div>
                     </div>
-                    % include('partials/pagination_partial.tpl')
+                    % include('partials/overview/pagination_partial.tpl')
 
                   </div>
                   % end
@@ -63,7 +65,7 @@
                       -->
 
                       <div class="col-3 bg-light border-right pre-scrollable" id="selected_item">
-                        % include('partials/selected_item_partial.tpl')
+                        % include('partials/overview/selected_item_partial.tpl')
                       </div>
                       <div class="col-8 pre-scrollable" id="related_items">
 
@@ -73,7 +75,7 @@
                         % end
 
                         <div class="col-4 p-1">
-                           % include('partials/recommended_item_partial.tpl')
+                           % include('partials/overview/recommended_item_partial.tpl')
 
                         </div>
 

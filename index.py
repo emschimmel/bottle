@@ -164,15 +164,26 @@ def __draw_config_controller():
     view['max_per_page'] = max_per_page
     view['selectable_page_amounts'] = State.SELECTABLE_PAGE_AMOUNTS
     view['offline_mode'] = offline_mode
-    view['amount_todo'] = df.amount_adds()
-    view['amount_done'] = df.amount_enriched()
     view['input_options'] = input_options
     view['insert_preference'] = insert_preference
     return view
 
 
+def __draw_scrape_controller():
+    view = dict()
+    view['tenant'] = tenant
+    view['search_string'] = search_string
+    view['amount_todo'] = df.amount_adds()
+    view['amount_done'] = df.amount_enriched()
+    return view
+
+
 ####################################
 # public routes
+####################################
+
+####################################
+# Overview
 ####################################
 @get('/')
 @view('index')
@@ -230,6 +241,10 @@ def reload(ad_id):
 def share(ad_id):
     return __draw_index(all=False, ad_id=ad_id)
 
+####################################
+# Config
+####################################
+
 
 @get('/config')
 @view('config')
@@ -264,6 +279,16 @@ def save_config():
     return __draw_config_controller()
 
 
+####################################
+# Scrape
+####################################
+
+@get('/scrape')
+@view('scrape')
+def config_control():
+    return __draw_scrape_controller()
+
+
 @post('/_start_scrape')
 def start_scrape():
     if request.forms.get('use_all'):
@@ -274,15 +299,13 @@ def start_scrape():
                               end=request.forms.get('end'))
 
 
-@post('/original')
-def reduse_original():
-    df.reduce_uploaded_csv_data()
-    return __draw_config_controller()
-
-
+####################################
+# Insert
+####################################
 rows = [AdObject()]
 insert_ad_id = ""
 insert_tenant = State.tenant
+
 
 @get('/insert')
 @view('insert')

@@ -24,7 +24,7 @@
             </div>
             <div id="repeat_form">
                 % for index, row in enumerate(insert_rows):
-                    % include('partials/add_row.tpl', content=row, enable_remove=len(insert_rows)>1, index=index)
+                    % include('partials/insert/add_row.tpl', content=row, enable_remove=len(insert_rows)>1, index=index)
                 % end
             </div>
 
