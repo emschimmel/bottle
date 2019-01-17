@@ -71,6 +71,8 @@
         <td>
             % if recommendation.expired:
                 <span class="alert alert-danger d-inline-block w-100 text m-0">Expired</span>
+            % elif recommendation.error:
+                <span class="alert alert-danger d-inline-block w-100 text m-0">Unavailable (404)</span>
             % elif recommendation.loaded is False and not offline_mode:
                 <span class="alert alert-info d-inline-block w-100 text m-0">Loading</span>
             % elif recommendation.loaded is False and offline_mode:
