@@ -1,6 +1,3 @@
-import concurrent
-from concurrent.futures import ThreadPoolExecutor
-
 import pandas
 
 from model.ad_object import AdObject
@@ -8,10 +5,12 @@ from model.tenant_enum import TenantConfig
 import pickle
 from model.state_config import FileName, State
 
-from multiprocessing import Process, Pool
+from multiprocessing import Pool
+
 
 def start_enrich_process(ad_id):
     return TenantConfig().startForId(tenant=State.tenant, id=ad_id)
+
 
 def callback_enrich_process(data):
     for item in data:
