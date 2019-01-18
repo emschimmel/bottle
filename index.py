@@ -1,7 +1,7 @@
 import os
 from bottle import route, run, template, view, static_file, request, redirect, post, get
 
-from config_actions import ConfigActions
+from actions.config_actions import ConfigActions
 from model.ad_object import AdObject
 from model.state_config import FileName, State
 import math
@@ -9,8 +9,8 @@ import math
 ####################################
 # Instances
 ####################################
-from overview_actions import OverviewActions
-from scrapper_actions import ScrapperActions
+from actions.overview_actions import OverviewActions
+from actions.scrapper_actions import ScrapperActions
 
 overview_action = OverviewActions()
 config_action = ConfigActions()
