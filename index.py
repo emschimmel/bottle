@@ -1,6 +1,7 @@
 import os
 from bottle import route, run, template, view, static_file, request, redirect, post, get
-from data_frame import DataActions
+
+from config_actions import ConfigActions
 from model.ad_object import AdObject
 from model.state_config import FileName, State
 import math
@@ -8,7 +9,13 @@ import math
 ####################################
 # Instances
 ####################################
-df = DataActions()
+from overview_actions import OverviewActions
+from scrapper_actions import ScrapperActions
+
+overview_action = OverviewActions()
+config_action = ConfigActions()
+scrapper_action = ScrapperActions()
+
 state = State()
 
 ####################################
@@ -60,7 +67,7 @@ def __update_item_list():
     global selected_item
     global current_page
 
-    full_output = df.ad_id_overview(search_string=search_string, filter_string=filter_string, offline_mode=offline_mode)
+    full_output = overview_action.ad_id_overview(search_string=search_string, filter_string=filter_string, offline_mode=offline_mode)
 
     paged_output = [full_output[i:i + max_per_page] for i in range(0, len(full_output), max_per_page)]
     amount_pages = len(paged_output)-1
@@ -117,13 +124,13 @@ def __draw_index(all=True, ad_id=selected_item):
         view['offline_mode'] = offline_mode
 
         # ad pane
-        selected_ad = df.get_ad_by_id(ad_id)
+        selected_ad = overview_action.get_ad_by_id(ad_id)
         view['selected_ad_complete'] = selected_ad.loaded
         view['selected_ad_error'] = selected_ad.error
 
         if selected_ad.loaded and not selected_ad.error:
             view['selected_ad'] = selected_ad
-            recommendations = df.get_recommenders_by_parent_id(ad_id)
+            recommendations = overview_action.get_recommenders_by_parent_id(ad_id)
             view['not_loaded'] = len([not_loaded.loaded for not_loaded in recommendations if not not_loaded.loaded])>0
             #recommenders pane
             view['recommendations'] = recommendations
@@ -177,8 +184,8 @@ def __draw_config_controller():
 def __draw_scrape_controller():
     view = dict()
     view['tenant'] = tenant
-    view['amount_todo'] = df.amount_adds()
-    view['amount_done'] = df.amount_enriched()
+    view['amount_todo'] = config_action.amount_adds()
+    view['amount_done'] = config_action.amount_enriched()
     return view
 
 
@@ -258,7 +265,7 @@ def change_amount_per_page(amount):
 @get('/_reload/<ad_id>')
 @get('/share/_reload/<ad_id>')
 def reload(ad_id):
-    df.reload(ad_id)
+    overview_action.reload(ad_id)
 
 
 @get('/share/<ad_id>')
@@ -315,11 +322,11 @@ def config_control():
 @post('/_start_scrape')
 def start_scrape():
     if request.forms.get('use_all'):
-        df.start_all()
+        scrapper_action.start_all()
     else:
-        df.start_for_criteria(amount=request.forms.get('amount'),
-                              start=request.forms.get('start'),
-                              end=request.forms.get('end'))
+        scrapper_action.start_for_criteria(amount=request.forms.get('amount'),
+                                           start=request.forms.get('start'),
+                                           end=request.forms.get('end'))
 
 
 ####################################
@@ -391,7 +398,7 @@ def do_insert():
     for row in rows:
         if not row.validate_for_csv():
             rows.remove(row)
-    df.insert_single_row(insert_ad_id, rows)
+    config_action.insert_single_row(insert_ad_id, rows)
 
     tenant = insert_tenant
     selected_item = insert_ad_id
@@ -411,7 +418,7 @@ def do_insert_raw():
 
     tenant = request.forms.get('tenant')
     raw_collection = [l.replace('\r', '').replace(' ', '') for l in request.forms.get('input_raw').split("\n") if l]
-    df.insert_multi_row(raw_collection)
+    config_action.insert_multi_row(raw_collection)
 
     state.tenant = tenant
     state.selected_item = ""
@@ -442,7 +449,7 @@ def do_upload():
     state.filter_string = ""
     state.store_state()
 
-    df.restore()
+    overview_action.restore()
     print("yay, done")
     return redirect('/')
 
@@ -451,7 +458,7 @@ def do_upload():
 # On server start
 ####################################
 if os.path.exists(FileName.dump_file_name()):
-    df.load_enriched_data()
+    overview_action.load_enriched_data()
 if os.path.exists(FileName.original_file_name()):
-    df.restore()
+    overview_action.restore()
 run(host='localhost', port=8084)
