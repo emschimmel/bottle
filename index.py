@@ -461,4 +461,4 @@ if os.path.exists(FileName.dump_file_name()):
     overview_action.load_enriched_data()
 if os.path.exists(FileName.original_file_name()):
     overview_action.restore()
-run(host='localhost', port=8084)
+run(host='0.0.0.0', port=8084)
