@@ -12,6 +12,4 @@ ADD requirements.txt /requirements.txt
 
 RUN pip install -r requirements.txt
 
-EXPOSE 8084
-
-RUN [ "python", "./index.py" ]
+CMD [ "python", "./index.py" ]

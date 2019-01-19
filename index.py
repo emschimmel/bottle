@@ -457,8 +457,9 @@ def do_upload():
 ####################################
 # On server start
 ####################################
-if os.path.exists(FileName.dump_file_name()):
-    overview_action.load_enriched_data()
-if os.path.exists(FileName.original_file_name()):
-    overview_action.restore()
-run(host='0.0.0.0', port=8084)
+if __name__ == '__main__':
+    if os.path.exists(FileName.dump_file_name()):
+        overview_action.load_enriched_data()
+    if os.path.exists(FileName.original_file_name()):
+        overview_action.restore()
+    run(host='0.0.0.0', port=8084)
