@@ -30,13 +30,22 @@ class EnrichDataMarktplaats():
                 object.error = True
         except Exception:
             pass
-
         if not object.error:
-            object.price, error = self.__get_price(html=html, id=ad_id)
+            expired = None
+            try:
+                expired = html.find('div', {"class": "expired-state-label"})
+            except Exception:
+                print("error determining if the add is expired for {url}".format(url=url))
             object.title, error = self.__get_title(html=html, id=ad_id)
             object.categories, error = self.__get_categories(html=html, id=ad_id)
-            object.img_url, error = self.__get_img(html, tenant, ad_id)
+            if expired is None:
+                object.price, error = self.__get_price(html=html, id=ad_id)
+                object.img_url, error = self.__get_img(html, tenant, ad_id)
+            else:
+                object.expired = True
         object.loaded = True
+        print(object)
+        print(object.categories)
         return object
 
     @staticmethod
@@ -71,7 +80,12 @@ class EnrichDataMarktplaats():
     @staticmethod
     def __get_title(html, id):
         try:
-            title = html.find('h1', {'class':'title', 'id':'title'}).getText()
+            title = html.find('h1', {'class':'title', 'id':'title'})
+            if title is not None:
+                title = title.getText()
+            else:
+                title = html.find('span', {'class':'mp-listing-title'}).getText()
+            print(title)
             # title = html.find('meta', name="twitter:title").get("content")
             return title, False
         except Exception as e:
@@ -99,6 +113,7 @@ class EnrichDataMarktplaats():
 
 
 
-EnrichDataMarktplaats().start_for_id(ad_id="a1262510063", url="http://marktplaats.nl/{id}", tenant="Marktplaats")
+# EnrichDataMarktplaats().start_for_id(ad_id="a1262510063", url="http://marktplaats.nl/{id}", tenant="Marktplaats")
 # EnrichDataMarktplaats().start_for_id(ad_id="m1362515546", url="http://marktplaats.nl/{id}", tenant="Marktplaats")
-# EnrichDataMarktplaats().start_for_id(ad_id="m1399515546", url="http://marktplaats.nl/{id}", tenant="Marktplaats")
+# EnrichDataMarktplaats().start_for_id(ad_id="m1399515546", url="http://marktplaats.nl/{id}", tenant="Marktplaats") # 404
+# EnrichDataMarktplaats().start_for_id(ad_id="m1351796175", url="http://marktplaats.nl/{id}", tenant="Marktplaats") # expired
