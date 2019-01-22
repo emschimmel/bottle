@@ -18,6 +18,7 @@ class EnrichDataTweedeHands():
 
         response = requests.get(url)
         html = BeautifulSoup(response.content, "lxml")
+        # print(html)
         object = AdObject()
         object.id = ad_id
         object.url = url
@@ -42,10 +43,21 @@ class EnrichDataTweedeHands():
             if expired is None:
                 object.price, error = self.__get_price(html=html, id=ad_id)
                 object.img_url, error = self.__get_img(html, tenant, ad_id, object.title)
+                object.location, error = self.__get_location(html=html, id=ad_id)
             else:
                 object.expired = True
         object.loaded = True
         return object
+
+    @staticmethod
+    def __get_location(html, id):
+        try:
+            location = html.find('span', {"class":"data-text ui-button-clean ui-link-info"}).getText()
+            return location, False
+        except Exception as e:
+            print("location not found for {id}".format(id=id))
+            print(e)
+            return "", True
 
     @staticmethod
     def __get_categories(html, id):
@@ -114,5 +126,5 @@ class EnrichDataTweedeHands():
 # EnrichDataTweedeHands().start_for_id(ad_id="4816171", url="https://www.2dehands.be/{id}.html", tenant="2dehands")
 # EnrichDataTweedeHands().start_for_id(ad_id="478237791", url="https://www.2dehands.be/{id}.html", tenant="2dehands")
 # EnrichDataTweedeHands().start_for_id(ad_id="471726179", url="https://www.2dehands.be/{id}.html", tenant="2dehands")
-# EnrichDataTweedeHands().start_for_id(ad_id="482616171", url="https://www.2dehands.be/{id}.html", tenant="2dehands")
+# EnrichDataTweedeHands().start_for_id(ad_id="482616171", url="https://www.2dehands.be/{id}.html", tenant="2dehands") # expired
 # EnrichDataTweedeHands().start_for_id(ad_id="456307202", url="https://www.2dehands.be/{id}.html", tenant="2dehands")

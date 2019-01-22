@@ -41,12 +41,22 @@ class EnrichDataMarktplaats():
             if expired is None:
                 object.price, error = self.__get_price(html=html, id=ad_id)
                 object.img_url, error = self.__get_img(html, tenant, ad_id)
+                object.location, error = self.__get_location(html=html, id=ad_id)
             else:
                 object.expired = True
+
         object.loaded = True
-        print(object)
-        print(object.categories)
         return object
+
+    @staticmethod
+    def __get_location(html, id):
+        try:
+            location = html.find('meta', {"name":"twitter:label2"}).get("content")
+            return location, False
+        except Exception as e:
+            print("location not found for {id}".format(id=id))
+            print(e)
+            return "", True
 
     @staticmethod
     def __get_categories(html, id):
@@ -69,8 +79,11 @@ class EnrichDataMarktplaats():
     @staticmethod
     def __get_price(html, id):
         try:
-            price = html.find('span', {'class': 'price '}).getText()
-            # price = html.find('meta', name="twitter:data1").get("content")
+            price = html.find('span', {'class': 'price '})
+            if price is not None:
+                price = price.getText()
+            else:
+                price = html.find('meta', {'name':'twitter:data1'}).get("content")
             return price, False
         except Exception as e:
             print("price not found for {id}".format(id=id))
@@ -85,7 +98,6 @@ class EnrichDataMarktplaats():
                 title = title.getText()
             else:
                 title = html.find('span', {'class':'mp-listing-title'}).getText()
-            print(title)
             # title = html.find('meta', name="twitter:title").get("content")
             return title, False
         except Exception as e:

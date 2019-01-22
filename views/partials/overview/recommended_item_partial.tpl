@@ -68,6 +68,20 @@
       </td>
     </tr>
     <tr>
+      <td>
+        <span>
+            % if recommendation.loaded is True:
+                location: {{recommendation.location}}
+            % elif not offline_mode:
+                Loading...
+            % else:
+                &nbsp;
+            % end
+
+        </span>
+      </td>
+    </tr>
+    <tr>
         <td>
             % if recommendation.expired:
                 <span class="alert alert-danger d-inline-block w-100 text m-0">Expired</span>

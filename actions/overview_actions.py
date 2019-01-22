@@ -58,9 +58,10 @@ class OverviewActions(DataFrameObject):
                                      error=enriched_result.error,
                                      expired=enriched_result.expired,
                                      categories=enriched_result.categories,
-                                     enriched_at=enriched_result.enriched_at)
+                                     enriched_at=enriched_result.enriched_at,
+                                     location=enriched_result.location)
         elif not State.offline_mode:
-            print("Retrieving dat for ad id {id}".format(id=ad_id))
+            print("Retrieving data for ad id {id}".format(id=ad_id))
             data = TenantConfig().startForId(tenant=State.tenant, id=ad_id)
             if data is not None:
                 if data.loaded:

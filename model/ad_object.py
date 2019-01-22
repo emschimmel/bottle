@@ -10,6 +10,7 @@ class AdObject(object):
     img_url = "/static/img/no_data.png"
     title = ""
     price = ""
+    location = ""
 
     loaded = False
     error = False
@@ -24,7 +25,7 @@ class AdObject(object):
         self.rank = rank
         self.score = score
 
-    def set_enriched_data(self, url, img_url, title, price, loaded, error, expired, categories, enriched_at):
+    def set_enriched_data(self, url, img_url, title, price, loaded, error, expired, categories, enriched_at, location):
         self.url = url
         self.img_url = img_url
         self.title = title
@@ -34,6 +35,7 @@ class AdObject(object):
         self.expired = expired
         self.categories = categories
         self.enriched_at = enriched_at
+        self.location = location
 
     def get_enriched_moment(self):
         return self.enriched_at.strftime('%H:%M:%S %d-%m-%Y')
