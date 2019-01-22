@@ -77,7 +77,7 @@
                 var form = $('#scrape_form')
                 $('#warning').show()
                 $('#start_button').hide()
-                $('#stop_button').show()
+                // $('#stop_button').show()
                 $.ajax({type: "POST", url: "_start_scrape", data:form.serialize()});
             });
         </script>
