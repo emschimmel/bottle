@@ -1,4 +1,7 @@
 import os
+import re
+from json import loads
+
 from model.ad_object import AdObject
 from bs4 import BeautifulSoup
 import requests
@@ -15,6 +18,7 @@ class EnrichDataMarktplaats():
 
         response = requests.get(url)
         html = BeautifulSoup(response.content, "lxml")
+        # print(html)
         object = AdObject()
         object.id = ad_id
         object.url = url
@@ -30,9 +34,28 @@ class EnrichDataMarktplaats():
         if not object.error:
             object.price, error = self.__get_price(html=html, id=ad_id)
             object.title, error = self.__get_title(html=html, id=ad_id)
+            object.categories, error = self.__get_categories(html=html, id=ad_id)
             object.img_url, error = self.__get_img(html, tenant, ad_id)
         object.loaded = True
         return object
+
+    @staticmethod
+    def __get_categories(html, id):
+        categories = list()
+        try:
+
+            json_text = html.find("script", text=re.compile("dataLayer = (.*?)")).getText()
+            json_text = json_text.strip().replace('dataLayer = [', '').replace('];', '')
+
+            json_data = loads(json_text)
+            for key in sorted(json_data['c'].keys()):
+                if key is not 'c':
+                    categories.append(json_data['c'][key]['n'])
+            return categories, False
+        except Exception as e:
+            print("categories not found for {id}".format(id=id))
+            print(e)
+            return categories, True
 
     @staticmethod
     def __get_price(html, id):
@@ -76,6 +99,6 @@ class EnrichDataMarktplaats():
 
 
 
-# EnrichDataMarktplaats().start_for_id(ad_id="a1262510063", url="http://marktplaats.nl/{id}", tenant="Marktplaats")
+EnrichDataMarktplaats().start_for_id(ad_id="a1262510063", url="http://marktplaats.nl/{id}", tenant="Marktplaats")
 # EnrichDataMarktplaats().start_for_id(ad_id="m1362515546", url="http://marktplaats.nl/{id}", tenant="Marktplaats")
 # EnrichDataMarktplaats().start_for_id(ad_id="m1399515546", url="http://marktplaats.nl/{id}", tenant="Marktplaats")

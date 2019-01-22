@@ -84,7 +84,7 @@ You can install them with `$pip3 install -r requirements.txt`. Pycharm will also
 #### Improvements
 
 #### Maintenance
-- categories marktplaats
+- √ categories marktplaats
 - expired marktplaats
 - categories kijiji
 - expired kijiji

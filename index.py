@@ -449,12 +449,12 @@ def do_upload():
         upload.save(temp_file_name, overwrite=True)
         start = int(request.forms.get('start'))
         end = int(request.forms.get('end'))
-        lines= ["ad_id,recommended_ad_id,rank,score"]
+        lines= ["ad_id,recommended_ad_id,rank,score\n"]
         with open(temp_file_name, 'r') as open_file:
             lines.extend(line for line in islice(open_file, start, end))
 
         with open(FileName.original_file_name(), 'w') as open_file:
-            open_file.write('\n'.join(lines))
+            open_file.write(''.join(lines))
 
         os.remove(temp_file_name)
 
