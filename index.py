@@ -1,5 +1,5 @@
 import os
-import signal
+from itertools import islice
 
 from bottle import route, run, template, view, static_file, request, redirect, post, get
 
@@ -346,8 +346,9 @@ insert_tenant = State.tenant
 def view_insert():
     return __draw_insert_controller()
 
+@get('/upload')
 @get('/_switch_input_format/<perference>')
-def switch_input_format(perference):
+def switch_input_format(perference=state.insert_preference):
     global insert_preference
 
     insert_preference = perference
@@ -430,7 +431,6 @@ def do_insert_raw():
     state.store_state()
     return redirect('/')
 
-
 @post('/upload')
 def do_upload():
     global tenant
@@ -440,12 +440,24 @@ def do_upload():
 
     tenant = request.forms.get('tenant')
     upload = request.files.get('upload')
-    # use_all = request.files.get('use_all')
-    # start = request.files.get('start')
-    # end = request.files.get('end')
     if not os.path.exists(FileName.config_path()):
         os.makedirs(FileName.config_path())
-    upload.save(FileName.original_file_name(), overwrite=True)
+    if request.forms.get('use_all'):
+        upload.save(FileName.original_file_name(), overwrite=True)
+    else:
+        temp_file_name = FileName.original_file_name()+"_temp"
+        upload.save(temp_file_name, overwrite=True)
+        start = int(request.forms.get('start'))
+        end = int(request.forms.get('end'))
+        lines= ["ad_id,recommended_ad_id,rank,score"]
+        with open(temp_file_name, 'r') as open_file:
+            lines.extend(line for line in islice(open_file, start, end))
+
+        with open(FileName.original_file_name(), 'w') as open_file:
+            open_file.write('\n'.join(lines))
+
+        os.remove(temp_file_name)
+
     current_page = 0
     state.tenant = tenant
     state.selected_item = ""

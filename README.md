@@ -77,7 +77,7 @@ You can install them with `$pip3 install -r requirements.txt`. Pycharm will also
 - index stateless?
 - progress bars for scrappers?
 - make filters
-- filters/ranges in upload window
+- √ filters/ranges in upload window
 - More verb Ui
 - enriched_data also in pandas?
 

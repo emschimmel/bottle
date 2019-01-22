@@ -16,20 +16,19 @@
             <label for="upload" class="col-2">CSV file</label>
             <input type="file" name="upload" id="upload" class="form-control col-10" placeholder="Select file" />
         </div>
-        <!--
+
         <div class="form-group form-row">
             <label for="use_all" class="col-2">Use whole file</label>
-            <input type="checkbox" name="use_all" id="use_all" class="form-control col-10" placeholder="Use all"  onchange="document.getElementById('start').disabled = !this.checked;document.getElementById('end').disabled = !this.checked;" />
+            <input type="checkbox" checked name="use_all" id="use_all" class="form-control col-10" placeholder="Use all"  onchange="document.getElementById('start').disabled = this.checked; document.getElementById('end').disabled = this.checked;" />
         </div>
         <div class="form-group form-row">
-            <label for="start" class="col-2">Start</label>
-            <input type="number" name="start" id="start" class="form-control col-10" placeholder="Start" />
+            <label for="start" class="col-2">Start line number</label>
+            <input type="number" disabled name="start" id="start" class="form-control col-10" placeholder="0" />
         </div>
         <div class="form-group form-row">
-            <label for="end" class="col-2">End</label>
-            <input type="number" name="end" id="end" class="form-control col-10" placeholder="End" />
+            <label for="end" class="col-2">End line number</label>
+            <input type="number" disabled name="end" id="end" class="form-control col-10" placeholder="1000" />
         </div>
-        -->
 
     </div>
     <div class="modal-footer">

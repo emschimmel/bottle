@@ -22,7 +22,7 @@
                         <div class="modal-header">
                             <span>Pre-load data into the application</span>
                         </div>
-                        <form action="/scrape" method="post" id="scrape_form" enctype="multipart/form-data">
+                        <form id="scrape_form">
                             <div class="modal-body">
                                 <div class="form-group row ml-0 mr-0">
                                     <span class="col-5">Total to do</span>

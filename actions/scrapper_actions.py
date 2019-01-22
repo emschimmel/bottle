@@ -7,10 +7,12 @@ from model.tenant_enum import TenantConfig
 
 
 def start_enrich_process(ad_id):
+    print("starting {ad_id}".format(ad_id=ad_id))
     return TenantConfig().startForId(tenant=State.tenant, id=ad_id)
 
 
 def callback_enrich_process(data):
+    print("saving {amount}".format(amount=len(data)))
     for item in data:
         if item.loaded:
             ScrapperActions.enriched_data.update({item.id: item})
@@ -52,9 +54,8 @@ class ScrapperActions(DataFrameObject):
                                                 row[2] not in DataFrameObject.enriched_data])
             print("processing {amount} before saving".format(amount=str(len(chunk_with_recommenders))))
             pool.map_async(func=start_enrich_process,
-                                chunksize=10,
-                                iterable=chunk_with_recommenders,
-                                callback=callback_enrich_process)
+                           iterable=chunk_with_recommenders,
+                           callback=callback_enrich_process)
         pool.terminate()
         pool.join()
         pool.close()
