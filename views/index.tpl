@@ -68,8 +68,12 @@
                         </div>
                         </div>
                       </div>
-                      <div class="col-8 pre-scrollable" id="related_items">
-
+                      <div class="col-9" id="related_items">
+                      <div class="card">
+                        <div class="card-header">
+                            <span>Recommendations</span>
+                        </div>
+                        <div class="card-body pre-scrollable">
                       % for index, recommendation in enumerate(recommendations):
                         % if not index%3:
                             <div class="row">
@@ -91,6 +95,8 @@
                               }, 1000);
                         </script>
                       % end
+                </div>
+                </div>
                 </div>
                 % else:
                 <div class="row">
