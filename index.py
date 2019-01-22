@@ -4,6 +4,9 @@ import signal
 from bottle import route, run, template, view, static_file, request, redirect, post, get
 
 from actions.config_actions import ConfigActions
+from actions.insert_actions import InsertActions
+from actions.overview_actions import OverviewActions
+from actions.scrapper_actions import ScrapperActions
 from model.ad_object import AdObject
 from model.state_config import FileName, State
 import math
@@ -11,12 +14,11 @@ import math
 ####################################
 # Instances
 ####################################
-from actions.overview_actions import OverviewActions
-from actions.scrapper_actions import ScrapperActions
 
 overview_action = OverviewActions()
 config_action = ConfigActions()
 scrapper_action = ScrapperActions()
+insert_action = InsertActions()
 
 state = State()
 
@@ -400,7 +402,7 @@ def do_insert():
     for row in rows:
         if not row.validate_for_csv():
             rows.remove(row)
-    config_action.insert_single_row(insert_ad_id, rows)
+    insert_action.insert_single_row(insert_ad_id, rows)
 
     tenant = insert_tenant
     selected_item = insert_ad_id
@@ -420,7 +422,7 @@ def do_insert_raw():
 
     tenant = request.forms.get('tenant')
     raw_collection = [l.replace('\r', '').replace(' ', '') for l in request.forms.get('input_raw').split("\n") if l]
-    config_action.insert_multi_row(raw_collection)
+    insert_action.insert_multi_row(raw_collection)
 
     state.tenant = tenant
     state.selected_item = ""
