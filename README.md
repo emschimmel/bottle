@@ -73,8 +73,8 @@ You can install them with `$pip3 install -r requirements.txt`. Pycharm will also
 - add item manual (single and multi) (save the csv)
 
 ### Medium requirements
-- build docker container
-- index stateless
+- √ build docker container
+- index stateless?
 - progress bars for scrappers?
 - make filters
 - filters/ranges in upload window

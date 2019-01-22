@@ -1,8 +1,8 @@
 <form action="/insert_raw" method="post" id="insert_raw">
       <div class="modal-body">
-            <div class="form-group">
-                <label for="tenant">Tenant</label>
-                <select name="tenant" id="tenant" class="form-control" placeholder="Select Tenant">
+            <div class="form-group form-row">
+                <label for="tenant" class="col-2">Tenant</label>
+                <select name="tenant" id="tenant" class="form-control col-10" placeholder="Select Tenant">
                   % for tenant_item in tenant_list:
                     <option value="{{tenant_item}}"
                         % if insert_tenant is tenant_item:
@@ -12,9 +12,11 @@
                   % end
                 <select>
             </div>
+
             <div class="form-group">
-                <textarea  class="form-control" id="input_raw" name="input_raw" aria-describedby="inputRawHelp">
-                </textarea>
+                <span name="id" id="id" class="input-group">Raw input</span>
+
+                <textarea  class="form-control" id="input_raw" name="input_raw" aria-describedby="inputRawHelp"></textarea>
                 <small id="inputRawHelp" class="form-text text-muted">
                     columns: "ad_id,recommended_ad_id,rank,score" example input:<br />
                     <span class="border d-inline-block w-100 p-2 bg-light rounded">

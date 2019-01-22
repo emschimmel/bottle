@@ -1,8 +1,8 @@
 <form action="/upload" method="post" enctype="multipart/form-data">
     <div class="modal-body">
-        <div class="form-group">
-            <label for="tenant">Tenant</label>
-            <select name="tenant" id="tenant" class="form-control" placeholder="Select Tenant">
+        <div class="form-group form-row">
+            <label for="tenant" class="col-2">Tenant</label>
+            <select name="tenant" id="tenant" class="form-control col-10" placeholder="Select Tenant">
               % for tenant_item in tenant_list:
                 <option value="{{tenant_item}}"
                     % if tenant is tenant_item:
@@ -12,22 +12,22 @@
               % end
             <select>
         </div>
-        <div class="form-group">
-            <label for="upload">CSV file</label>
-            <input type="file" name="upload" id="upload" class="form-control" placeholder="Select file" />
+        <div class="form-group form-row">
+            <label for="upload" class="col-2">CSV file</label>
+            <input type="file" name="upload" id="upload" class="form-control col-10" placeholder="Select file" />
         </div>
         <!--
-        <div class="form-group">
-            <label for="use_all">Use whole file</label>
-            <input type="checkbox" name="use_all" id="use_all" class="form-control" placeholder="Use all"  onchange="document.getElementById('start').disabled = !this.checked;document.getElementById('end').disabled = !this.checked;" />
+        <div class="form-group form-row">
+            <label for="use_all" class="col-2">Use whole file</label>
+            <input type="checkbox" name="use_all" id="use_all" class="form-control col-10" placeholder="Use all"  onchange="document.getElementById('start').disabled = !this.checked;document.getElementById('end').disabled = !this.checked;" />
         </div>
-        <div class="form-group">
-            <label for="start">Start</label>
-            <input type="number" name="start" id="start" class="form-control" placeholder="Start" />
+        <div class="form-group form-row">
+            <label for="start" class="col-2">Start</label>
+            <input type="number" name="start" id="start" class="form-control col-10" placeholder="Start" />
         </div>
-        <div class="form-group">
-            <label for="end">End</label>
-            <input type="number" name="end" id="end" class="form-control" placeholder="End" />
+        <div class="form-group form-row">
+            <label for="end" class="col-2">End</label>
+            <input type="number" name="end" id="end" class="form-control col-10" placeholder="End" />
         </div>
         -->
 

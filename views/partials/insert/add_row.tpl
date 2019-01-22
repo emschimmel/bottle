@@ -1,6 +1,6 @@
-<div class="input-group" id="row_{{index}}">
-    <div class="input-group-prepend">
-        <span class="input-group-text" id="rank">{{row.rank}}</span>
+<div class="input-group form-row" id="row_{{index}}">
+    <div class="input-group-prepend col-1 pr-0">
+        <span class="input-group-text col-12" id="rank_{{index}}">{{row.rank}}</span>
     </div>
     <input type="text" name="id_{{index}}" id="id_{{index}}" class="form-control" placeholder="Recommendation id" value="{{row.id}}" required />
     <input type="number" name="score_{{index}}" id="score_{{index}}" class="form-control col-3" placeholder="score" value="{{row.score}}" />
