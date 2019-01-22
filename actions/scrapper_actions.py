@@ -17,7 +17,6 @@ def callback_enrich_process(data):
     ScrapperActions.save_enriched_data()
 
 
-
 class ScrapperActions(DataFrameObject):
 
     @classmethod
@@ -41,8 +40,8 @@ class ScrapperActions(DataFrameObject):
         all_ids = [id for id in all_ids if id not in DataFrameObject.enriched_data]
         self.__start_processes_for_list(all_ids)
 
-    @classmethod
-    def __start_processes_for_list(self, all_ids):
+    @staticmethod
+    def __start_processes_for_list(all_ids):
         pool = Pool(State.MAX_WORKERS)
         for i in range(0, len(all_ids), State.SAVE_INTERVAL):
             chunk_with_recommenders = list()
@@ -52,6 +51,11 @@ class ScrapperActions(DataFrameObject):
                     DataFrameObject.uploaded_csv_data['ad_id'] == ad_id].itertuples() if
                                                 row[2] not in DataFrameObject.enriched_data])
             print("processing {amount} before saving".format(amount=str(len(chunk_with_recommenders))))
-            pool.map_async(func=start_enrich_process, chunksize=10, iterable=chunk_with_recommenders,
-                           callback=callback_enrich_process)
+            pool.map_async(func=start_enrich_process,
+                                chunksize=10,
+                                iterable=chunk_with_recommenders,
+                                callback=callback_enrich_process)
+        pool.terminate()
+        pool.join()
+        pool.close()
 

@@ -5,7 +5,7 @@ from model.state_config import FileName
 
 class DataFrameObject(object):
 
-    uploaded_csv_data = pandas.DataFrame()
+    uploaded_csv_data = pandas.DataFrame(columns=['ad_id', 'recommended_ad_id', 'rank', 'score'])
     enriched_data = dict()
     # enriched_data = pandas.DataFrame()
 

@@ -52,6 +52,7 @@
                             <div class="modal-footer">
                                 % if amount_todo>0 and (amount_done / amount_todo * 100) <100:
                                     <span class="collapse hide" id="warning">Reloading the browser will not stop the prosess</span>
+                                    <button type="button" id="stop_button" class="btn btn-primary collapse hide">Stop</button>
                                     <button type="button" id="start_button" class="btn btn-primary collapse show">Start</button>
                                  % else:
                                     <span class="collapse hide" id="warning">All data available</span>
@@ -66,10 +67,17 @@
             </div>
         </div>
         <script type="text/javascript">
+            $('#stop_button').click(function() {
+                $('#warning').hide()
+                $('#stop_button').hide()
+                $('#start_button').show()
+                $.ajax({type: "POST", url: "_stop_scrape"});
+            });
             $('#start_button').click(function() {
                 var form = $('#scrape_form')
                 $('#warning').show()
                 $('#start_button').hide()
+                $('#stop_button').show()
                 $.ajax({type: "POST", url: "_start_scrape", data:form.serialize()});
             });
         </script>

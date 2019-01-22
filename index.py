@@ -1,4 +1,6 @@
 import os
+import signal
+
 from bottle import route, run, template, view, static_file, request, redirect, post, get
 
 from actions.config_actions import ConfigActions
@@ -462,4 +464,7 @@ if __name__ == '__main__':
         overview_action.load_enriched_data()
     if os.path.exists(FileName.original_file_name()):
         overview_action.restore()
-    run(host='0.0.0.0', port=8084)
+    # signal.signal(signal.SIGTERM, scrapper_action.stop_processes())
+    # signal.signal(signal.SIGINT, scrapper_action.stop_processes())
+    # signal.signal(signal.SIGQUIT, scrapper_action.stop_processes())
+    run(host='localhost', port=8084)
