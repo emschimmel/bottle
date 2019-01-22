@@ -2,7 +2,7 @@
     <thead>
       <tr>
         <th>
-            <span class="text">
+            <span class="card-title text">
                 {{selected_ad.title}}
             </span>
         </th>

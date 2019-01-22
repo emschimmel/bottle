@@ -59,7 +59,14 @@
                       -->
 
                       <div class="col-3 bg-light border-right pre-scrollable" id="selected_item">
+                      <div class="card">
+                        <div class="card-header">
+                            <span>Selected ad</span>
+                        </div>
+                        <div class="card-body p-0">
                         % include('partials/overview/selected_item_partial.tpl')
+                        </div>
+                        </div>
                       </div>
                       <div class="col-8 pre-scrollable" id="related_items">
 
