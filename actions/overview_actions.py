@@ -45,8 +45,8 @@ class OverviewActions(DataFrameObject):
             result_list.append(result)
         return result_list
 
-    @classmethod
-    def set_enriched_data(self, ad_id, result):
+    @staticmethod
+    def set_enriched_data(ad_id, result):
         if ad_id in DataFrameObject.enriched_data:
             enriched_result = DataFrameObject.enriched_data[ad_id]
             # print("enriched_result {}".format(enriched_result))
@@ -65,11 +65,11 @@ class OverviewActions(DataFrameObject):
             if data is not None:
                 if data.loaded:
                     DataFrameObject.enriched_data.update({ad_id: data})
-            self.save_enriched_data()
+            DataFrameObject.save_enriched_data()
         return result
 
-    @classmethod
-    def reload(self, ad_id):
+    @staticmethod
+    def reload(ad_id):
         print(DataFrameObject.enriched_data[ad_id])
         del DataFrameObject.enriched_data[ad_id]
         recommenders = list(DataFrameObject.uploaded_csv_data[DataFrameObject.uploaded_csv_data['ad_id'] == ad_id]['recommended_ad_id'].unique())

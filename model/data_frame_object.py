@@ -13,10 +13,9 @@ class DataFrameObject(object):
     def restore():
         DataFrameObject.uploaded_csv_data = pandas.read_csv(FileName.original_file_name(), dtype={'ad_id':str, 'recommended_ad_id':str})
 
-    @staticmethod
-    def save_data():
-        DataFrameObject.uploaded_csv_data.to_csv(FileName.original_file_name(), index=False)
-        DataFrameObject.uploaded_csv_data = pandas.read_csv(FileName.original_file_name(), dtype={'ad_id':str, 'recommended_ad_id':str})
+    @classmethod
+    def save_data(self):
+        self.uploaded_csv_data.to_csv(FileName.original_file_name(), index=False)
 
     @staticmethod
     def load_enriched_data():

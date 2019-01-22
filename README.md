@@ -70,7 +70,7 @@ You can install them with `$pip3 install -r requirements.txt`. Pycharm will also
 ### TODO
 
 #### Hard requirements
-- add item manual (single and multi) (save the csv)
+- √ add item manual (single and multi) (save the csv)
 
 ### Medium requirements
 - √ build docker container
