@@ -45,6 +45,7 @@ class State(ConfigObject):
     def store_state():
         parser = configparser.RawConfigParser()
         parser.add_section('UserConfig')
+        print(ConfigObject.tenant)
         parser.set('UserConfig', 'tenant', ConfigObject.tenant)
         parser.set('UserConfig', 'search_string', ConfigObject.search_string)
         parser.set('UserConfig', 'filter_string', ConfigObject.filter_string)
@@ -71,3 +72,11 @@ class State(ConfigObject):
         with open(ConfigObject.config_file, 'w') as file:
             # json.dump(self.config, file)
             parser.write(file)
+
+    @classmethod
+    def store_filled_state(self, tenant="", selected_item="", search_string="", filter_string=""):
+        ConfigObject.tenant = tenant
+        ConfigObject.selected_item = selected_item
+        ConfigObject.search_string = search_string
+        ConfigObject.filter_string = filter_string
+        self.store_state()

@@ -409,9 +409,7 @@ def do_insert():
     rows = [AdObject()]
 
     state.tenant = tenant
-    state.selected_item = ""
-    state.search_string = ""
-    state.store_state()
+    state.store_filled_state(tenant=tenant)
     return redirect('/_open_item/'+selected_item)
 
 
@@ -424,9 +422,7 @@ def do_insert_raw():
     insert_action.insert_multi_row(raw_collection)
 
     state.tenant = tenant
-    state.selected_item = ""
-    state.search_string = ""
-    state.store_state()
+    state.store_filled_state(tenant=tenant)
     return redirect('/')
 
 @post('/upload')
@@ -458,10 +454,7 @@ def do_upload():
 
     current_page = 0
     state.tenant = tenant
-    state.selected_item = ""
-    state.search_string = ""
-    state.filter_string = ""
-    state.store_state()
+    state.store_filled_state(tenant=tenant)
 
     overview_action.restore()
     print("yay, done")
