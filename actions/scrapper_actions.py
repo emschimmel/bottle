@@ -22,7 +22,7 @@ def callback_enrich_process(data):
             panda_items.append(row)
 
     panda_row = pandas.DataFrame(data=panda_items, columns=DataFrameObject.enriched_data.columns)
-    DataFrameObject.enriched_data.append(panda_row, ignore_index=True)
+    DataFrameObject.enriched_data = DataFrameObject.enriched_data.append(panda_row, ignore_index=True)
 
     ScrapperActions.save_enriched_data()
 
