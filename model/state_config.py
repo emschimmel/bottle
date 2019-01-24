@@ -12,7 +12,7 @@ class FileName(ConfigObject):
 
     @staticmethod
     def dump_file_name():
-        return "{path}/{suffix}-{tenant}.json".format(path=ConfigObject.CONFIG_PATH,
+        return "{path}/{suffix}-{tenant}.csv".format(path=ConfigObject.CONFIG_PATH,
                                                       suffix=ConfigObject.PARSED_FILE_SUFFIX,
                                                       tenant=ConfigObject.tenant)
 

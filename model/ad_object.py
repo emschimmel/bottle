@@ -1,4 +1,8 @@
+import ast
 from datetime import datetime
+
+from dateutil import parser
+
 
 class AdObject(object):
 
@@ -12,11 +16,12 @@ class AdObject(object):
     price = ""
     location = ""
 
+    categories = []
+
     loaded = False
     error = False
     expired = False
 
-    categories = []
 
     enriched_at = datetime.now()
 
@@ -25,6 +30,7 @@ class AdObject(object):
         self.rank = rank
         self.score = score
 
+    # def set_enriched_data(self, url, img_url, title, price, loaded, error, expired, location):
     def set_enriched_data(self, url, img_url, title, price, loaded, error, expired, categories, enriched_at, location):
         self.url = url
         self.img_url = img_url
@@ -34,17 +40,26 @@ class AdObject(object):
         self.error = error
         self.expired = expired
         self.categories = categories
+        if isinstance(categories, str):
+            self.categories = ast.literal_eval(categories)
         self.enriched_at = enriched_at
+        if isinstance(enriched_at, str):
+            self.enriched_at = parser.parse(enriched_at)
         self.location = location
 
     def get_enriched_moment(self):
         return self.enriched_at.strftime('%H:%M:%S %d-%m-%Y')
+        # return self.enriched_at
 
     def set_enriched_moment(self):
         self.enriched_at = datetime.now()
 
     def validate_for_csv(self):
         return self.rank and self.score and self.score
+
+    def enriched_panda_row(self):
+        # return [self.id, self.url, self.img_url, self.title, self.price, self.location, self.loaded, self.error, self.expired]
+        return [self.id, self.url, self.img_url, self.title, self.price, self.location, self.categories, self.loaded, self.error, self.expired, self.enriched_at]
 
     def __repr__(self):
         return "({id}, {url}, {title})".format(id=self.id, url=self.url, title=self.title)

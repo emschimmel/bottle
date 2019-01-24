@@ -1,3 +1,5 @@
+import pandas
+
 from model.ad_object import AdObject
 from model.data_frame_object import DataFrameObject
 from model.tenant_enum import TenantConfig
@@ -47,25 +49,38 @@ class OverviewActions(DataFrameObject):
 
     @staticmethod
     def set_enriched_data(ad_id, result):
-        if ad_id in DataFrameObject.enriched_data:
-            enriched_result = DataFrameObject.enriched_data[ad_id]
-            # print("enriched_result {}".format(enriched_result))
-            result.set_enriched_data(url=enriched_result.url,
-                                     img_url=enriched_result.img_url,
-                                     title=enriched_result.title,
-                                     price=enriched_result.price,
-                                     loaded=enriched_result.loaded,
-                                     error=enriched_result.error,
-                                     expired=enriched_result.expired,
-                                     categories=enriched_result.categories,
-                                     enriched_at=enriched_result.enriched_at,
-                                     location=enriched_result.location)
+        enriched_result = DataFrameObject.enriched_data.loc[DataFrameObject.enriched_data['id'] == ad_id]
+        if not enriched_result.empty:
+            for row in enriched_result.itertuples():
+                result.set_enriched_data(url=row[2],
+                                         img_url=row[3],
+                                         title=row[4],
+                                         price=row[5],
+                                         location=row[6],
+                                         categories=row[7],
+                                         loaded=row[8],
+                                         error=row[9],
+                                         expired=row[10],
+                                         enriched_at=row[11],
+                )
+                break
+            # result.set_enriched_data(url=enriched_result.url,
+            #                          img_url=enriched_result.img_url,
+            #                          title=enriched_result.title,
+            #                          price=enriched_result.price,
+            #                          loaded=enriched_result.loaded,
+            #                          error=enriched_result.error,
+            #                          expired=enriched_result.expired,
+            #                          # categories=enriched_result.categories,
+            #                          # enriched_at=enriched_result.enriched_at,
+            #                          location=enriched_result.location
         elif not State.offline_mode:
             print("Retrieving data for ad id {id}".format(id=ad_id))
             data = TenantConfig().startForId(tenant=State.tenant, id=ad_id)
             if data is not None:
                 if data.loaded:
-                    DataFrameObject.enriched_data.update({ad_id: data})
+                    panda_row = pandas.DataFrame(data=[data.enriched_panda_row()], columns=DataFrameObject.enriched_data.columns)
+                    DataFrameObject.enriched_data = DataFrameObject.enriched_data.append(panda_row, ignore_index=True)
             DataFrameObject.save_enriched_data()
         return result
 

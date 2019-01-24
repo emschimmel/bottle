@@ -1,3 +1,5 @@
+import pandas
+
 from model.data_frame_object import DataFrameObject
 
 from multiprocessing import Pool
@@ -13,9 +15,15 @@ def start_enrich_process(ad_id):
 
 def callback_enrich_process(data):
     print("saving {amount}".format(amount=len(data)))
+    panda_items = list()
     for item in data:
         if item.loaded:
-            ScrapperActions.enriched_data.update({item.id: item})
+            row = item.enriched_panda_row()
+            panda_items.append(row)
+
+    panda_row = pandas.DataFrame(data=panda_items, columns=DataFrameObject.enriched_data.columns)
+    DataFrameObject.enriched_data.append(panda_row, ignore_index=True)
+
     ScrapperActions.save_enriched_data()
 
 
@@ -39,7 +47,7 @@ class ScrapperActions(DataFrameObject):
     @classmethod
     def start_all(self):
         all_ids = DataFrameObject.uploaded_csv_data['ad_id'].unique()
-        all_ids = [id for id in all_ids if id not in DataFrameObject.enriched_data]
+        all_ids = [id for id in all_ids if DataFrameObject.enriched_data.loc[DataFrameObject.enriched_data['id'] == id].empty]
         self.__start_processes_for_list(all_ids)
 
     @staticmethod
@@ -55,8 +63,9 @@ class ScrapperActions(DataFrameObject):
             print("processing {amount} before saving".format(amount=str(len(chunk_with_recommenders))))
             pool.map_async(func=start_enrich_process,
                            iterable=chunk_with_recommenders,
+                           chunksize=10,
                            callback=callback_enrich_process)
-        pool.terminate()
-        pool.join()
-        pool.close()
+        # pool.terminate()
+        # pool.join()
+        # pool.close()
 

@@ -1,4 +1,3 @@
-import pickle
 import pandas
 
 from model.state_config import FileName
@@ -6,8 +5,9 @@ from model.state_config import FileName
 class DataFrameObject(object):
 
     uploaded_csv_data = pandas.DataFrame(columns=['ad_id', 'recommended_ad_id', 'rank', 'score'])
-    enriched_data = dict()
-    # enriched_data = pandas.DataFrame()
+    # enriched_data = pandas.DataFrame(columns=['id', 'url', 'img_url', 'title', 'price', 'location', 'loaded', 'error', 'expired'])
+    enriched_data = pandas.DataFrame(columns=['id', 'url', 'img_url', 'title', 'price', 'location', 'categories', 'loaded', 'error', 'expired', 'enriched_at'])
+    enriched_data.sort_index(axis=0)
 
     @staticmethod
     def restore():
@@ -19,10 +19,9 @@ class DataFrameObject(object):
 
     @staticmethod
     def load_enriched_data():
-        with open(FileName.dump_file_name(), 'rb') as f:
-            DataFrameObject.enriched_data = pickle.load(f)
+        # DataFrameObject.enriched_data = pandas.read_csv(FileName.dump_file_name(), dtype={'id':str, 'url':str, 'img_url':str, 'title':str, 'price':str, 'location':str, 'loaded':bool, 'error':bool, 'expired':bool})
+        DataFrameObject.enriched_data = pandas.read_csv(FileName.dump_file_name(), dtype={'id':str, 'url':str, 'img_url':str, 'title':str, 'price':str, 'location':str, 'categories':object, 'loaded':bool, 'error':bool, 'expired':bool, 'enriched_at':str})
 
-    @staticmethod
-    def save_enriched_data():
-        with open(FileName.dump_file_name(), 'wb') as f:
-            pickle.dump(DataFrameObject.enriched_data, f, protocol=pickle.HIGHEST_PROTOCOL)
+    @classmethod
+    def save_enriched_data(self):
+        self.enriched_data.to_csv(FileName.dump_file_name(), index=False)

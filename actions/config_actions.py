@@ -15,7 +15,7 @@ class ConfigActions(DataFrameObject):
         try:
             all = DataFrameObject.uploaded_csv_data['ad_id'].unique()
             for id in all:
-                if id in DataFrameObject.enriched_data:
+                if not DataFrameObject.enriched_data.loc[DataFrameObject.enriched_data['id'] == id].empty:
                     count += 1
         except:
             pass

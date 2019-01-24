@@ -70,14 +70,14 @@ You can install them with `$pip3 install -r requirements.txt`. Pycharm will also
 ### TODO
 
 #### Hard requirements
+- √ processes don't start/save anymore
+- no image found bug
 
 ### Medium requirements
 - index stateless?
 - progress bars for scrappers?
 - make filters
-- √ More verb Ui
-- enriched_data also in pandas?
-
+- √ enriched_data also in pandas?
 
 ### Imposible requirements
 - denmark dba scrapper
