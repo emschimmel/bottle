@@ -3,7 +3,6 @@ from itertools import islice
 
 from bottle import route, run, template, view, static_file, request, redirect, post, get
 
-from actions.config_actions import ConfigActions
 from actions.insert_actions import InsertActions
 from actions.overview_actions import OverviewActions
 from actions.scrapper_actions import ScrapperActions
@@ -16,7 +15,6 @@ import math
 ####################################
 
 overview_action = OverviewActions()
-config_action = ConfigActions()
 scrapper_action = ScrapperActions()
 insert_action = InsertActions()
 
@@ -188,8 +186,8 @@ def __draw_config_controller():
 def __draw_scrape_controller():
     view = dict()
     view['tenant'] = tenant
-    view['amount_todo'] = config_action.amount_adds()
-    view['amount_done'] = config_action.amount_enriched()
+    view['amount_todo'] = scrapper_action.amount_adds()
+    view['amount_done'] = scrapper_action.amount_enriched()
     return view
 
 

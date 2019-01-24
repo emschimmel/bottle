@@ -29,6 +29,25 @@ def callback_enrich_process(data):
 
 class ScrapperActions(DataFrameObject):
 
+    @staticmethod
+    def amount_adds():
+        try:
+            return len(DataFrameObject.uploaded_csv_data['ad_id'].unique())
+        except:
+            return 0
+
+    @staticmethod
+    def amount_enriched():
+        count = 0
+        try:
+            all = DataFrameObject.uploaded_csv_data['ad_id'].unique()
+            for id in all:
+                if not DataFrameObject.enriched_data.loc[DataFrameObject.enriched_data['id'] == id].empty:
+                    count += 1
+        except:
+            pass
+        return count
+
     @classmethod
     def start_for_criteria(self, amount, start, end):
         all_ids = [id for id in list(DataFrameObject.uploaded_csv_data['ad_id'].unique()) if

@@ -64,16 +64,6 @@ class OverviewActions(DataFrameObject):
                                          enriched_at=row[11],
                 )
                 break
-            # result.set_enriched_data(url=enriched_result.url,
-            #                          img_url=enriched_result.img_url,
-            #                          title=enriched_result.title,
-            #                          price=enriched_result.price,
-            #                          loaded=enriched_result.loaded,
-            #                          error=enriched_result.error,
-            #                          expired=enriched_result.expired,
-            #                          # categories=enriched_result.categories,
-            #                          # enriched_at=enriched_result.enriched_at,
-            #                          location=enriched_result.location
         elif not State.offline_mode:
             print("Retrieving data for ad id {id}".format(id=ad_id))
             data = TenantConfig().startForId(tenant=State.tenant, id=ad_id)
@@ -86,12 +76,9 @@ class OverviewActions(DataFrameObject):
 
     @staticmethod
     def reload(ad_id):
-        # del DataFrameObject.enriched_data[ad_id]
         recommenders = list(DataFrameObject.uploaded_csv_data[DataFrameObject.uploaded_csv_data['ad_id'] == ad_id]['recommended_ad_id'].unique())
         for recommender_id in recommenders:
-            DataFrameObject.enriched_data.drop([DataFrameObject.uploaded_csv_data['ad_id'] == recommender_id])
-            # DataFrameObject.enriched_data.drop(recommender_id, axis=0)
-        DataFrameObject.enriched_data.drop([DataFrameObject.uploaded_csv_data['ad_id'] == ad_id])
-        # DataFrameObject.enriched_data.drop(ad_id, axis=0)
+            DataFrameObject.enriched_data = DataFrameObject.enriched_data[DataFrameObject.enriched_data['id'] != recommender_id]
+        DataFrameObject.enriched_data = DataFrameObject.enriched_data[DataFrameObject.enriched_data['id'] != ad_id]
 
 
