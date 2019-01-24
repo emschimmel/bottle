@@ -21,12 +21,12 @@ class OverviewActions(DataFrameObject):
     @classmethod
     def ad_id_overview(self, search_string, filter_string, offline_mode):
         if offline_mode:
-            ad_id_list = [id for id in self.__ad_id_overview(search_string=search_string) if id in DataFrameObject.enriched_data]
+            ad_id_list = [id for id in self.__ad_id_overview(search_string=search_string) if not DataFrameObject.enriched_data.loc[DataFrameObject.enriched_data['id'] == id].empty]
         else:
             ad_id_list = self.__ad_id_overview(search_string=search_string)
         if filter_string:
             print(filter_string)
-            ad_id_list = [id for id in ad_id_list if id in DataFrameObject.enriched_data and filter_string in DataFrameObject.enriched_data[id].title]
+            ad_id_list = list(DataFrameObject.enriched_data[DataFrameObject.enriched_data['title'].str.contains(filter_string)]['id'].unique())
         return ad_id_list
 
     @classmethod
@@ -86,9 +86,12 @@ class OverviewActions(DataFrameObject):
 
     @staticmethod
     def reload(ad_id):
-        print(DataFrameObject.enriched_data[ad_id])
-        del DataFrameObject.enriched_data[ad_id]
+        # del DataFrameObject.enriched_data[ad_id]
         recommenders = list(DataFrameObject.uploaded_csv_data[DataFrameObject.uploaded_csv_data['ad_id'] == ad_id]['recommended_ad_id'].unique())
         for recommender_id in recommenders:
-            del DataFrameObject.enriched_data[recommender_id]
+            DataFrameObject.enriched_data.drop([DataFrameObject.uploaded_csv_data['ad_id'] == recommender_id])
+            # DataFrameObject.enriched_data.drop(recommender_id, axis=0)
+        DataFrameObject.enriched_data.drop([DataFrameObject.uploaded_csv_data['ad_id'] == ad_id])
+        # DataFrameObject.enriched_data.drop(ad_id, axis=0)
+
 

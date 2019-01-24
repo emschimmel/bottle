@@ -73,6 +73,8 @@ You can install them with `$pip3 install -r requirements.txt`. Pycharm will also
 - √ processes don't start/save anymore
 - √ no image found bug
 - reload button
+- √ offline mode
+- √ filter string
 
 ### Medium requirements
 - index stateless?
