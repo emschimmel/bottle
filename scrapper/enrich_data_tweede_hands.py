@@ -117,6 +117,8 @@ class EnrichDataTweedeHands():
                     with urllib.urlopen(img_from_site, cafile=certifi.where()) as response, open(img_url, 'wb') as out_file:
                         data = response.read()  # a `bytes` object
                         out_file.write(data)
+                else:
+                    return "/static/img/no_data.png", True
             except Exception as e:
                 print("image not found for {id}".format(id=ad_id))
                 print(e)
@@ -128,3 +130,4 @@ class EnrichDataTweedeHands():
 # EnrichDataTweedeHands().start_for_id(ad_id="471726179", url="https://www.2dehands.be/{id}.html", tenant="2dehands")
 # EnrichDataTweedeHands().start_for_id(ad_id="482616171", url="https://www.2dehands.be/{id}.html", tenant="2dehands") # expired
 # EnrichDataTweedeHands().start_for_id(ad_id="456307202", url="https://www.2dehands.be/{id}.html", tenant="2dehands")
+# EnrichDataTweedeHands().start_for_id(ad_id="476958230", url="https://www.2dehands.be/{id}.html", tenant="2dehands") # no image
