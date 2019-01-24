@@ -69,5 +69,7 @@ You can install them with `$pip3 install -r requirements.txt`. Pycharm will also
 
 ### TODO
 
+- merge_asof 2 dataframes to 
+
 ### Imposible requirements
 - denmark dba scrapper (the conversion between id and public id is missing, or the key to create the public id's is missing)

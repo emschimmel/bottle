@@ -42,7 +42,7 @@ class ScrapperActions(DataFrameObject):
         try:
             all = DataFrameObject.uploaded_csv_data['ad_id'].unique()
             for id in all:
-                if not DataFrameObject.enriched_data.loc[DataFrameObject.enriched_data['id'] == id].empty:
+                if not DataFrameObject.enriched_data.loc[DataFrameObject.enriched_data['ad_id'] == id].empty:
                     count += 1
         except:
             pass
@@ -66,7 +66,7 @@ class ScrapperActions(DataFrameObject):
     @classmethod
     def start_all(self):
         all_ids = DataFrameObject.uploaded_csv_data['ad_id'].unique()
-        all_ids = [id for id in all_ids if DataFrameObject.enriched_data.loc[DataFrameObject.enriched_data['id'] == id].empty]
+        all_ids = [id for id in all_ids if DataFrameObject.enriched_data.loc[DataFrameObject.enriched_data['ad_id'] == id].empty]
         self.__start_processes_for_list(all_ids)
 
     @staticmethod

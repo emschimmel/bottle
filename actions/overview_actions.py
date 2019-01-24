@@ -21,12 +21,12 @@ class OverviewActions(DataFrameObject):
     @classmethod
     def ad_id_overview(self, search_string, filter_string, offline_mode):
         if offline_mode:
-            ad_id_list = [id for id in self.__ad_id_overview(search_string=search_string) if not DataFrameObject.enriched_data.loc[DataFrameObject.enriched_data['id'] == id].empty]
+            ad_id_list = [id for id in self.__ad_id_overview(search_string=search_string) if not DataFrameObject.enriched_data.loc[DataFrameObject.enriched_data['ad_id'] == id].empty]
         else:
             ad_id_list = self.__ad_id_overview(search_string=search_string)
         if filter_string:
             filtered_list = set()
-            recommendations = list(DataFrameObject.enriched_data[DataFrameObject.enriched_data['title'].str.contains(filter_string)]['id'].unique())
+            recommendations = list(DataFrameObject.enriched_data[DataFrameObject.enriched_data['title'].str.contains(filter_string)]['ad_id'].unique())
             for recommendation_id in recommendations:
                 if not DataFrameObject.uploaded_csv_data.loc[DataFrameObject.uploaded_csv_data['ad_id'] == recommendation_id].empty:
                     filtered_list.add(recommendation_id)
@@ -55,7 +55,7 @@ class OverviewActions(DataFrameObject):
 
     @staticmethod
     def set_enriched_data(ad_id, result):
-        enriched_result = DataFrameObject.enriched_data.loc[DataFrameObject.enriched_data['id'] == ad_id]
+        enriched_result = DataFrameObject.enriched_data.loc[DataFrameObject.enriched_data['ad_id'] == ad_id]
         if not enriched_result.empty:
             for row in enriched_result.itertuples():
                 result.set_enriched_data(url=row[2],
@@ -84,7 +84,7 @@ class OverviewActions(DataFrameObject):
     def reload(ad_id):
         recommenders = list(DataFrameObject.uploaded_csv_data[DataFrameObject.uploaded_csv_data['ad_id'] == ad_id]['recommended_ad_id'].unique())
         for recommender_id in recommenders:
-            DataFrameObject.enriched_data = DataFrameObject.enriched_data[DataFrameObject.enriched_data['id'] != recommender_id]
-        DataFrameObject.enriched_data = DataFrameObject.enriched_data[DataFrameObject.enriched_data['id'] != ad_id]
+            DataFrameObject.enriched_data = DataFrameObject.enriched_data[DataFrameObject.enriched_data['ad_id'] != recommender_id]
+        DataFrameObject.enriched_data = DataFrameObject.enriched_data[DataFrameObject.enriched_data['ad_id'] != ad_id]
 
 
