@@ -9,21 +9,22 @@ from model.state_config import State
 class OverviewActions(DataFrameObject):
 
     @staticmethod
-    def __ad_id_overview(search_string=""):
+    def __ad_id_overview(dataframe=DataFrameObject.uploaded_csv_data, search_string=""):
         try:
             if search_string is not "":
-                return list(DataFrameObject.uploaded_csv_data[DataFrameObject.uploaded_csv_data['ad_id'].str.contains(search_string)]['ad_id'].unique())
+                return list(dataframe[dataframe['ad_id'].str.contains(search_string)]['ad_id'].unique())
             else:
-                return list(DataFrameObject.uploaded_csv_data['ad_id'].unique())
+                return list(dataframe['ad_id'].unique())
         except:
             return list()
 
     @classmethod
     def ad_id_overview(self, search_string, filter_string, offline_mode):
         if offline_mode:
-            ad_id_list = [id for id in self.__ad_id_overview(search_string=search_string) if not DataFrameObject.enriched_data.loc[DataFrameObject.enriched_data['ad_id'] == id].empty]
+            combined = DataFrameObject.uploaded_csv_data.merge(DataFrameObject.enriched_data, left_on='ad_id', right_on='ad_id', how='inner')
+            ad_id_list = [id for id in self.__ad_id_overview(combined, search_string=search_string) if not DataFrameObject.enriched_data.loc[DataFrameObject.enriched_data['ad_id'] == id].empty]
         else:
-            ad_id_list = self.__ad_id_overview(search_string=search_string)
+            ad_id_list = self.__ad_id_overview(DataFrameObject.uploaded_csv_data, search_string=search_string)
         if filter_string:
             filtered_list = set()
             recommendations = list(DataFrameObject.enriched_data[DataFrameObject.enriched_data['title'].str.contains(filter_string)]['ad_id'].unique())
