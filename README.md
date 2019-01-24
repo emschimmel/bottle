@@ -20,7 +20,7 @@ To start the scrape process you have to run the application. When you click an i
 You can also start a bulk mode in by using `Enrich data` screen. When you use the `use whole file` set to on, it will try to scrape data it doesn't already have for the whole csv file. This process will take a lot of time!
 When preparing for a demo, you might want to select a specific range of id's the system has using the `Enrich data` screen to configure the range and or amount the application should retrieve. 
 The enrich data process uses a Python multiprocess pool and can only be interrupted by ctr+c twice. 
-But be carefull. Since this proceess is also writing to disc, the `./config/dump-<tenant>.json` file might contain zero bites when killing the application when the new data is not written, than the scrapped data is gone. 
+This process is also writing the `./config/dump-<tenant>.csv` file to disc. This file contains the scrapped data and will be read with pandas on load. 
 To increase the time between the file saves, you can increase the `save_interval`. This number means the amount of ads processed (not counting it's recommendations) before the process saves to file. Increasing reduces the io and makes the process faster, but when interupting, more data will be lost.
 
 When you set the application to `use offline` in the `Config` screen, you will only see adds in the overview it has data for.
@@ -69,18 +69,5 @@ You can install them with `$pip3 install -r requirements.txt`. Pycharm will also
 
 ### TODO
 
-#### Hard requirements
-- √ processes don't start/save anymore
-- √ no image found bug
-- reload button
-- √ offline mode
-- √ filter string
-
-### Medium requirements
-- index stateless?
-- progress bars for scrappers?
-- make filters
-- √ enriched_data also in pandas?
-
 ### Imposible requirements
-- denmark dba scrapper
+- denmark dba scrapper (the conversion between id and public id is missing, or the key to create the public id's is missing)
