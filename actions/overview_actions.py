@@ -25,8 +25,14 @@ class OverviewActions(DataFrameObject):
         else:
             ad_id_list = self.__ad_id_overview(search_string=search_string)
         if filter_string:
-            print(filter_string)
-            ad_id_list = list(DataFrameObject.enriched_data[DataFrameObject.enriched_data['title'].str.contains(filter_string)]['id'].unique())
+            filtered_list = set()
+            recommendations = list(DataFrameObject.enriched_data[DataFrameObject.enriched_data['title'].str.contains(filter_string)]['id'].unique())
+            for recommendation_id in recommendations:
+                if not DataFrameObject.uploaded_csv_data.loc[DataFrameObject.uploaded_csv_data['ad_id'] == recommendation_id].empty:
+                    filtered_list.add(recommendation_id)
+                elif not DataFrameObject.uploaded_csv_data.loc[DataFrameObject.uploaded_csv_data['recommended_ad_id'] == recommendation_id].empty:
+                    filtered_list.update(list(DataFrameObject.uploaded_csv_data.loc[DataFrameObject.uploaded_csv_data['recommended_ad_id'] == recommendation_id]['ad_id']))
+            ad_id_list = list(item for item in filtered_list if item in ad_id_list)
         return ad_id_list
 
     @classmethod
