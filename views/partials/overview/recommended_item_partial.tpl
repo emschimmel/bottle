@@ -61,7 +61,7 @@
     <tr>
       <td>
           % if recommendation.loaded is True or offline_mode:
-            <img width="100%" height="250px" src="{{recommendation.img_url}}" />
+            <img width="300px" height="250px" src="{{recommendation.img_url}}" />
           % elif not offline_mode:
             Loading...
           % end

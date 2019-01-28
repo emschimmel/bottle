@@ -40,46 +40,60 @@ class OverviewActions(DataFrameObject):
     def get_ad_by_id(self, ad_id):
         result = AdObject()
         result.id = ad_id
-        result = self.set_enriched_data(ad_id, result)
-        return result
-
-    @classmethod
-    def get_recommenders_by_parent_id(self, ad_id):
-        # ad_object
-        result_list = []
-        for row in DataFrameObject.uploaded_csv_data.loc[DataFrameObject.uploaded_csv_data['ad_id'] == ad_id].itertuples():
-            result = AdObject()
-            result.set_initial_data(row[2], row[3], row[4])
-            result = self.set_enriched_data(row[2], result)
-            result_list.append(result)
-        return result_list
-
-    @staticmethod
-    def set_enriched_data(ad_id, result):
-        enriched_result = DataFrameObject.enriched_data.loc[DataFrameObject.enriched_data['ad_id'] == ad_id]
-        if not enriched_result.empty:
-            for row in enriched_result.itertuples():
-                result.set_enriched_data(url=row[2],
-                                         img_url=row[3],
-                                         title=row[4],
-                                         price=row[5],
-                                         location=row[6],
-                                         categories=row[7],
-                                         loaded=row[8],
-                                         error=row[9],
-                                         expired=row[10],
-                                         enriched_at=row[11],
-                )
-                break
-        elif not State.offline_mode:
-            print("Retrieving data for ad id {id}".format(id=ad_id))
+        enriched_result, loaded = self.__set_enriched_data(ad_id, result)
+        result = enriched_result
+        if not loaded and not State.offline_mode:
             data = TenantConfig().startForId(tenant=State.tenant, id=ad_id)
             if data is not None:
                 if data.loaded:
                     panda_row = pandas.DataFrame(data=[data.enriched_panda_row()], columns=DataFrameObject.enriched_data.columns)
                     DataFrameObject.enriched_data = DataFrameObject.enriched_data.append(panda_row, ignore_index=True)
-            DataFrameObject.save_enriched_data()
+                    DataFrameObject.save_enriched_data()
+                    result, loaded = self.__set_enriched_data(ad_id, result)
         return result
+
+    @classmethod
+    def get_recommenders_for_initial_view(self, ad_id, limit=6):
+        result_list = self.__get_recommenders_by_parent_id(ad_id)
+        ad_ids_to_load = []
+        if not limit:
+            limit = len(result_list)
+        for index, result in enumerate(result_list[0:limit]):
+            result, loaded = self.__set_enriched_data(result.id, result)
+            if loaded:
+                result_list[index] = result
+            else:
+                ad_ids_to_load.append(result.id)
+
+        return result_list, ad_ids_to_load
+
+    @classmethod
+    def __get_recommenders_by_parent_id(self, ad_id):
+        # ad_object
+        result_list = []
+        for row in DataFrameObject.uploaded_csv_data.loc[DataFrameObject.uploaded_csv_data['ad_id'] == ad_id].values:
+            result = AdObject()
+            result.set_initial_data(row[1], row[2], row[3])
+            result_list.append(result)
+        return result_list
+
+    @staticmethod
+    def __set_enriched_data(ad_id, result):
+        enriched_result = DataFrameObject.enriched_data.loc[DataFrameObject.enriched_data['ad_id'] == ad_id]
+        if not enriched_result.empty:
+            for row in enriched_result.values:
+                result.set_enriched_data(url=row[1],
+                                         img_url=row[2],
+                                         title=row[3],
+                                         price=row[4],
+                                         location=row[5],
+                                         categories=row[6],
+                                         loaded=row[7],
+                                         error=row[8],
+                                         expired=row[9],
+                                         enriched_at=row[10])
+                break
+        return result, not enriched_result.empty
 
     @staticmethod
     def reload(ad_id):

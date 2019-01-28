@@ -24,6 +24,8 @@ class FileName(ConfigObject):
 
 class State(ConfigObject):
 
+
+
     @staticmethod
     def supported_tenants():
         return TenantConfig().getTenantList()
@@ -45,7 +47,6 @@ class State(ConfigObject):
     def store_state():
         parser = configparser.RawConfigParser()
         parser.add_section('UserConfig')
-        print(ConfigObject.tenant)
         parser.set('UserConfig', 'tenant', ConfigObject.tenant)
         parser.set('UserConfig', 'search_string', ConfigObject.search_string)
         parser.set('UserConfig', 'filter_string', ConfigObject.filter_string)
@@ -53,6 +54,7 @@ class State(ConfigObject):
         parser.set('UserConfig', 'max_per_page', ConfigObject.max_per_page)
         parser.set('UserConfig', 'offline_mode', ConfigObject.offline_mode)
         parser.set('UserConfig', 'insert_preference', ConfigObject.insert_preference)
+        parser.set('UserConfig', 'default_limit', ConfigObject.default_limit)
         parser.add_section('SystemConfig')
         parser.set('SystemConfig', 'original_file_suffix', ConfigObject.ORIGINAL_FILE_SUFFIX)
         parser.set('SystemConfig', 'parsed_file_suffix', ConfigObject.PARSED_FILE_SUFFIX)

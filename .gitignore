@@ -1,0 +1,16 @@
+# Mac
+.DS_Store
+
+# Intellij
+.idea/
+*.iml
+*.iws
+.scalafmt
+*/__pycache__/
+
+# project specific
+img/
+config/
+venv/
+
+*.pyc

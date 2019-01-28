@@ -29,6 +29,8 @@ def callback_enrich_process(data):
 
 class ScrapperActions(DataFrameObject):
 
+    pool = Pool(State.MAX_WORKERS)
+
     @staticmethod
     def amount_adds():
         try:
@@ -38,12 +40,10 @@ class ScrapperActions(DataFrameObject):
 
     @staticmethod
     def amount_enriched():
-        count = 0
         try:
-            count = len(DataFrameObject.enriched_data[~DataFrameObject.enriched_data['ad_id'].isin(DataFrameObject.uploaded_csv_data['ad_id'])].index)
+            return len(DataFrameObject.enriched_data['ad_id'].isin(DataFrameObject.uploaded_csv_data['ad_id']))
         except:
-            pass
-        return count
+            return 0
 
     @classmethod
     def start_for_criteria(self, amount, start, end):
@@ -58,30 +58,28 @@ class ScrapperActions(DataFrameObject):
         if amount:
             all_ids = all_ids[:int(amount)]
 
-        self.__start_processes_for_list(all_ids)
+        self.__start_processes_for_list_and_recommenders(all_ids)
 
     @classmethod
     def start_all(self):
-        all_ids = DataFrameObject.uploaded_csv_data['ad_id'].unique()
-        all_ids = [id for id in all_ids if DataFrameObject.enriched_data.loc[DataFrameObject.enriched_data['ad_id'] == id].empty]
-        self.__start_processes_for_list(all_ids)
+        all_ids = DataFrameObject.enriched_data.loc[~DataFrameObject.enriched_data['ad_id'].isin(DataFrameObject.uploaded_csv_data['ad_id']) == False]['ad_id']
+        self.__start_processes_for_list_and_recommenders(all_ids)
 
-    @staticmethod
-    def __start_processes_for_list(all_ids):
-        pool = Pool(State.MAX_WORKERS)
+    @classmethod
+    def __start_processes_for_list_and_recommenders(self, all_ids):
         for i in range(0, len(all_ids), State.SAVE_INTERVAL):
             chunk_with_recommenders = list()
             for ad_id in all_ids[i:i + State.SAVE_INTERVAL]:
                 chunk_with_recommenders.append(ad_id)
-                chunk_with_recommenders.extend([row[2] for row in DataFrameObject.uploaded_csv_data.loc[
-                    DataFrameObject.uploaded_csv_data['ad_id'] == ad_id].itertuples() if
-                                                row[2] not in DataFrameObject.enriched_data])
+                chunk_with_recommenders.extend([row[1] for row in DataFrameObject.uploaded_csv_data.loc[
+                    DataFrameObject.uploaded_csv_data['ad_id'] == ad_id].values if
+                                                row[1] not in DataFrameObject.enriched_data])
             print("processing {amount} before saving".format(amount=str(len(chunk_with_recommenders))))
-            pool.map_async(func=start_enrich_process,
-                           iterable=chunk_with_recommenders,
-                           chunksize=10,
-                           callback=callback_enrich_process)
-        # pool.terminate()
-        # pool.join()
-        # pool.close()
+            self.start_processes_for_list(chunk_with_recommenders)
 
+    @classmethod
+    def start_processes_for_list(self, all_ids):
+        self.pool.map_async(func=start_enrich_process,
+                       iterable=all_ids,
+                       chunksize=10,
+                       callback=callback_enrich_process)

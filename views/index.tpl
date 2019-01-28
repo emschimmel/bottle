@@ -75,17 +75,26 @@
                         </div>
                         <div class="card-body pre-scrollable">
                       % for index, recommendation in enumerate(recommendations):
-                        % if not index%3:
-                            <div class="row">
-                        % end
-
-                        <div class="col-4 p-1">
-                           % include('partials/overview/recommended_item_partial.tpl')
-
-                        </div>
-
-                        % if not (index+1)%3:
+                        % if recommendations_limit is not False and index == recommendations_limit:
+                            <div class="row alert alert-secondary">
+                                <div class="mx-auto">
+                                    <a href="/_show_more/{{recommendations_limit + 6}}" class="btn btn-secondary">Show more</a>
+                                    <a href="/_show_all" class="btn btn-secondary">Show all</a>
+                                </div>
                             </div>
+                        % elif  recommendations_limit is False or index < recommendations_limit:
+                            % if not index%3:
+                                <div class="row">
+                            % end
+
+                            <div class="col-4 p-1">
+                               % include('partials/overview/recommended_item_partial.tpl')
+
+                            </div>
+
+                            % if not (index+1)%3:
+                                </div>
+                            % end
                         % end
                       % end
                       % if not_loaded and not offline_mode:

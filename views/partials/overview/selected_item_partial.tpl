@@ -26,7 +26,7 @@
       </tr>
       <tr>
         <td>
-          <img width="100%" height="50%" src="{{selected_ad.img_url}}" />
+          <img width="300px" height="50%" src="{{selected_ad.img_url}}" />
         </td>
       </tr>
       <tr>

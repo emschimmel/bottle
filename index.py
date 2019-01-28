@@ -34,6 +34,7 @@ max_per_page = state.max_per_page
 
 insert_preference = State.insert_preference
 input_options = ["CSV", "RAW", "FORM"]
+limit = state.default_limit
 
 
 ####################################
@@ -132,10 +133,13 @@ def __draw_index(all=True, ad_id=selected_item):
 
         if selected_ad.loaded and not selected_ad.error:
             view['selected_ad'] = selected_ad
-            recommendations = overview_action.get_recommenders_by_parent_id(ad_id)
-            view['not_loaded'] = len([not_loaded.loaded for not_loaded in recommendations if not not_loaded.loaded])>0
+            recommendations, ad_ids_to_load = overview_action.get_recommenders_for_initial_view(ad_id=ad_id, limit=limit)
+            if len(ad_ids_to_load) > 0:
+                scrapper_action.start_processes_for_list(ad_ids_to_load)
+            view['not_loaded'] = len([not_loaded.loaded for not_loaded in recommendations[0:limit if limit is not False else len(recommendations)] if not not_loaded.loaded])>0
             #recommenders pane
             view['recommendations'] = recommendations
+        view['recommendations_limit'] = limit
 
         #fallback
         view['no_data'] = False
@@ -219,8 +223,19 @@ def main_page():
 @view('index')
 def open_item(ad_id):
     global selected_item
+    global limit
 
+    limit = state.default_limit
     selected_item = ad_id
+    return redirect('/')
+
+@get('/_show_all')
+@get('/_show_more/<prefered_limit:int>')
+@view('index')
+def open_item(prefered_limit=False):
+    global limit
+
+    limit = prefered_limit
     return redirect('/')
 
 
@@ -229,7 +244,9 @@ def open_item(ad_id):
 def open_page(page):
     global current_page
     global selected_item
+    global limit
 
+    limit = state.default_limit
     selected_item = None
     current_page = page
     return redirect('/')
@@ -240,7 +257,9 @@ def open_page(page):
 def search(search_phrase=""):
     global search_string
     global current_page
+    global limit
 
+    limit = state.default_limit
     current_page = 0
     search_string = search_phrase
 
@@ -250,10 +269,11 @@ def search(search_phrase=""):
 def search(filter_phrase=""):
     global filter_string
     global current_page
+    global limit
 
+    limit = state.default_limit
     current_page = 0
     filter_string = filter_phrase
-
 
 @get('/_amount_per_page/<amount:int>')
 def change_amount_per_page(amount):
@@ -267,6 +287,9 @@ def change_amount_per_page(amount):
 @get('/_reload/<ad_id>')
 @get('/share/_reload/<ad_id>')
 def reload(ad_id):
+    global limit
+
+    limit = state.default_limit
     overview_action.reload(ad_id)
 
 
@@ -416,7 +439,9 @@ def do_insert():
 @post('/insert_raw')
 def do_insert_raw():
     global tenant
+    global limit
 
+    limit = state.default_limit
     tenant = request.forms.get('tenant')
     raw_collection = [l.replace('\r', '').replace(' ', '') for l in request.forms.get('input_raw').split("\n") if l]
     insert_action.insert_multi_row(raw_collection)
@@ -431,7 +456,9 @@ def do_upload():
     global search_string
     global filter_string
     global current_page
+    global limit
 
+    limit = state.default_limit
     tenant = request.forms.get('tenant')
     upload = request.files.get('upload')
     if not os.path.exists(FileName.config_path()):

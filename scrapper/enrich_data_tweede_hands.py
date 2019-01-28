@@ -68,7 +68,7 @@ class EnrichDataTweedeHands():
             json_data = loads(json_text)
             for key in sorted(json_data[0]['c'].keys()):
                 if key is not 'c':
-                    categories.append(json_data[0]['c'][key]['ad_id'])
+                    categories.append(json_data[0]['c'][key]['id'])
             return categories, False
         except Exception as e:
             print("categories not found for {id}".format(id=id))
