@@ -22,8 +22,10 @@ class AdObject(object):
     error = False
     expired = False
 
-
     enriched_at = datetime.now()
+
+    extra_images = []
+    extra_data = []
 
     def set_initial_data(self, id, rank, score):
         self.id = id
@@ -31,7 +33,7 @@ class AdObject(object):
         self.score = score
 
     # def set_enriched_data(self, url, img_url, title, price, loaded, error, expired, location):
-    def set_enriched_data(self, url, img_url, title, price, loaded, error, expired, categories, enriched_at, location):
+    def set_enriched_data(self, url, img_url, title, price, loaded, error, expired, categories, enriched_at, location, extra_images=list(), extra_data=list()):
         self.url = url
         self.img_url = img_url
         self.title = title
@@ -46,6 +48,8 @@ class AdObject(object):
         if isinstance(enriched_at, str):
             self.enriched_at = parser.parse(enriched_at)
         self.location = location
+        self.extra_images = extra_images
+        self.extra_data = extra_data
 
     def get_enriched_moment(self):
         return self.enriched_at.strftime('%H:%M:%S %d-%m-%Y')

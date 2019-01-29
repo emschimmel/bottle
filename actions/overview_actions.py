@@ -102,4 +102,33 @@ class OverviewActions(DataFrameObject):
             DataFrameObject.enriched_data = DataFrameObject.enriched_data[DataFrameObject.enriched_data['ad_id'] != recommender_id]
         DataFrameObject.enriched_data = DataFrameObject.enriched_data[DataFrameObject.enriched_data['ad_id'] != ad_id]
 
+    @classmethod
+    def ad_list_for_page(self, search_string, filter_string, offline_mode, current_page, max_per_page):
+        if offline_mode:
+            combined = DataFrameObject.uploaded_add_list_data.merge(DataFrameObject.enriched_data, left_on='ad_id', right_on='ad_id', how='inner')
+            ad_id_list = [id for id in self.__ad_id_overview(combined, search_string=search_string) if not DataFrameObject.enriched_data.loc[DataFrameObject.enriched_data['ad_id'] == id].empty]
+        else:
+            ad_id_list = self.__ad_id_overview(DataFrameObject.uploaded_add_list_data, search_string=search_string)
+        if filter_string:
+            filtered_list = set()
+            ads = list(DataFrameObject.enriched_data[DataFrameObject.enriched_data['title'].str.contains(filter_string)]['ad_id'].unique())
+            for id in ads:
+                if not DataFrameObject.uploaded_add_list_data.loc[DataFrameObject.uploaded_add_list_data['ad_id'] == id].empty:
+                    filtered_list.add(id)
+            ad_id_list = list(item for item in filtered_list if item in ad_id_list)
+
+        ###
+
+        paged_output = [ad_id_list[i:i + max_per_page] for i in range(0, len(ad_id_list), max_per_page)]
+        amount_pages = len(paged_output) - 1
+        if current_page is None:
+            current_page = 0
+        print("full_output length {l}".format(l=len(ad_id_list)))
+        output = []
+        if len(paged_output) > 0:
+            output = paged_output[current_page]
+
+        ###
+        enriched_data_to_show = list(self.get_ad_by_id(id) for id in output)
+        return enriched_data_to_show, amount_pages, current_page
 

@@ -3,6 +3,8 @@ import ast
 
 
 class ConfigObject(object):
+
+    ad_recommenders = None
     config_file = "config/state_config.ini"
     parser = configparser.RawConfigParser()
     parser.read(config_file)
@@ -25,10 +27,14 @@ class ConfigObject(object):
     # System config
     ####################################
     ORIGINAL_FILE_SUFFIX = parser.get('SystemConfig', 'original_file_suffix', fallback='original')
+    ORIGINAL_AD_LIST_FILE_SUFFIX = parser.get('SystemConfig', 'original_ad_list_file_suffix', fallback='original_ad_list')
     PARSED_FILE_SUFFIX = parser.get('SystemConfig', 'parsed_file_suffix', fallback='dump')
     SELECTABLE_PAGE_AMOUNTS = ast.literal_eval(parser.get('SystemConfig', 'selectable_page_amounts', fallback="[10, 50, 100]"))
     MAX_WORKERS = parser.getint('SystemConfig', 'max_workers', fallback=10)
     SAVE_INTERVAL = parser.getint('SystemConfig', 'save_interval', fallback=5)
+    AD_RECOMMENDERS_MODE = 'ad_recommenders'
+    AD_LIST_MODE = 'ad_list_mode'
+    AVAILABLE_SYSTEM_MODES = [AD_RECOMMENDERS_MODE, AD_LIST_MODE]
 
     ####################################
     # State config
@@ -38,6 +44,7 @@ class ConfigObject(object):
 
     selected_item = parser.get('UserConfig', 'selected_item', fallback="0")
     tenant = parser.get('UserConfig', 'tenant', fallback="2dehands")
+    system_mode = parser.get('UserConfig', 'system_mode', fallback=AD_RECOMMENDERS_MODE)
 
     max_per_page = parser.getint('UserConfig', 'max_per_page', fallback=50)
     offline_mode = parser.getboolean('UserConfig', 'offline_mode', fallback=False)

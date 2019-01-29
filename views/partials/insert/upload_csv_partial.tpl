@@ -1,6 +1,18 @@
 <form action="/upload" method="post" enctype="multipart/form-data">
     <div class="modal-body">
         <div class="form-group form-row">
+            <label for="application_mode" class="col-2">Application mode</label>
+            <select name="application_mode" id="application_mode" class="form-control col-10" placeholder="Select application mode">
+              % for mode in application_modes:
+                <option value="{{mode}}"
+                % if mode == system_mode:
+                    selected
+                % end
+                >{{mode}}</option>
+              % end
+            <select>
+        </div>
+        <div class="form-group form-row">
             <label for="tenant" class="col-2">Tenant</label>
             <select name="tenant" id="tenant" class="form-control col-10" placeholder="Select Tenant">
               % for tenant_item in tenant_list:
@@ -19,7 +31,7 @@
 
         <div class="form-group form-row">
             <label for="use_all" class="col-2">Use whole file</label>
-            <input type="checkbox" checked name="use_all" id="use_all" class="form-control col-10" placeholder="Use all"  onchange="document.getElementById('start').disabled = this.checked; document.getElementById('end').disabled = this.checked;" />
+            <input type="checkbox" checked name="use_all" id="use_all" class="form-control col-10" placeholder="Use all" onchange="document.getElementById('start').disabled = this.checked; document.getElementById('end').disabled = this.checked;" />
         </div>
         <div class="form-group form-row">
             <label for="start" class="col-2">Start line number</label>

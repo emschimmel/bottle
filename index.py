@@ -66,6 +66,17 @@ def server_static(subdir, filename):
 ####################################
 # Private
 ####################################
+def __call_restore():
+    if State.system_mode == State.AD_LIST_MODE:
+        print('starting the application in ad list ui mode')
+        if os.path.exists(FileName.original_data_list_file_name()):
+            overview_action.restore_add_list_data()
+    elif State.system_mode == State.AD_RECOMMENDERS_MODE:
+        print('starting the application in recommender ui mode')
+        if os.path.exists(FileName.original_file_name()):
+            overview_action.restore()
+
+
 def __update_item_list():
     global selected_item
     global current_page
@@ -98,53 +109,91 @@ def __page_bar_list(amount_pages, current_page):
     return list(sorted(sub_set))
 
 
+def __draw_index_list_mode(all=True):
+    global current_page
+
+    view = dict()
+    if all:
+        ad_list, amount_pages, current_page = overview_action.ad_list_for_page(search_string, filter_string, offline_mode, current_page, max_per_page)
+        if len(ad_list) is 0:
+            return __draw_index_search_data()
+        # list pane
+        view['item_list'] = ad_list
+
+        # pagination
+        view['max_per_page'] = max_per_page
+        view['selectable_page_amounts'] = State.SELECTABLE_PAGE_AMOUNTS
+        view['page_bar'] = __page_bar_list(amount_pages=amount_pages, current_page=current_page)
+        view['current_page'] = current_page
+
+    view['all_data'] = all
+
+    # top pane
+    view['tenant'] = tenant
+    view['system_mode'] = State.system_mode
+    view['filter_string'] = filter_string
+    view['search_string'] = search_string
+    view['offline_mode'] = offline_mode
+
+    #fallback
+    view['no_data'] = False
+    view['no_search_data'] = False
+    return view
+
+
+def __draw_index_with_recommenders(all=True, ad_id=selected_item):
+    view = dict()
+    if all:
+        ad_list, amount_pages, current_page = __update_item_list()
+        ad_id = selected_item
+        if len(ad_list) is 0:
+            return __draw_index_search_data()
+        # list pane
+        view['selected_item'] = ad_id
+        view['item_list'] = ad_list
+
+        # pagination
+        view['max_per_page'] = max_per_page
+        view['selectable_page_amounts'] = State.SELECTABLE_PAGE_AMOUNTS
+        view['page_bar'] = __page_bar_list(amount_pages=amount_pages, current_page=current_page)
+        view['current_page'] = current_page
+
+    view['all_data'] = all
+
+    # top pane
+    view['tenant'] = tenant
+    view['system_mode'] = State.system_mode
+    view['filter_string'] = filter_string
+    view['search_string'] = search_string
+    view['offline_mode'] = offline_mode
+
+    # ad pane
+    selected_ad = overview_action.get_ad_by_id(ad_id)
+    view['selected_ad_complete'] = selected_ad.loaded
+    view['selected_ad_error'] = selected_ad.error
+
+    if selected_ad.loaded and not selected_ad.error:
+        view['selected_ad'] = selected_ad
+        recommendations, ad_ids_to_load = overview_action.get_recommenders_for_initial_view(ad_id=ad_id, limit=limit)
+        if len(ad_ids_to_load) > 0:
+            scrapper_action.start_processes_for_list(ad_ids_to_load)
+        view['not_loaded'] = len([not_loaded.loaded for not_loaded in recommendations[0:limit if limit is not False else len(recommendations)] if not not_loaded.loaded])>0
+        #recommenders pane
+        view['recommendations'] = recommendations
+    view['recommendations_limit'] = limit
+
+    #fallback
+    view['no_data'] = False
+    view['no_search_data'] = False
+    return view
+
+
 def __draw_index(all=True, ad_id=selected_item):
     # maybe we need a beter check here
-    if os.path.exists(FileName.original_file_name()):
-        view = dict()
-
-        if all:
-            ad_list, amount_pages, current_page = __update_item_list()
-            ad_id = selected_item
-            if len(ad_list) is 0:
-                return __draw_index_search_data()
-            # list pane
-            view['selected_item'] = ad_id
-            view['item_list'] = ad_list
-
-            # pagination
-            view['max_per_page'] = max_per_page
-            view['selectable_page_amounts'] = State.SELECTABLE_PAGE_AMOUNTS
-            view['page_bar'] = __page_bar_list(amount_pages=amount_pages, current_page=current_page)
-            view['current_page'] = current_page
-
-        view['all_data'] = all
-
-        # top pane
-        view['tenant'] = tenant
-        view['filter_string'] = filter_string
-        view['search_string'] = search_string
-        view['offline_mode'] = offline_mode
-
-        # ad pane
-        selected_ad = overview_action.get_ad_by_id(ad_id)
-        view['selected_ad_complete'] = selected_ad.loaded
-        view['selected_ad_error'] = selected_ad.error
-
-        if selected_ad.loaded and not selected_ad.error:
-            view['selected_ad'] = selected_ad
-            recommendations, ad_ids_to_load = overview_action.get_recommenders_for_initial_view(ad_id=ad_id, limit=limit)
-            if len(ad_ids_to_load) > 0:
-                scrapper_action.start_processes_for_list(ad_ids_to_load)
-            view['not_loaded'] = len([not_loaded.loaded for not_loaded in recommendations[0:limit if limit is not False else len(recommendations)] if not not_loaded.loaded])>0
-            #recommenders pane
-            view['recommendations'] = recommendations
-        view['recommendations_limit'] = limit
-
-        #fallback
-        view['no_data'] = False
-        view['no_search_data'] = False
-        return view
+    if State.system_mode == State.AD_RECOMMENDERS_MODE and os.path.exists(FileName.original_file_name()):
+        return __draw_index_with_recommenders(all=all, ad_id=ad_id)
+    if State.system_mode == State.AD_LIST_MODE and os.path.exists(FileName.original_data_list_file_name()):
+        return __draw_index_list_mode(all=all)
     return __draw_index_no_data()
 
 
@@ -176,6 +225,8 @@ def __draw_config_controller():
     view = dict()
     view['tenant'] = tenant
     view['tenant_list'] = State.supported_tenants()
+    view['application_modes'] = State.AVAILABLE_SYSTEM_MODES
+    view['system_mode'] = State.system_mode
     view['selected_item'] = selected_item
     view['search_string'] = search_string
     view['current_page'] = current_page
@@ -184,6 +235,7 @@ def __draw_config_controller():
     view['offline_mode'] = offline_mode
     view['input_options'] = input_options
     view['insert_preference'] = insert_preference
+    view['default_limit'] = State.default_limit
     return view
 
 
@@ -199,6 +251,8 @@ def __draw_insert_controller():
     view = dict()
     view['tenant_list'] = State.supported_tenants()
     view['tenant'] = State.tenant
+    view['application_modes'] = State.AVAILABLE_SYSTEM_MODES
+    view['system_mode'] = State.system_mode
     view['insert_tenant'] = insert_tenant
     view['insert_ad_id'] = insert_ad_id
     view['insert_rows'] = rows
@@ -296,7 +350,7 @@ def reload(ad_id):
 @get('/share/<ad_id>')
 @view('index')
 def share(ad_id):
-    return __draw_index(all=False, ad_id=ad_id)
+    return __draw_index_with_recommenders(all=False, ad_id=ad_id)
 
 
 ####################################
@@ -319,18 +373,25 @@ def save_config():
     global insert_preference
 
     tenant = request.forms.get('tenant')
+    system_mode = request.forms.get('application_mode')
     search_string = request.forms.get('search_string')
     selected_item = request.forms.get('selected_item')
     offline_mode = True if request.forms.get('offline_mode') else False
     insert_preference = request.forms.get('insert_preference')
+    default_limit = request.forms.get('default_limit')
+
+    State.default_limit = default_limit
+    State.tenant = tenant
 
     max_per_page = int(request.forms.get('max_per_page'))
     state.set_variables(tenant=tenant,
+                        system_mode=system_mode,
                         search_string=search_string,
                         selected_item=selected_item,
                         max_per_page=max_per_page,
                         offline_mode=offline_mode,
-                        insert_preference=insert_preference)
+                        insert_preference=insert_preference,
+                        default_limit=default_limit)
     state.store_state()
     return __draw_config_controller()
 
@@ -360,6 +421,7 @@ def start_scrape():
 rows = [AdObject()]
 insert_ad_id = ""
 insert_tenant = State.tenant
+insert_system_mode = State.system_mode
 
 
 @get('/insert')
@@ -401,6 +463,7 @@ def remove_insert_row(row_id):
 def __set_insert_form_data():
     global insert_ad_id
     global insert_tenant
+    global insert_system_mode
     global rows
 
     for key in request.forms.keys():
@@ -408,6 +471,8 @@ def __set_insert_form_data():
             insert_ad_id = request.forms.get('ad_id')
         elif key == 'tenant':
             insert_tenant = request.forms.get('tenant')
+        elif key == 'application_mode':
+            insert_system_mode = request.forms.get('application_mode')
         else:
             key_for_row, rank = key.split('_', 1)
             setattr(rows[int(rank)], key_for_row, request.forms.get(key))
@@ -418,21 +483,25 @@ def do_insert():
     global rows
     global tenant
     global insert_ad_id
+    global insert_system_mode
 
     __set_insert_form_data()
 
     for row in rows:
         if not row.validate_for_csv():
             rows.remove(row)
-    insert_action.insert_single_row(insert_ad_id, rows)
-
+    if insert_system_mode == State.AD_RECOMMENDERS_MODE:
+        insert_action.insert_single_row_with_recommendations(insert_ad_id, rows)
+    elif insert_system_mode == State.AD_LIST_MODE:
+        insert_action.insert_single_row_add_list(insert_ad_id)
     tenant = insert_tenant
     selected_item = insert_ad_id
     insert_ad_id = ""
     rows = [AdObject()]
 
     state.tenant = tenant
-    state.store_filled_state(tenant=tenant)
+    state.system_mode = insert_system_mode
+    state.store_filled_state(tenant=tenant, system_mode=insert_system_mode)
     return redirect('/_open_item/'+selected_item)
 
 
@@ -443,11 +512,15 @@ def do_insert_raw():
 
     limit = state.default_limit
     tenant = request.forms.get('tenant')
+    system_mode = request.forms.get('application_mode')
     raw_collection = [l.replace('\r', '').replace(' ', '') for l in request.forms.get('input_raw').split("\n") if l]
-    insert_action.insert_multi_row(raw_collection)
-
+    if system_mode == State.AD_RECOMMENDERS_MODE:
+        insert_action.insert_multi_row_with_recommendations(raw_collection)
+    elif insert_system_mode == State.AD_LIST_MODE:
+        insert_action.insert_multi_row_add_list(raw_collection)
     state.tenant = tenant
-    state.store_filled_state(tenant=tenant)
+    state.system_mode = system_mode
+    state.store_filled_state(tenant=tenant, system_mode=system_mode)
     return redirect('/')
 
 @post('/upload')
@@ -460,13 +533,17 @@ def do_upload():
 
     limit = state.default_limit
     tenant = request.forms.get('tenant')
+    system_mode = request.forms.get('application_mode')
     upload = request.files.get('upload')
+
+    filename = FileName.original_file_name() if system_mode == State.AD_RECOMMENDERS_MODE else FileName.original_data_list_file_name()
+
     if not os.path.exists(FileName.config_path()):
         os.makedirs(FileName.config_path())
     if request.forms.get('use_all'):
-        upload.save(FileName.original_file_name(), overwrite=True)
+        upload.save(filename, overwrite=True)
     else:
-        temp_file_name = FileName.original_file_name()+"_temp"
+        temp_file_name = filename+"_temp"
         upload.save(temp_file_name, overwrite=True)
         start = int(request.forms.get('start'))
         end = int(request.forms.get('end'))
@@ -474,28 +551,29 @@ def do_upload():
         with open(temp_file_name, 'r') as open_file:
             lines.extend(line for line in islice(open_file, start, end))
 
-        with open(FileName.original_file_name(), 'w') as open_file:
+        with open(filename, 'w') as open_file:
             open_file.write(''.join(lines))
 
         os.remove(temp_file_name)
 
     current_page = 0
     state.tenant = tenant
-    state.store_filled_state(tenant=tenant)
+    state.system_mode = system_mode
+    state.store_filled_state(tenant=tenant, system_mode=system_mode)
 
-    overview_action.restore()
+    __call_restore()
     print("yay, done")
     return redirect('/')
-
 
 ####################################
 # On server start
 ####################################
 if __name__ == '__main__':
     if os.path.exists(FileName.dump_file_name()):
+        print('loading scrapped data for tenant {tenant}'.format(tenant=State.tenant))
         overview_action.load_enriched_data()
-    if os.path.exists(FileName.original_file_name()):
-        overview_action.restore()
+    __call_restore()
+
     # signal.signal(signal.SIGTERM, scrapper_action.stop_processes())
     # signal.signal(signal.SIGINT, scrapper_action.stop_processes())
     # signal.signal(signal.SIGQUIT, scrapper_action.stop_processes())

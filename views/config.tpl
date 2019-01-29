@@ -25,6 +25,18 @@
                         <form action="/config" method="post" enctype="multipart/form-data">
                             <div class="modal-body">
                                 <div class="form-group row ml-0 mr-0">
+                                    <label for="application_mode" class="col-5">Application mode</label>
+                                    <select name="application_mode" id="application_mode" class="form-control col-7" placeholder="Select application mode">
+                                      % for mode in application_modes:
+                                        <option value="{{mode}}"
+                                        % if mode == system_mode:
+                                            selected
+                                        % end
+                                        >{{mode}}</option>
+                                      % end
+                                    <select>
+                                </div>
+                                <div class="form-group row ml-0 mr-0">
                                     <label for="tenant" class="col-5">Tenant</label>
                                     <select name="tenant" id="tenant" class="form-control col-7" placeholder="Select Tenant">
                                       % for tenant_item in tenant_list:
@@ -75,6 +87,10 @@
                                         >{{item}}</option>
                                       % end
                                     <select>
+                                </div>
+                                <div class="form-group row ml-0 mr-0">
+                                    <label for="default_limit" class="col-5">Default loaded per page</label>
+                                    <input type="number" name="default_limit" id="default_limit" class="form-control col-7" placeholder="6" value="{{default_limit}}" />
                                 </div>
                             </div>
                             <div class="modal-footer">
