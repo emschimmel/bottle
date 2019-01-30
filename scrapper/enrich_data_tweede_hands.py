@@ -44,10 +44,53 @@ class EnrichDataTweedeHands():
                 object.price, error = self.__get_price(html=html, id=ad_id)
                 object.img_url, error = self.__get_img(html, tenant, ad_id, object.title)
                 object.location, error = self.__get_location(html=html, id=ad_id)
+                object.extra_data, error = self.__get_as_much_attributes_possible(html=html, id=ad_id)
+                object.extra_images, error = self.__get_other_images(html=html, tenant=tenant, id=ad_id)
             else:
                 object.expired = True
         object.loaded = True
         return object
+
+    @staticmethod
+    def __get_other_images(html, tenant, id):
+        images = list()
+        try:
+            section = html.find("div", {"class": "image-carousel-thumbs"})
+            images_links = section.findChildren("img" , recursive=True)
+
+            for index, image_tag in enumerate(images_links):
+                img_from_site = image_tag.get('src')
+                href_from_site = image_tag.get('data-enlarged-image-src').replace('[breakpointPlaceholder]', 'normal')
+
+                img_url = "img/{tenant}/{id}_{index}.jpg".format(tenant=tenant, id=id, index=index)
+                img_path = "img/{tenant}".format(tenant=tenant)
+                if not os.path.exists(img_path):
+                    os.makedirs(img_path)
+                with urllib.urlopen(img_from_site, cafile=certifi.where()) as response, open(img_url, 'wb') as out_file:
+                    data = response.read()  # a `bytes` object
+                    out_file.write(data)
+                images.append(["/" + img_url, href_from_site])
+            return images, False
+        except Exception as e:
+            print("extra images not found for {id}".format(id=id))
+            print(e)
+            return images, True
+
+    @staticmethod
+    def __get_as_much_attributes_possible(html, id):
+        attributes = list()
+        try:
+            section = html.find("dl", {"class": "item-details-list"})
+            keys = section.findChildren("dt" , recursive=True)
+            values = section.findChildren("dd" , recursive=True)
+            for index, key in enumerate(keys):
+                value = values[index].getText().replace("\n            ", "")
+                attributes.append([key.getText(), value])
+            return attributes, False
+        except Exception as e:
+            print("extra attributes not found for {id}".format(id=id))
+            print(e)
+            return attributes, True
 
     @staticmethod
     def __get_location(html, id):
