@@ -45,6 +45,20 @@ class ScrapperActions(DataFrameObject):
         except:
             return 0
 
+    @staticmethod
+    def amount_adds_for_list():
+        try:
+            return len(DataFrameObject.uploaded_add_list_data['ad_id'].unique())
+        except:
+            return 0
+
+    @staticmethod
+    def amount_enriched_for_list():
+        try:
+            return len(DataFrameObject.enriched_data['ad_id'].isin(DataFrameObject.uploaded_add_list_data['ad_id']))
+        except:
+            return 0
+
     @classmethod
     def start_for_criteria(self, amount, start, end):
         all_ids = [id for id in list(DataFrameObject.uploaded_csv_data['ad_id'].unique()) if
@@ -62,8 +76,34 @@ class ScrapperActions(DataFrameObject):
 
     @classmethod
     def start_all(self):
-        all_ids = DataFrameObject.enriched_data.loc[~DataFrameObject.enriched_data['ad_id'].isin(DataFrameObject.uploaded_csv_data['ad_id']) == False]['ad_id']
+        all_ids = DataFrameObject.uploaded_csv_data.loc[~DataFrameObject.uploaded_csv_data['ad_id'].isin(DataFrameObject.enriched_data['ad_id']) == False]['ad_id']
         self.__start_processes_for_list_and_recommenders(all_ids)
+
+    @classmethod
+    def start_for_criteria_for_list(self, amount, start, end):
+        all_ids = [id for id in list(DataFrameObject.uploaded_add_list_data['ad_id'].unique()) if
+                   id not in DataFrameObject.enriched_data]
+        if start or end:
+            if not start:
+                start = True
+            if not end:
+                end = True
+            all_ids = [id for id in all_ids if id >= start and id <= end]
+        if amount:
+            all_ids = all_ids[:int(amount)]
+
+        self.__start_processes_for_list_without_recommenders(all_ids)
+
+    @classmethod
+    def start_all_for_list(self):
+        all_ids = DataFrameObject.uploaded_add_list_data.loc[DataFrameObject.uploaded_add_list_data['ad_id'].isin(DataFrameObject.enriched_data['ad_id']) == False]['ad_id']
+        self.__start_processes_for_list_without_recommenders(all_ids)
+
+    @classmethod
+    def __start_processes_for_list_without_recommenders(self, all_ids):
+        for i in range(0, len(all_ids), State.SAVE_INTERVAL):
+            print("processing {amount} before saving".format(amount=str(len(all_ids[i:i + State.SAVE_INTERVAL]))))
+            self.start_processes_for_list(all_ids[i:i + State.SAVE_INTERVAL])
 
     @classmethod
     def __start_processes_for_list_and_recommenders(self, all_ids):

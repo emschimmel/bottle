@@ -91,7 +91,9 @@ class OverviewActions(DataFrameObject):
                                          loaded=row[7],
                                          error=row[8],
                                          expired=row[9],
-                                         enriched_at=row[10])
+                                         enriched_at=row[10],
+                                         extra_data=row[11],
+                                         extra_images=row[12])
                 break
         return result, not enriched_result.empty
 
@@ -100,6 +102,10 @@ class OverviewActions(DataFrameObject):
         recommenders = list(DataFrameObject.uploaded_csv_data[DataFrameObject.uploaded_csv_data['ad_id'] == ad_id]['recommended_ad_id'].unique())
         for recommender_id in recommenders:
             DataFrameObject.enriched_data = DataFrameObject.enriched_data[DataFrameObject.enriched_data['ad_id'] != recommender_id]
+        DataFrameObject.enriched_data = DataFrameObject.enriched_data[DataFrameObject.enriched_data['ad_id'] != ad_id]
+
+    @staticmethod
+    def reload_list_item(ad_id):
         DataFrameObject.enriched_data = DataFrameObject.enriched_data[DataFrameObject.enriched_data['ad_id'] != ad_id]
 
     @classmethod

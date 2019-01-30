@@ -17,3 +17,27 @@
 </div>
 </div>
 % include('partials/overview/pagination_partial.tpl')
+
+<script type="text/javascript">
+    $(function () {
+      $('[data-toggle="tooltip"]').tooltip()
+    })
+    function showMore(id_more, id_block, id_block_second, id_less) {
+        $('#'+id_more).addClass("d-none");
+        $('#'+id_block_second).addClass("d-none");
+        $('#'+id_block).removeClass("d-none");
+        $('#'+id_less).removeClass("d-none");
+    }
+    function showLess(id_more, id_block, id_block_second, id_less) {
+        $('#'+id_more).removeClass("d-none");
+        $('#'+id_block_second).removeClass("d-none");
+        $('#'+id_block).addClass("d-none");
+        $('#'+id_less).addClass("d-none");
+    }
+
+    function reload(val){
+        $.ajax({url: "_reload/"+val, success: function(data){
+            location.reload();
+        }});
+    }
+</script>

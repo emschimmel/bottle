@@ -33,7 +33,7 @@ class AdObject(object):
         self.score = score
 
     # def set_enriched_data(self, url, img_url, title, price, loaded, error, expired, location):
-    def set_enriched_data(self, url, img_url, title, price, loaded, error, expired, categories, enriched_at, location, extra_images=list(), extra_data=list()):
+    def set_enriched_data(self, url, img_url, title, price, loaded, error, expired, categories, enriched_at, location, extra_data=list(), extra_images=list()):
         self.url = url
         self.img_url = img_url
         self.title = title
@@ -48,8 +48,12 @@ class AdObject(object):
         if isinstance(enriched_at, str):
             self.enriched_at = parser.parse(enriched_at)
         self.location = location
-        self.extra_images = extra_images
         self.extra_data = extra_data
+        if isinstance(extra_data, str):
+            self.extra_data = ast.literal_eval(extra_data)
+        self.extra_images = extra_images
+        if isinstance(extra_images, str):
+            self.extra_images = ast.literal_eval(extra_images)
 
     def get_enriched_moment(self):
         return self.enriched_at.strftime('%H:%M:%S %d-%m-%Y')
@@ -62,8 +66,7 @@ class AdObject(object):
         return self.rank and self.score and self.score
 
     def enriched_panda_row(self):
-        # return [self.id, self.url, self.img_url, self.title, self.price, self.location, self.loaded, self.error, self.expired]
-        return [self.id, self.url, self.img_url, self.title, self.price, self.location, self.categories, self.loaded, self.error, self.expired, self.enriched_at]
+        return [self.id, self.url, self.img_url, self.title, self.price, self.location, self.categories, self.loaded, self.error, self.expired, self.enriched_at, self.extra_data, self.extra_images]
 
     def __repr__(self):
         return "({id}, {url}, {title})".format(id=self.id, url=self.url, title=self.title)

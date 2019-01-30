@@ -57,13 +57,13 @@
       </tr>
     </tbody>
 </table>
-    <script type="text/javascript">
+<script type="text/javascript">
 
-        // onchange amount adds per page
-        function reload(val){
-            $.ajax({url: "_reload/"+val, success: function(data){
+    // onchange amount adds per page
+    function reload(val){
+        $.ajax({url: "_reload/"+val, success: function(data){
 
-            location.reload();
-            }});
-        }
-    </script>
+        location.reload();
+        }});
+    }
+</script>

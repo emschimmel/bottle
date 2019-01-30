@@ -242,8 +242,16 @@ def __draw_config_controller():
 def __draw_scrape_controller():
     view = dict()
     view['tenant'] = tenant
-    view['amount_todo'] = scrapper_action.amount_adds()
-    view['amount_done'] = scrapper_action.amount_enriched()
+    print(State.system_mode)
+    if State.system_mode == State.AD_RECOMMENDERS_MODE:
+        view['amount_todo'] = scrapper_action.amount_adds()
+        view['amount_done'] = scrapper_action.amount_enriched()
+    elif State.system_mode == State.AD_LIST_MODE:
+        view['amount_todo'] = scrapper_action.amount_adds_for_list()
+        view['amount_done'] = scrapper_action.amount_enriched_for_list()
+    else:
+        view['amount_todo'] = 0
+        view['amount_done'] = 0
     return view
 
 
@@ -344,7 +352,10 @@ def reload(ad_id):
     global limit
 
     limit = state.default_limit
-    overview_action.reload(ad_id)
+    if State.system_mode == State.AD_RECOMMENDERS_MODE:
+        overview_action.reload(ad_id)
+    elif State.system_mode == State.AD_LIST_MODE:
+        overview_action.reload_list_item(ad_id)
 
 
 @get('/share/<ad_id>')
@@ -407,13 +418,20 @@ def config_control():
 
 @post('/_start_scrape')
 def start_scrape():
-    if request.forms.get('use_all'):
-        scrapper_action.start_all()
-    else:
-        scrapper_action.start_for_criteria(amount=request.forms.get('amount'),
-                                           start=request.forms.get('start'),
-                                           end=request.forms.get('end'))
-
+    if State.system_mode == State.AD_RECOMMENDERS_MODE:
+        if request.forms.get('use_all'):
+            scrapper_action.start_all()
+        else:
+            scrapper_action.start_for_criteria(amount=request.forms.get('amount'),
+                                               start=request.forms.get('start'),
+                                               end=request.forms.get('end'))
+    elif State.system_mode == State.AD_LIST_MODE:
+        if request.forms.get('use_all'):
+            scrapper_action.start_all_for_list()
+        else:
+            scrapper_action.start_for_criteria_for_list(amount=request.forms.get('amount'),
+                                                        start=request.forms.get('start'),
+                                                        end=request.forms.get('end'))
 
 ####################################
 # Insert
