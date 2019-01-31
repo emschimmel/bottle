@@ -27,7 +27,7 @@ class OverviewActions(DataFrameObject):
             ad_id_list = self.__ad_id_overview(DataFrameObject.uploaded_csv_data, search_string=search_string)
         if filter_string:
             filtered_list = set()
-            recommendations = list(DataFrameObject.enriched_data[DataFrameObject.enriched_data['title'].str.contains(filter_string)]['ad_id'].unique())
+            recommendations = list(DataFrameObject.enriched_data[DataFrameObject.enriched_data['title'].notnull()&DataFrameObject.enriched_data['title'].str.contains(filter_string)]['ad_id'].unique())
             for recommendation_id in recommendations:
                 if not DataFrameObject.uploaded_csv_data.loc[DataFrameObject.uploaded_csv_data['ad_id'] == recommendation_id].empty:
                     filtered_list.add(recommendation_id)
@@ -117,7 +117,7 @@ class OverviewActions(DataFrameObject):
             ad_id_list = self.__ad_id_overview(DataFrameObject.uploaded_add_list_data, search_string=search_string)
         if filter_string:
             filtered_list = set()
-            ads = list(DataFrameObject.enriched_data[DataFrameObject.enriched_data['title'].str.contains(filter_string)]['ad_id'].unique())
+            ads = list(DataFrameObject.enriched_data[DataFrameObject.enriched_data['title'].notnull()&DataFrameObject.enriched_data['title'].str.contains(filter_string)]['ad_id'].unique())
             for id in ads:
                 if not DataFrameObject.uploaded_add_list_data.loc[DataFrameObject.uploaded_add_list_data['ad_id'] == id].empty:
                     filtered_list.add(id)
