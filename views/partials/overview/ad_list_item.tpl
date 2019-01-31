@@ -93,7 +93,7 @@
     </tr>
     <tr>
       <td>
-        <span>
+        <span class="text">
             % if current_ad.loaded is True:
                 location: {{current_ad.location}}
             % elif not offline_mode:
