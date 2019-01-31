@@ -73,14 +73,14 @@
                     <button id="img_more_{{current_ad.id}}" class="btn btn-sm mt-1 btn-outline-secondary w-100" onclick="showMore('img_more_{{current_ad.id}}', 'img_block_{{current_ad.id}}', 'img_block_{{current_ad.id}}', 'img_less_{{current_ad.id}}')">Show more</button>
                     <div id="img_block_{{current_ad.id}}" class="d-none">
                 % end
-                <img src="{{image[0]}}" width="62px" height="85px" data-toggle="tooltip" data-placement="right" data-html="true" title="<img src='{{image[1]}}' />" />
+                <img src="{{image[0]}}" class="mb-1" width="23%" height="85px" data-toggle="tooltip" data-placement="right" data-html="true" title="<img src='{{image[1]}}' />" />
                 % if index>4 and index == len(current_ad.extra_images)-1:
                     <button id="img_less_{{current_ad.id}}" class="btn btn-sm mt-1 btn-outline-secondary w-100 d-none" onclick="showLess('img_more_{{current_ad.id}}', 'img_block_{{current_ad.id}}', 'img_block_{{current_ad.id}}', 'img_less_{{current_ad.id}}')">Show less</button>
                     </div>
                 % end
             % end
             % for i in range(len(current_ad.extra_images), 4):
-                <img width="62px" height="85px" src="/static/img/dummy.png" />
+                <img class="mb-1" width="23%" height="85px" src="/static/img/dummy.png" />
             % end
             % if len(current_ad.extra_images)<5:
                 <button class="btn-sm mt-1 btn-outline-light w-100" >&nbsp;</button>
