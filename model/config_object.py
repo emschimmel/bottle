@@ -52,3 +52,9 @@ class ConfigObject(object):
     insert_preference = parser.get('UserConfig', 'insert_preference', fallback="CSV")
 
     default_limit = parser.getint('UserConfig', 'default_limit', fallback=6)
+
+    ####################################
+    # ES connection settings
+    ####################################
+    ELASTIC_IP = parser.get('ElasticConfig', 'ip', fallback='127.0.0.1')
+    ELASTIC_PORT = parser.getint('ElasticConfig', 'port', fallback=9200)

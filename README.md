@@ -67,6 +67,10 @@ Extra pip packages needed:
 
 You can install them with `$pip3 install -r requirements.txt`. Pycharm will also pick them up from the requirements file.
 
+### Extra
+
+There is now an option to export the pandas data to ElasticSearch. For this ES needs to be running and can be started with `env/run_docker.sh` and stopped with `env/stop_docker.sh`
+
 ### TODO
 
 ### Imposible requirements

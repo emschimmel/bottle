@@ -53,6 +53,9 @@ class State(ConfigObject):
     @staticmethod
     def store_state():
         parser = configparser.RawConfigParser()
+        parser.add_section('ElasticConfig')
+        parser.set('ElasticConfig', 'ip', ConfigObject.ELASTIC_IP)
+        parser.set('ElasticConfig', 'port', ConfigObject.ELASTIC_PORT)
         parser.add_section('UserConfig')
         parser.set('UserConfig', 'system_mode', ConfigObject.system_mode)
         parser.set('UserConfig', 'tenant', ConfigObject.tenant)

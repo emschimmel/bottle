@@ -13,7 +13,7 @@
                     % if not offline_mode:
                         <a href="/insert" role="button" class="btn btn-sm btn-secondary">Insert data</a>
                         <a href="/scrape" role="button" class="btn btn-sm btn-secondary">Enrich data</a>
-
+                        <a href="/elastic" role="button" class="btn btn-sm btn-secondary">Export to ES</a>
                     % end
                     <a href="/config" role="button" class="btn btn-sm btn-secondary">Config</a>
                     <span>current tenant: {{tenant}}</span>

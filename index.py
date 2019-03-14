@@ -6,6 +6,7 @@ from bottle import route, run, template, view, static_file, request, redirect, p
 from actions.insert_actions import InsertActions
 from actions.overview_actions import OverviewActions
 from actions.scrapper_actions import ScrapperActions
+from actions.elastic_actions import ElasticActions
 from model.ad_object import AdObject
 from model.state_config import FileName, State
 import math
@@ -17,6 +18,7 @@ import math
 overview_action = OverviewActions()
 scrapper_action = ScrapperActions()
 insert_action = InsertActions()
+elastic_action = ElasticActions()
 
 state = State()
 
@@ -582,6 +584,16 @@ def do_upload():
     __call_restore()
     print("yay, done")
     return redirect('/')
+
+
+####################################
+# Insert into Elasticsearch
+####################################
+@route('/elastic')
+def elastic():
+    elastic_action.start_import()
+    return template('<b>Started importing</b>')
+
 
 ####################################
 # On server start
