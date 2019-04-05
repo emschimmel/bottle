@@ -1,4 +1,5 @@
 from model.config_object import ConfigObject
+from scrapper.enrich_data_bva import EnrichDataBVA
 from scrapper.enrich_data_dba import EnrichDataDBA
 from scrapper.enrich_data_tweede_hands import EnrichDataTweedeHands
 from scrapper.enrich_data_kijiji import EnrichDataKijiji
@@ -8,6 +9,7 @@ from enum import Enum
 
 
 class TenantEnum(Enum):
+    BVA = ("Bva", EnrichDataBVA)
     TWEEDE_HANDS = ("2dehands", EnrichDataTweedeHands)
     MARKTPLAATS = ("Marktplaats", EnrichDataMarktplaats)
     KIJIJI = ("Kijiji", EnrichDataKijiji)

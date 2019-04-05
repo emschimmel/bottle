@@ -13,11 +13,13 @@ class ConfigObject(object):
     ####################################
     # Tenant config
     ####################################
+    BVA = parser.getboolean('TenantConfig', 'enable_bva', fallback=True)
     MARKTPLAATS = parser.getboolean('TenantConfig', 'enable_marktplaats', fallback=True)
     KIJIJI = parser.getboolean('TenantConfig', 'enable_kijiji', fallback=True)
     TWEEDE_HANDS = parser.getboolean('TenantConfig', 'enable_tweedehands', fallback=True)
     DBA = parser.getboolean('TenantConfig', 'enable_dba', fallback=False)
 
+    BVA_URL = parser.get('TenantConfig', 'url_bva', fallback="https://www.bva-auctions.com/nl/auction/lot/{id}")
     MARKTPLAATS_URL = parser.get('TenantConfig', 'url_marktplaats', fallback="http://marktplaats.nl/{id}")
     KIJIJI_URL = parser.get('TenantConfig', 'url_kijiji', fallback="https://www.kijiji.ca/v-view-details.html?adId={id}")
     TWEEDE_HANDS_URL = parser.get('TenantConfig', 'url_tweedehands', fallback="https://www.2dehands.be/{id}.html")
