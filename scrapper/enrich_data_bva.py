@@ -23,8 +23,7 @@ class EnrichDataBVA():
         object.url = url
 
         object.error = False
-        object.title = self.__get_title(html, ad_id)
-
+        object.title, error = self.__get_title(html, ad_id)
         object.img_url, error = self.__get_img(html, tenant, ad_id)
         # object.extra_images, error = self.__get_other_images(html=html, tenant=tenant, id=ad_id)
         object.loaded = True
