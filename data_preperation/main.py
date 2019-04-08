@@ -12,6 +12,7 @@ class DataPreperation():
         inner_hits = outer_hits['hits']
         parsed_data_list = []
         data_for_spark = []
+        timestamp = None
         ### line
         # for item in inner_hits[10]['_source']:
             # print(item)
@@ -21,7 +22,6 @@ class DataPreperation():
 
         ### line end
         for hit in inner_hits:
-
             rate = 1
             event_name = hit['_source']['event_name']
             user_id = hit['_source']['user_id']
@@ -30,7 +30,8 @@ class DataPreperation():
             combined_key = ""
             categoryId = ""
             title = ""
-
+            if hit['_source']['collector_tstamp']:
+                timestamp = hit['_source']['collector_tstamp']
             if hit['_source']['refr_urlpath']:
                 event_subtype = "ref_with_auction"
                 url_string_parts = hit['_source']['refr_urlpath'].split('/')
@@ -62,13 +63,13 @@ class DataPreperation():
             elif 'user_id' in hit['_source']:
                 if hit['_source']['user_id'] is not None:
                     user_id = hit['_source']['user_id']
-            parsed_data_list.append([user_id, combined_key, rate, event_name, event_subtype, categoryId , title ])
             if user_id and product:
-                data_for_spark.append([user_id, product, rate])
+                parsed_data_list.append([user_id, combined_key, rate, event_name, event_subtype, categoryId, title])
+                data_for_spark.append([user_id, product, rate, timestamp])
             # else:
             #     print(hit)
-        pandas.DataFrame(data_for_spark, columns=['user', 'product', 'rank']).to_csv("test_data.csv", index=False)
-
+        pandas.DataFrame(parsed_data_list, columns=['user', 'combined_key', 'rate', 'event_name', 'event_subtype', 'categoryId', 'title']).to_csv("meta_data.csv", index=False)
+        pandas.DataFrame(data_for_spark, columns=['user', 'product', 'rank', 'timestamp']).to_csv("test_data.csv", index=False)
 
 
 if __name__ == '__main__':

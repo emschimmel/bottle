@@ -13,7 +13,10 @@ class EnrichDataBVA():
 
     @classmethod
     def start_for_id(self, ad_id, url, tenant):
-        url = url.format(id=ad_id.replace('-', '/'))
+        if '-' in url:
+            url = url.format(id=ad_id.replace('-', '/'))
+        else:
+            url = "https://www.bva-auctions.com/nl/auction/39555/"+ad_id
         response = requests.get(url)
         html = BeautifulSoup(response.content, "html.parser") # slowest parser
         # print(html)
