@@ -56,9 +56,11 @@ def server_static(filename):
 def server_static(filename):
     return static_file(filename, root='./static/css')
 
+
 @route('/static/img/<filename>', name='static')
 def server_static(filename):
     return static_file(filename, root='./static/img')
+
 
 @route('/img/<subdir>/<filename>', name='static')
 def server_static(subdir, filename):
@@ -77,24 +79,30 @@ def __call_restore():
         print('starting the application in recommender ui mode')
         if os.path.exists(FileName.original_file_name()):
             overview_action.restore()
+    elif State.system_mode == State.AD_USER_RECOM_MODE:
+        print('starting the application in recommender ui mode')
+        if os.path.exists(FileName.original_user_recom_file_name()):
+            overview_action.restore_user_recom_data()
 
 
 def __update_item_list():
     global selected_item
     global current_page
 
-    full_output = overview_action.ad_id_overview(search_string=search_string, filter_string=filter_string, offline_mode=offline_mode)
+    full_output = overview_action.ad_id_overview(search_string=search_string, filter_string=filter_string,
+                                                 offline_mode=offline_mode)
 
     paged_output = [full_output[i:i + max_per_page] for i in range(0, len(full_output), max_per_page)]
-    amount_pages = len(paged_output)-1
+    amount_pages = len(paged_output) - 1
     if current_page is None:
-        current_page = math.floor(full_output.index(selected_item)/max_per_page) if selected_item in full_output else 0
+        current_page = math.floor(
+            full_output.index(selected_item) / max_per_page) if selected_item in full_output else 0
     print("full_output length {l}".format(l=len(full_output)))
     output = []
     if len(paged_output) > 0:
         output = paged_output[current_page]
         if (selected_item not in output):
-            selected_item = output[0] if len(output)>0 else 0
+            selected_item = output[0] if len(output) > 0 else 0
 
     return output, amount_pages, current_page
 
@@ -105,8 +113,8 @@ def __page_bar_list(amount_pages, current_page):
     if amount_pages > 1:
         sub_set.add(amount_pages)
     sub_set.add(current_page)
-    start = current_page-2 if current_page is not None and current_page-2 >0 else 1
-    for e in range(start, start+5 if start+5 < amount_pages else amount_pages):
+    start = current_page - 2 if current_page is not None and current_page - 2 > 0 else 1
+    for e in range(start, start + 5 if start + 5 < amount_pages else amount_pages):
         sub_set.add(e)
     return list(sorted(sub_set))
 
@@ -116,7 +124,8 @@ def __draw_index_list_mode(all=True):
 
     view = dict()
     if all:
-        ad_list, amount_pages, current_page = overview_action.ad_list_for_page(search_string, filter_string, offline_mode, current_page, max_per_page)
+        ad_list, amount_pages, current_page = overview_action.ad_list_for_page(search_string, filter_string,
+                                                                               offline_mode, current_page, max_per_page)
         if len(ad_list) is 0:
             return __draw_index_search_data()
         # list pane
@@ -137,7 +146,24 @@ def __draw_index_list_mode(all=True):
     view['search_string'] = search_string
     view['offline_mode'] = offline_mode
 
-    #fallback
+    # fallback
+    view['no_data'] = False
+    view['no_search_data'] = False
+    return view
+
+
+def __draw_index_user_recom_mode(all=True, ad_id=selected_item):
+    view = dict()
+    view['all_data'] = all
+
+    # top pane
+    view['tenant'] = tenant
+    view['system_mode'] = State.system_mode
+    view['filter_string'] = filter_string
+    view['search_string'] = search_string
+    view['offline_mode'] = offline_mode
+
+    # fallback
     view['no_data'] = False
     view['no_search_data'] = False
     return view
@@ -179,12 +205,14 @@ def __draw_index_with_recommenders(all=True, ad_id=selected_item):
         recommendations, ad_ids_to_load = overview_action.get_recommenders_for_initial_view(ad_id=ad_id, limit=limit)
         if len(ad_ids_to_load) > 0:
             scrapper_action.start_processes_for_list(ad_ids_to_load)
-        view['not_loaded'] = len([not_loaded.loaded for not_loaded in recommendations[0:limit if limit is not False else len(recommendations)] if not not_loaded.loaded])>0
-        #recommenders pane
+        view['not_loaded'] = len([not_loaded.loaded for not_loaded in
+                                  recommendations[0:limit if limit is not False else len(recommendations)] if
+                                  not not_loaded.loaded]) > 0
+        # recommenders pane
         view['recommendations'] = recommendations
     view['recommendations_limit'] = limit
 
-    #fallback
+    # fallback
     view['no_data'] = False
     view['no_search_data'] = False
     return view
@@ -196,6 +224,8 @@ def __draw_index(all=True, ad_id=selected_item):
         return __draw_index_with_recommenders(all=all, ad_id=ad_id)
     if State.system_mode == State.AD_LIST_MODE and os.path.exists(FileName.original_data_list_file_name()):
         return __draw_index_list_mode(all=all)
+    if State.system_mode == State.AD_USER_RECOM_MODE and os.path.exists(FileName.original_user_recom_file_name()):
+        return __draw_index_user_recom_mode(all=all, ad_id=ad_id)
     return __draw_index_no_data()
 
 
@@ -293,6 +323,7 @@ def open_item(ad_id):
     selected_item = ad_id
     return redirect('/')
 
+
 @get('/_show_all')
 @get('/_show_more/<prefered_limit:int>')
 @view('index')
@@ -338,6 +369,7 @@ def search(filter_phrase=""):
     limit = state.default_limit
     current_page = 0
     filter_string = filter_phrase
+
 
 @get('/_amount_per_page/<amount:int>')
 def change_amount_per_page(amount):
@@ -434,6 +466,14 @@ def start_scrape():
             scrapper_action.start_for_criteria_for_list(amount=request.forms.get('amount'),
                                                         start=request.forms.get('start'),
                                                         end=request.forms.get('end'))
+    elif State.system_mode == State.AD_USER_RECOM_MODE:
+        if request.forms.get('use_all'):
+            scrapper_action.start_all_for_user_recom()
+        else:
+            scrapper_action.start_for_criteria_for_user_recom(amount=request.forms.get('amount'),
+                                                              start=request.forms.get('start'),
+                                                              end=request.forms.get('end'))
+
 
 ####################################
 # Insert
@@ -448,6 +488,7 @@ insert_system_mode = State.system_mode
 @view('insert')
 def view_insert():
     return __draw_insert_controller()
+
 
 @get('/upload')
 @get('/_switch_input_format/<perference>')
@@ -465,7 +506,7 @@ def add_insert_row():
     __set_insert_form_data()
 
     new_row = AdObject()
-    new_row.rank=len(rows)+1
+    new_row.rank = len(rows) + 1
     rows.insert(len(rows), new_row)
 
 
@@ -477,7 +518,7 @@ def remove_insert_row(row_id):
 
     del rows[row_id]
     for index, row in enumerate(rows):
-        row.rank = index+1
+        row.rank = index + 1
 
 
 def __set_insert_form_data():
@@ -514,6 +555,8 @@ def do_insert():
         insert_action.insert_single_row_with_recommendations(insert_ad_id, rows)
     elif insert_system_mode == State.AD_LIST_MODE:
         insert_action.insert_single_row_add_list(insert_ad_id)
+    elif insert_system_mode == State.AD_USER_RECOM_MODE:
+        insert_action.insert_single_row_user_recommendations(insert_ad_id, rows)
     tenant = insert_tenant
     selected_item = insert_ad_id
     insert_ad_id = ""
@@ -522,7 +565,7 @@ def do_insert():
     state.tenant = tenant
     state.system_mode = insert_system_mode
     state.store_filled_state(tenant=tenant, system_mode=insert_system_mode)
-    return redirect('/_open_item/'+selected_item)
+    return redirect('/_open_item/' + selected_item)
 
 
 @post('/insert_raw')
@@ -538,10 +581,13 @@ def do_insert_raw():
         insert_action.insert_multi_row_with_recommendations(raw_collection)
     elif insert_system_mode == State.AD_LIST_MODE:
         insert_action.insert_multi_row_add_list(raw_collection)
+    elif insert_system_mode == State.AD_USER_RECOM_MODE:
+        insert_action.insert_multi_row_user_recom_list(raw_collection)
     state.tenant = tenant
     state.system_mode = system_mode
     state.store_filled_state(tenant=tenant, system_mode=system_mode)
     return redirect('/')
+
 
 @post('/upload')
 def do_upload():
@@ -556,18 +602,23 @@ def do_upload():
     system_mode = request.forms.get('application_mode')
     upload = request.files.get('upload')
 
-    filename = FileName.original_file_name() if system_mode == State.AD_RECOMMENDERS_MODE else FileName.original_data_list_file_name()
+    filename = FileName.original_file_name()
+    if system_mode == State.AD_LIST_MODE:
+        filename = FileName.original_data_list_file_name()
+    if system_mode == State.AD_USER_RECOM_MODE:
+        filename = FileName.original_user_recom_file_name()
 
     if not os.path.exists(FileName.config_path()):
         os.makedirs(FileName.config_path())
     if request.forms.get('use_all'):
         upload.save(filename, overwrite=True)
     else:
-        temp_file_name = filename+"_temp"
+        temp_file_name = filename + "_temp"
         upload.save(temp_file_name, overwrite=True)
         start = int(request.forms.get('start'))
         end = int(request.forms.get('end'))
-        lines= ["ad_id,recommended_ad_id,rank,score\n"]
+        # TODO: check if this isn't to specific
+        lines = ["ad_id,recommended_ad_id,rank,score\n"]
         with open(temp_file_name, 'r') as open_file:
             lines.extend(line for line in islice(open_file, start, end))
 

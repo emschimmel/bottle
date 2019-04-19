@@ -31,7 +31,11 @@
                 % if system_mode == "ad_recommenders":
 	                % include('partials/overview/overview_with_recommendations.tpl')
 	            % else:
-	                % include('partials/overview/overview_ad_list.tpl')
+	                % if system_mode == "ad_list_mode":
+	                    % include('partials/overview/overview_ad_list.tpl')
+	                % else:
+	                    % include('partials/overview/overview_with_user_recommendations.tpl')
+	                % end
 	            % end
             % else:
                 <div class="row h-100">

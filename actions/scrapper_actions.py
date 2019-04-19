@@ -100,6 +100,30 @@ class ScrapperActions(DataFrameObject):
         self.__start_processes_for_list_without_recommenders(all_ids)
 
     @classmethod
+    def start_for_criteria_for_user_recom(self, amount, start, end):
+        # TODO: check if this is the right field returning (lot_id vs ad_id)
+        all_ids = [id for id in list(DataFrameObject.uploaded_user_recom_data['lot_id'].unique()) if
+                   id not in DataFrameObject.enriched_data]
+        if start or end:
+            if not start:
+                start = True
+            if not end:
+                end = True
+            all_ids = [id for id in all_ids if id >= start and id <= end]
+        if amount:
+            all_ids = all_ids[:int(amount)]
+        #TODO: check if this is the right one
+        self.__start_processes_for_list_without_recommenders(all_ids)
+
+    @classmethod
+    def start_all_for_user_recom(self):
+        # TODO: check if this is the right field returning (lot_id vs ad_id)
+        all_ids = DataFrameObject.uploaded_user_recom_data.loc[DataFrameObject.uploaded_user_recom_data['lot_id'].isin(DataFrameObject.enriched_data['ad_id']) == False]['ad_id']
+        #TODO: check if this is the right one
+        self.__start_processes_for_list_without_recommenders(all_ids)
+
+
+    @classmethod
     def __start_processes_for_list_without_recommenders(self, all_ids):
         for i in range(0, len(all_ids), State.SAVE_INTERVAL):
             print("processing {amount} before saving".format(amount=str(len(all_ids[i:i + State.SAVE_INTERVAL]))))

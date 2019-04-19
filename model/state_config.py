@@ -26,6 +26,10 @@ class FileName(ConfigObject):
         return "{path}/{suffix}.csv".format(path=ConfigObject.CONFIG_PATH,
                                             suffix=ConfigObject.ORIGINAL_AD_LIST_FILE_SUFFIX)
 
+    @staticmethod
+    def original_user_recom_file_name():
+        return "{path}/{suffix}.csv".format(path=ConfigObject.CONFIG_PATH,
+                                            suffix=ConfigObject.ORIGINAL_USER_RECOM_FILE_SUFFIX)
 
 class State(ConfigObject):
 
@@ -69,6 +73,7 @@ class State(ConfigObject):
         parser.add_section('SystemConfig')
         parser.set('SystemConfig', 'original_file_suffix', ConfigObject.ORIGINAL_FILE_SUFFIX)
         parser.set('SystemConfig', 'original_ad_list_file_suffix', ConfigObject.ORIGINAL_AD_LIST_FILE_SUFFIX)
+        parser.set('SystemConfig', 'original_user_recom_file_suffix', ConfigObject.ORIGINAL_USER_RECOM_FILE_SUFFIX)
         parser.set('SystemConfig', 'parsed_file_suffix', ConfigObject.PARSED_FILE_SUFFIX)
         parser.set('SystemConfig', 'selectable_page_amounts', ConfigObject.SELECTABLE_PAGE_AMOUNTS)
         parser.set('SystemConfig', 'max_workers', ConfigObject.MAX_WORKERS)
