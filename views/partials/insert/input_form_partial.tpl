@@ -31,7 +31,7 @@
                 <input type="text" name="ad_id" id="ad_id" class="form-control col-10" placeholder="ad_id" value="{{insert_ad_id}}" required />
             </div>
             <div class="form-group justify-content-between
-            %if system_mode is not "ad_recommenders":
+            %if system_mode == "ad_list_mode":
                 d-none
             %else:
                 d-flex
@@ -42,7 +42,7 @@
             </div>
 
             <div id="repeat_form"
-            %if system_mode is not "ad_recommenders":
+            %if system_mode == "ad_list_mode":
                 class="d-none"
             %end
             >
@@ -61,14 +61,25 @@
 
       </div>
       <div class="modal-footer">
-        <button type="submit" id="insert_button" class="btn btn-primary collapse show">Insert</button>
+        <button type="submit" id="insert_button" class="btn btn-primary collapse
+        %if system_mode != "user_recom_mode":
+        show
+        %end
+        ">Insert</button>
       </div>
       <script type="text/javascript">
           $("#application_mode").change(function() {
-               if ($(this).children(":selected").text() === "ad_recommenders" ) {
+               $("#insert_button").removeClass("hide")
+               $("#insert_button").addClass("show")
+               if ($(this).children(":selected").text() != "ad_list_mode" ) {
                     $("#repeat_form").removeClass("d-none")
                     $("#recommendation_title").removeClass("d-none")
                     $("#recommendation_title").addClass("d-flex")
+                    if ($(this).children(":selected").text() === "user_recom_mode" ) {
+                        $("#insert_button").addClass("hide")
+                        $("#insert_button").removeClass("show")
+                    }
+
                }
                else {
                     $("#repeat_form").addClass("d-none")

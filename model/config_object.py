@@ -31,6 +31,7 @@ class ConfigObject(object):
     ORIGINAL_FILE_SUFFIX = parser.get('SystemConfig', 'original_file_suffix', fallback='original')
     ORIGINAL_AD_LIST_FILE_SUFFIX = parser.get('SystemConfig', 'original_ad_list_file_suffix', fallback='original_ad_list')
     ORIGINAL_USER_RECOM_FILE_SUFFIX = parser.get('SystemConfig', 'original_user_recom_file_suffix', fallback='original_user_recom')
+    ORIGINAL_PRODUCT_RECOM_FILE_SUFFIX = parser.get('SystemConfig', 'original_product_recom_file_suffix', fallback='original_product_recom')
     PARSED_FILE_SUFFIX = parser.get('SystemConfig', 'parsed_file_suffix', fallback='dump')
     SELECTABLE_PAGE_AMOUNTS = ast.literal_eval(parser.get('SystemConfig', 'selectable_page_amounts', fallback="[10, 50, 100]"))
     MAX_WORKERS = parser.getint('SystemConfig', 'max_workers', fallback=10)
@@ -47,6 +48,7 @@ class ConfigObject(object):
     filter_string = parser.get('UserConfig', 'filter_string', fallback="")
 
     selected_item = parser.get('UserConfig', 'selected_item', fallback="0")
+    selected_user_item = parser.get('UserConfig', 'selected_user_item', fallback="0")
     tenant = parser.get('UserConfig', 'tenant', fallback="Bva")
     system_mode = parser.get('UserConfig', 'system_mode', fallback=AD_USER_RECOM_MODE)
 

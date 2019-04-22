@@ -28,6 +28,15 @@
             <label for="upload" class="col-2">CSV file</label>
             <input type="file" name="upload" id="upload" class="form-control col-10" placeholder="Select file" />
         </div>
+        <div id="upload_user_file_row" class="form-group form-row
+            %if system_mode != "user_recom_mode":
+                d-none
+            %end
+            ">
+            <label for="upload_user_file" class="col-2">CSV file user data</label>
+            <input type="file" name="upload_user_file" id="upload_user_file" class="form-control col-10" placeholder="Select file" />
+        </div>
+        %end
 
         <div class="form-group form-row">
             <label for="use_all" class="col-2">Use whole file</label>
@@ -54,4 +63,13 @@
         $('#waiting').show()
         $('#upload_button').hide()
     });
-</script>
+
+      $("#application_mode").change(function() {
+           if ($(this).children(":selected").text() === "user_recom_mode" ) {
+                $("#upload_user_file_row").removeClass("d-none");
+           }
+           else {
+                $("#upload_user_file_row").addClass("d-none");
+           }
+      });
+  </script>

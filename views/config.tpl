@@ -59,6 +59,10 @@
                                     <input type="text" name="selected_item" id="selected_item" class="form-control col-7" placeholder="default selected item" value="{{selected_item}}" />
                                 </div>
                                 <div class="form-group row ml-0 mr-0">
+                                    <label for="selected_item" class="col-5">Default selected user</label>
+                                    <input type="text" name="selected_user_item" id="selected_user_item" class="form-control col-7" placeholder="default selected user" value="{{selected_user_item}}" />
+                                </div>
+                                <div class="form-group row ml-0 mr-0">
                                     <label for="max_per_page" class="col-5">Default amount per page</label>
                                     <select name="max_per_page" id="max_per_page" class="form-control col-7" placeholder="Select Tenant">
                                       % for selectable_amount in selectable_page_amounts:

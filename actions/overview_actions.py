@@ -18,6 +18,16 @@ class OverviewActions(DataFrameObject):
         except:
             return list()
 
+    @staticmethod
+    def __ad_id_overview_user_recom(dataframe=DataFrameObject.uploaded_csv_data, search_string=""):
+        try:
+            if search_string is not "":
+                return list(dataframe[dataframe['lot_id'].str.contains(search_string)]['lot_id'].unique())
+            else:
+                return list(dataframe['lot_id'].unique())
+        except:
+            return list()
+
     @classmethod
     def ad_id_overview(self, search_string, filter_string, offline_mode):
         if offline_mode:
@@ -33,6 +43,24 @@ class OverviewActions(DataFrameObject):
                     filtered_list.add(recommendation_id)
                 elif not DataFrameObject.uploaded_csv_data.loc[DataFrameObject.uploaded_csv_data['recommended_ad_id'] == recommendation_id].empty:
                     filtered_list.update(list(DataFrameObject.uploaded_csv_data.loc[DataFrameObject.uploaded_csv_data['recommended_ad_id'] == recommendation_id]['ad_id']))
+            ad_id_list = list(item for item in filtered_list if item in ad_id_list)
+        return ad_id_list
+
+    @classmethod
+    def ad_id_overview_user_recom(self, search_string, filter_string, offline_mode):
+        if offline_mode:
+            combined = DataFrameObject.uploaded_product_recom_data.merge(DataFrameObject.enriched_data, left_on='lot_id', right_on='ad_id', how='inner')
+            ad_id_list = [id for id in self.__ad_id_overview_user_recom(combined, search_string=search_string) if not DataFrameObject.enriched_data.loc[DataFrameObject.enriched_data['ad_id'] == id].empty]
+        else:
+            ad_id_list = self.__ad_id_overview_user_recom(DataFrameObject.uploaded_product_recom_data, search_string=search_string)
+        if filter_string:
+            filtered_list = set()
+            # recommendations = list(DataFrameObject.enriched_data[DataFrameObject.enriched_data['title'].notnull()&DataFrameObject.enriched_data['title'].str.contains(filter_string)]['ad_id'].unique())
+            # for recommendation_id in recommendations:
+            #     if not DataFrameObject.uploaded_user_recom_data.loc[DataFrameObject.uploaded_user_recom_data['lot_id'] == recommendation_id].empty:
+            #         filtered_list.add(recommendation_id)
+            #     elif not DataFrameObject.uploaded_user_recom_data.loc[DataFrameObject.uploaded_user_recom_data['lot_id'] == recommendation_id].empty:
+            #         filtered_list.update(list(DataFrameObject.uploaded_user_recom_data.loc[DataFrameObject.uploaded_user_recom_data['lot_id'] == recommendation_id]['ad_id']))
             ad_id_list = list(item for item in filtered_list if item in ad_id_list)
         return ad_id_list
 
@@ -68,10 +96,61 @@ class OverviewActions(DataFrameObject):
         return result_list, ad_ids_to_load
 
     @classmethod
+    def get_product_recommenders_for_initial_view(self, ad_id, limit=6):
+        result_list = self.__get_product_recommendations_by_parent_id(ad_id)
+        ad_ids_to_load = []
+        if not limit:
+            limit = len(result_list)
+        for index, result in enumerate(result_list[0:limit]):
+            result, loaded = self.__set_enriched_data(result.id, result)
+            if loaded:
+                result_list[index] = result
+            else:
+                ad_ids_to_load.append(result.id)
+        return result_list, ad_ids_to_load
+
+    def get_user_recommenders_for_initial_view(self, ad_id, user_id, limit=6):
+        result_list = self.__get_user_recommendations_by_parent_id(ad_id, user_id)
+        ad_ids_to_load = []
+        if not limit:
+            limit = len(result_list)
+        for index, result in enumerate(result_list[0:limit]):
+            result, loaded = self.__set_enriched_data(result.id, result)
+            if loaded:
+                result_list[index] = result
+            else:
+                ad_ids_to_load.append(result.id)
+        return result_list, ad_ids_to_load
+
+    @classmethod
+    def get_users_for_product_recommendations(self, ad_id):
+        return list(DataFrameObject.uploaded_user_recom_data[DataFrameObject.uploaded_user_recom_data['lot_id']==ad_id]['user'].unique())
+
+    @classmethod
     def __get_recommenders_by_parent_id(self, ad_id):
         # ad_object
         result_list = []
         for row in DataFrameObject.uploaded_csv_data.loc[DataFrameObject.uploaded_csv_data['ad_id'] == ad_id].values:
+            result = AdObject()
+            result.set_initial_data(row[1], row[2], row[3])
+            result_list.append(result)
+        return result_list
+
+    @classmethod
+    def __get_product_recommendations_by_parent_id(self, ad_id):
+        result_list = []
+        for row in DataFrameObject.uploaded_product_recom_data.loc[DataFrameObject.uploaded_product_recom_data['lot_id'] == ad_id].values:
+            result = AdObject()
+            result.set_initial_data(row[1], row[2], row[3])
+            result_list.append(result)
+        return result_list
+
+    @classmethod
+    def __get_user_recommendations_by_parent_id(self, ad_id, user_id):
+        #todo: do something with the category of the ad_id
+        result_list = []
+        for row in DataFrameObject.uploaded_user_recom_data.loc[DataFrameObject.uploaded_user_recom_data['user'] == int(user_id)].values:
+        # for row in DataFrameObject.uploaded_user_recom_data.loc[DataFrameObject.uploaded_user_recom_data['lot_id'] == ad_id].values:
             result = AdObject()
             result.set_initial_data(row[1], row[2], row[3])
             result_list.append(result)

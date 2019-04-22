@@ -30,7 +30,7 @@
 
                 <textarea  class="form-control" id="input_raw" name="input_raw" aria-describedby="inputRawHelp"></textarea>
                 <small id="inputRawWithRecommenderHelp" class="form-text text-muted
-                %if system_mode is not "ad_recommenders":
+                %if system_mode != "ad_recommenders":
                     d-none
                 %end
                 ">
@@ -43,7 +43,7 @@
                     </span>
                 </small>
                 <small id="inputRawWithoutRecommenderHelp" class="form-text text-muted
-                %if system_mode is "ad_recommenders":
+                %if system_mode != "ad_list_mode":
                     d-none
                 %end
                 ">
@@ -53,6 +53,31 @@
                     102447794<br />
                     166094071<br />
                     463382718
+                    </span>
+                </small>
+                <small id="inputRawProductRecommenderHelp" class="form-text text-muted
+                %if system_mode != "user_recom_mode":
+                    d-none
+                %end
+                ">
+                    columns: "lot_id,auction,auction_name,title,interest_group,topcategoryid,topcategory,recommendation_lot_id,recommendation_auction_name,recommendation_title,recommendation_interest_group,recommendation_topcategoryid,recommendation_topcategory,rating,channel,timestamp" example input:<br />
+                    <span class="border d-inline-block w-100 p-2 bg-light rounded">
+                    11878611,123,,,,,,,,,,,,,,0<br />
+                    todo...
+                    </span>
+                </small>
+            </div>
+
+            <div class="form-group" id="inputRawUserRecommender">
+                <span name="id_user" id="id_user" class="input-group">Raw input</span>
+
+                <textarea  class="form-control" id="input_raw_user" name="input_raw_user" aria-describedby="inputRawHelp"></textarea>
+
+                <small class="form-text text-muted">
+                    columns: "user,lot_id,rating,auction,number,lot,auction_name,title,interest_group,topcategoryid,topcategory,channel,timestamp" example input:<br />
+                    <span class="border d-inline-block w-100 p-2 bg-light rounded">
+                    1586903,11878611,1.9,34210,570,,,,,,,0<br />
+                    todo...
                     </span>
                 </small>
             </div>
@@ -67,10 +92,21 @@
                if ($(this).children(":selected").text() === "ad_recommenders" ) {
                     $("#inputRawWithRecommenderHelp").removeClass("d-none")
                     $("#inputRawWithoutRecommenderHelp").addClass("d-none")
+                    $("#inputRawProductRecommenderHelp").addClass("d-none")
+                    $("#inputRawUserRecommender").addClass("d-none")
                }
-               else {
+               if ($(this).children(":selected").text() === "ad_list_mode" ) {
                     $("#inputRawWithRecommenderHelp").addClass("d-none")
                     $("#inputRawWithoutRecommenderHelp").removeClass("d-none")
+                    $("#inputRawProductRecommenderHelp").addClass("d-none")
+                    $("#inputRawUserRecommender").addClass("d-none")
+
+               }
+               if ($(this).children(":selected").text() === "user_recom_mode" ) {
+                    $("#inputRawWithRecommenderHelp").addClass("d-none")
+                    $("#inputRawWithoutRecommenderHelp").addClass("d-none")
+                    $("#inputRawProductRecommenderHelp").removeClass("d-none")
+                    $("#inputRawUserRecommender").removeClass("d-none")
 
                }
           });
