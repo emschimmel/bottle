@@ -39,7 +39,7 @@
         % include('partials/overview/selected_item_horizontal_partial.tpl')
         </div>
         <div class="card-header">
-            <span>Product recommendations</span>
+            <span class="text-sm">Product recommendations</span>
         </div>
         <div class="card-body pre-scrollable">
       % for index, recommendation in enumerate(recommendations):
@@ -68,7 +68,7 @@
         </div>
         </div>
         <div class="card-header">
-            <span>User recommendations</span>
+            <span class="text-sm">User recommendations</span>
         </div>
         <div class="card-body pre-scrollable">
       % for index, recommendation in enumerate(user_recommendations):

@@ -1,4 +1,4 @@
-<table class="table bg-light border recommendation">
+<table class="table table-sm bg-light border recommendation">
   <thead>
     <tr>
       <th>

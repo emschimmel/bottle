@@ -1,16 +1,16 @@
 <div class="row">
 <img width="300px" height="50%" src="{{selected_ad.img_url}}" class="col-3" />
 <div class="col-9">
-<table class="table">
+<table class="table table-sm">
     <thead>
       <tr>
         <th colspan="2">
-            <span class="card-title text m-0">
+            <span class="card-title text-sm m-0">
                 {{selected_ad.title}}
             </span>
         </th>
         <th>
-          <span class="card-title text m-0">
+          <span class="card-title text-sm m-0">
             <a href="{{selected_ad.url}}">{{selected_ad.id}}</a>
           </span>
         </th>
@@ -19,20 +19,20 @@
     <tbody>
       <tr>
         <td>
-          <span class="text">Categories: {{" > ".join(selected_ad.categories)}}</span>
+          <span class="text-sm">Categories: {{" > ".join(selected_ad.categories)}}</span>
         </td>
         <td>
-          <span>location: {{selected_ad.location}}</span>
+          <span class="text-sm">location: {{selected_ad.location}}</span>
         </td>
         <td>
-            <span>price: {{selected_ad.price}}</span>
+          <span class="text-sm">price: {{selected_ad.price}}</span>
         </td>
       </tr>
 
       <tr>
         <td>
           % if selected_ad.expired:
-            <span class="alert alert-danger d-inline-block w-100 m-0">Expired</span>
+            <span class="alert alert-sm alert-danger d-inline-block w-100 m-0">Expired</span>
           % end
         </td>
 
