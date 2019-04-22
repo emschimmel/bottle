@@ -124,7 +124,7 @@ class OverviewActions(DataFrameObject):
 
     @classmethod
     def get_users_for_product_recommendations(self, ad_id):
-        return list(DataFrameObject.uploaded_user_recom_data[DataFrameObject.uploaded_user_recom_data['lot_id']==ad_id]['user'].unique())
+        return list(DataFrameObject.uploaded_user_recom_data[DataFrameObject.uploaded_user_recom_data['lot_id']==int(ad_id)]['user'].unique())
 
     @classmethod
     def __get_recommenders_by_parent_id(self, ad_id):
@@ -139,7 +139,7 @@ class OverviewActions(DataFrameObject):
     @classmethod
     def __get_product_recommendations_by_parent_id(self, ad_id):
         result_list = []
-        for row in DataFrameObject.uploaded_product_recom_data.loc[DataFrameObject.uploaded_product_recom_data['lot_id'] == ad_id].values:
+        for row in DataFrameObject.uploaded_product_recom_data.loc[DataFrameObject.uploaded_product_recom_data['lot_id'] == int(ad_id)].values:
             result = AdObject()
             result.set_initial_data(row[1], row[2], row[3])
             result_list.append(result)

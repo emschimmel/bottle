@@ -177,7 +177,7 @@ def __draw_index_user_recom_mode(all=True, ad_id=selected_item, user_id=selected
         view['selectable_page_amounts'] = State.SELECTABLE_PAGE_AMOUNTS
         view['page_bar'] = __page_bar_list(amount_pages=amount_pages, current_page=current_page)
         view['current_page'] = current_page
-        view['item_user_list'] = overview_action.get_users_for_product_recommendations(ad_id=ad_id)
+    view['item_user_list'] = overview_action.get_users_for_product_recommendations(ad_id=ad_id)
     # top pane
     view['tenant'] = tenant
     view['system_mode'] = State.system_mode
@@ -191,22 +191,25 @@ def __draw_index_user_recom_mode(all=True, ad_id=selected_item, user_id=selected
     view['selected_ad_error'] = selected_ad.error
     if selected_ad.loaded and not selected_ad.error:
         view['selected_ad'] = selected_ad
-        recommendations, ad_ids_to_load = overview_action.get_product_recommenders_for_initial_view(ad_id=ad_id, limit=limit)
-        if len(ad_ids_to_load) > 0:
-            scrapper_action.start_processes_for_list(ad_ids_to_load)
-        view['not_loaded'] = len([not_loaded.loaded for not_loaded in
-                                  recommendations[0:limit if limit is not False else len(recommendations)] if
-                                  not not_loaded.loaded]) > 0
+        recommendations, product_ad_ids_to_load = overview_action.get_product_recommenders_for_initial_view(ad_id=ad_id,
+                                                                                                            limit=limit)
+        user_recommendations, user_ad_ids_to_load = overview_action.get_user_recommenders_for_initial_view(ad_id=ad_id,
+                                                                                                           user_id=user_id,
+                                                                                                           limit=limit)
+
+        if len(product_ad_ids_to_load + user_ad_ids_to_load) > 0:
+            scrapper_action.start_processes_for_list(product_ad_ids_to_load + user_ad_ids_to_load)
+
         # recommenders pane
         view['recommendations'] = recommendations
-        user_recommendations, ad_ids_to_load = overview_action.get_user_recommenders_for_initial_view(ad_id=ad_id, user_id=user_id, limit=limit)
         view['user_recommendations'] = user_recommendations
-        if len(ad_ids_to_load) > 0:
-            scrapper_action.start_processes_for_list(ad_ids_to_load)
+        if len(product_ad_ids_to_load+user_ad_ids_to_load) > 0:
+            scrapper_action.start_processes_for_list(product_ad_ids_to_load+user_ad_ids_to_load)
         view['not_loaded'] = len([not_loaded.loaded for not_loaded in
-                                  recommendations[0:limit if limit is not False else len(recommendations)] if
+                                  recommendations[0:limit if limit is not False else len(recommendations)]+user_recommendations[0:limit if limit is not False else len(user_recommendations)] if
                                   not not_loaded.loaded]) > 0
     view['recommendations_limit'] = limit
+
     # fallback
     view['no_data'] = False
     view['no_search_data'] = False
@@ -254,6 +257,64 @@ def __draw_index_with_recommenders(all=True, ad_id=selected_item):
                                   not not_loaded.loaded]) > 0
         # recommenders pane
         view['recommendations'] = recommendations
+    view['recommendations_limit'] = limit
+
+    # fallback
+    view['no_data'] = False
+    view['no_search_data'] = False
+    return view
+
+def __draw_index_with_recommenders_and_users(all=True, ad_id=selected_item, user_id=selected_user_item):
+    view = dict()
+    if all:
+        ad_list, amount_pages, current_page = __update_item_list()
+        ad_id = selected_item
+        if len(ad_list) is 0:
+            return __draw_index_search_data()
+        # list pane
+        view['selected_item'] = ad_id
+        view['item_list'] = ad_list
+
+        # pagination
+        view['max_per_page'] = max_per_page
+        view['selectable_page_amounts'] = State.SELECTABLE_PAGE_AMOUNTS
+        view['page_bar'] = __page_bar_list(amount_pages=amount_pages, current_page=current_page)
+        view['current_page'] = current_page
+    view['item_user_list'] = overview_action.get_users_for_product_recommendations(ad_id=ad_id)
+    view['selected_user_item'] = selected_user_item
+    view['all_data'] = all
+
+    # top pane
+    view['tenant'] = tenant
+    view['system_mode'] = State.system_mode
+    view['filter_string'] = filter_string
+    view['search_string'] = search_string
+    view['offline_mode'] = offline_mode
+
+    # ad pane
+    selected_ad = overview_action.get_ad_by_id(ad_id)
+    view['selected_ad_complete'] = selected_ad.loaded
+    view['selected_ad_error'] = selected_ad.error
+
+    if selected_ad.loaded and not selected_ad.error:
+        view['selected_ad'] = selected_ad
+        recommendations, product_ad_ids_to_load = overview_action.get_product_recommenders_for_initial_view(ad_id=ad_id,
+                                                                                                            limit=limit)
+        user_recommendations, user_ad_ids_to_load = overview_action.get_user_recommenders_for_initial_view(ad_id=ad_id,
+                                                                                                           user_id=user_id,
+                                                                                                           limit=limit)
+
+        if len(product_ad_ids_to_load + user_ad_ids_to_load) > 0:
+            scrapper_action.start_processes_for_list(product_ad_ids_to_load + user_ad_ids_to_load)
+
+        # recommenders pane
+        view['recommendations'] = recommendations
+        view['user_recommendations'] = user_recommendations
+        if len(product_ad_ids_to_load+user_ad_ids_to_load) > 0:
+            scrapper_action.start_processes_for_list(product_ad_ids_to_load+user_ad_ids_to_load)
+        view['not_loaded'] = len([not_loaded.loaded for not_loaded in
+                                  recommendations[0:limit if limit is not False else len(recommendations)]+user_recommendations[0:limit if limit is not False else len(user_recommendations)] if
+                                  not not_loaded.loaded]) > 0
     view['recommendations_limit'] = limit
 
     # fallback
@@ -368,9 +429,10 @@ def open_item(ad_id):
     selected_item = ad_id
     return redirect('/')
 
-@get('/_open_item_for_user/<user_id>')
+
+@get('/_open_item_for_user/<user_id>/<all>')
 @view('index')
-def open_item(user_id):
+def open_item(user_id, all):
     global selected_user_item
     global limit
 
@@ -445,12 +507,17 @@ def reload(ad_id):
         overview_action.reload(ad_id)
     elif State.system_mode == State.AD_LIST_MODE:
         overview_action.reload_list_item(ad_id)
+    elif State.system_mode == State.AD_USER_RECOM_MODE:
+        overview_action.reload_list_item(ad_id)
 
 
 @get('/share/<ad_id>')
 @view('index')
 def share(ad_id):
+    if State.system_mode == State.AD_USER_RECOM_MODE:
+        return __draw_index_with_recommenders_and_users(all=False, ad_id=ad_id, user_id=selected_user_item)
     return __draw_index_with_recommenders(all=False, ad_id=ad_id)
+
 
 
 ####################################
@@ -640,7 +707,8 @@ def do_insert_raw():
         insert_action.insert_multi_row_add_list(raw_collection)
     elif insert_system_mode == State.AD_USER_RECOM_MODE:
         insert_action.insert_multi_row_product_recom_list(raw_collection)
-        raw_user_collection = [l.replace('\r', '').replace(' ', '') for l in request.forms.get('input_raw_user').split("\n") if l]
+        raw_user_collection = [l.replace('\r', '').replace(' ', '') for l in
+                               request.forms.get('input_raw_user').split("\n") if l]
         insert_action.insert_multi_row_user_recom_list(raw_user_collection)
     state.tenant = tenant
     state.system_mode = system_mode
@@ -680,6 +748,7 @@ def do_upload():
     print("yay, done")
     return redirect('/')
 
+
 def __store_file(upload, filename):
     if not os.path.exists(FileName.config_path()):
         os.makedirs(FileName.config_path())
@@ -699,6 +768,7 @@ def __store_file(upload, filename):
             open_file.write(''.join(lines))
 
         os.remove(temp_file_name)
+
 
 ####################################
 # Insert into Elasticsearch
