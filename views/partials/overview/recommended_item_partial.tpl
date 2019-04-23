@@ -29,12 +29,21 @@
       </td>
     </tr>
     <tr>
+    % if system_mode == "user_recom_mode":
+      <td style="background-color:hsl({{(1-float(recommendation.score/3))*150}},100%,50%)">
+        <span class="w-100">{{recommendation.score/3}}% Chance that the user places a bid
+        &nbsp; ({{recommendation.rank}})
+        </span>
+      </td>
+    % else:
       <td style="background-color:hsl({{(1-float(recommendation.score))*150}},100%,50%)">
         <span class="w-100">{{recommendation.score}}
         &nbsp; ({{recommendation.rank}})
         </span>
       </td>
+    % end
     </tr>
+
     <tr>
       <td>
           % if recommendation.loaded is True:

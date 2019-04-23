@@ -60,9 +60,9 @@
                     d-none
                 %end
                 ">
-                    columns: "lot_id,auction,auction_name,title,interest_group,topcategoryid,topcategory,recommendation_lot_id,recommendation_auction_name,recommendation_title,recommendation_interest_group,recommendation_topcategoryid,recommendation_topcategory,rating,channel,timestamp" example input:<br />
+                    columns: "lot_id,auction_id,auction_name,title,interest_group,topcategoryid,topcategory,recommendation_lot_id,recommendation_auction_id,recommendation_auction_name,recommendation_title,recommendation_interest_group,recommendation_topcategoryid,recommendation_topcategory,rating,channel,timestamp" example input:<br />
                     <span class="border d-inline-block w-100 p-2 bg-light rounded">
-                    11878611,123,,,,,,,,,,,,,,0<br />
+                    11878611,123,,,,,,,,,,,,,,,0<br />
                     todo...
                     </span>
                 </small>
@@ -74,7 +74,7 @@
                 <textarea  class="form-control" id="input_raw_user" name="input_raw_user" aria-describedby="inputRawHelp"></textarea>
 
                 <small class="form-text text-muted">
-                    columns: "user,lot_id,rating,auction,number,lot,auction_name,title,interest_group,topcategoryid,topcategory,channel,timestamp" example input:<br />
+                    columns: "user,lot_id,rating,auction_id,number,lot,auction_name,title,interest_group,topcategoryid,topcategory,channel,timestamp" example input:<br />
                     <span class="border d-inline-block w-100 p-2 bg-light rounded">
                     1586903,11878611,1.9,34210,570,,,,,,,0<br />
                     todo...

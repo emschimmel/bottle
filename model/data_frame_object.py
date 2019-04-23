@@ -7,11 +7,11 @@ class DataFrameObject(object):
     uploaded_csv_data = pandas.DataFrame(columns=['ad_id', 'recommended_ad_id', 'rank', 'score'])
     uploaded_add_list_data = pandas.DataFrame(columns=['ad_id'])
     uploaded_user_recom_data = pandas.DataFrame(
-        columns=['user', 'lot_id', 'rating', 'auction', 'number', 'lot', 'auction_name', 'title', 'interest_group',
+        columns=['user', 'lot_id', 'rating', 'auction_id', 'number', 'lot', 'auction_name', 'title', 'interest_group',
                  'topcategoryid', 'topcategory', 'channel', 'timestamp'])
     uploaded_product_recom_data = pandas.DataFrame(
-        columns=['lot_id', 'auction', 'auction_name', 'title', 'interest_group', 'topcategoryid', 'topcategory',
-                 'recommendation_lot_id', 'recommendation_auction_name', 'recommendation_title',
+        columns=['lot_id', 'auction_id', 'auction_name', 'title', 'interest_group', 'topcategoryid', 'topcategory',
+                 'recommendation_lot_id', 'recommendation_auction_id', 'recommendation_auction_name', 'recommendation_title',
                  'recommendation_interest_group', 'recommendation_topcategoryid', 'recommendation_topcategory',
                  'rating', 'channel', 'timestamp'])
 
@@ -42,7 +42,7 @@ class DataFrameObject(object):
     def restore_user_recom_data():
         DataFrameObject.uploaded_user_recom_data = pandas.read_csv(FileName.original_user_recom_file_name(),
                                                                    dtype={'user': int, 'lot_id': int, 'rating': float,
-                                                                          'auction': str, 'number': str, 'lot': str,
+                                                                          'auction_id': int, 'number': str, 'lot': str,
                                                                           'auction_name': str, 'title': str,
                                                                           'interest_group': str, 'topcategoryid': str,
                                                                           'topcategory': str, 'channel': str},
@@ -55,11 +55,12 @@ class DataFrameObject(object):
     @staticmethod
     def restore_product_recom_data():
         DataFrameObject.uploaded_product_recom_data = pandas.read_csv(FileName.original_user_recom_file_name(),
-                                                                      dtype={'lot_id': int, 'auction': int,
+                                                                      dtype={'lot_id': int, 'auction_id': int,
                                                                              'auction_name': str, 'title': str,
                                                                              'interest_group': str,
                                                                              'topcategoryid': str, 'topcategory': str,
-                                                                             'recommendation_lot_id': str,
+                                                                             'recommendation_lot_id': int,
+                                                                             'recommendation_auction_id': int,
                                                                              'recommendation_auction_name': str,
                                                                              'recommendation_title': str,
                                                                              'recommendation_interest_group': str,

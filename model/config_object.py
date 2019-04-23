@@ -19,7 +19,7 @@ class ConfigObject(object):
     TWEEDE_HANDS = parser.getboolean('TenantConfig', 'enable_tweedehands', fallback=False)
     DBA = parser.getboolean('TenantConfig', 'enable_dba', fallback=False)
 
-    BVA_URL = parser.get('TenantConfig', 'url_bva', fallback="https://www.bva-auctions.com/nl/auction/lot/{id}")
+    BVA_URL = parser.get('TenantConfig', 'url_bva', fallback="https://www.bva-auctions.com/nl/auction/lot/{auction_id}/{lot_id}")
     MARKTPLAATS_URL = parser.get('TenantConfig', 'url_marktplaats', fallback="http://marktplaats.nl/{id}")
     KIJIJI_URL = parser.get('TenantConfig', 'url_kijiji', fallback="https://www.kijiji.ca/v-view-details.html?adId={id}")
     TWEEDE_HANDS_URL = parser.get('TenantConfig', 'url_tweedehands', fallback="https://www.2dehands.be/{id}.html")

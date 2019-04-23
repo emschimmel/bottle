@@ -2,6 +2,7 @@ import os
 import re
 from json import loads
 
+# from actions.scrapper_actions import ScrapperActions
 from model.ad_object import AdObject
 from bs4 import BeautifulSoup
 import requests
@@ -13,24 +14,46 @@ class EnrichDataBVA():
 
     @classmethod
     def start_for_id(self, ad_id, url, tenant):
-        # if '-' in url:
-        #     url = url.format(id=ad_id.replace('-', '/'))
-        # else:
-        #     url = "https://www.bva-auctions.com/nl/auction/39555/"+ad_id
+        object = AdObject()
+        object.id = ad_id
+        object, auction_id = self.__get_product_data(ad_id, object)
+        url = url.format(auction_id=auction_id, lot_id=ad_id)
         response = requests.get(url)
         html = BeautifulSoup(response.content, "html.parser") # slowest parser
         # print(html)
 
-        object = AdObject()
-        object.id = ad_id
         object.url = url
 
         object.error = False
-        object.title, error = self.__get_title(html, ad_id)
         object.img_url, error = self.__get_img(html, tenant, ad_id)
         # object.extra_images, error = self.__get_other_images(html=html, tenant=tenant, id=ad_id)
         object.loaded = True
         return object
+
+    @staticmethod
+    def __get_product_data(id, object):
+        auction_id = 1
+        # available_data = ScrapperActions.uploaded_product_recom_data[ScrapperActions.uploaded_product_recom_data['lot_id'] == id]
+        # if available_data.empty:
+        #     for row in available_data.values:
+        #         auction_id = row[1]
+        #         object.title = row[3]
+        #         object.categories = row[6]
+        # else:
+        #     available_data = ScrapperActions.uploaded_product_recom_data[ScrapperActions.uploaded_product_recom_data['recommendation_lot_id'] == id]
+        #     if available_data.empty:
+        #         for row in available_data.values:
+        #             auction_id = row[8]
+        #             object.title = row[10]
+        #             object.categories = row[13]
+        #     else:
+        #         available_data = ScrapperActions.uploaded_user_recom_data[ScrapperActions.uploaded_user_recom_data['lot_id'] == id]
+        #         if available_data.empty:
+        #             for row in available_data.values:
+        #                 auction_id = row[3]
+        #                 object.title = row[7]
+        #                 object.categories = row[10]
+        return object, auction_id
 
     @staticmethod
     def __get_other_images(html, tenant, id):
@@ -44,16 +67,6 @@ class EnrichDataBVA():
             print("extra images not found for {id}".format(id=id))
             print(e)
             return images, True
-
-    @staticmethod
-    def __get_title(html, id):
-        try:
-            title = html.find('meta', property="og:title").get("content")
-            return title, False
-        except Exception as e:
-            print("title not found for {id}".format(id=id))
-            print(e)
-            return "", True
 
     @staticmethod
     def __get_img(html, tenant, id):
