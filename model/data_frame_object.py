@@ -40,6 +40,8 @@ class DataFrameObject(object):
 
     @staticmethod
     def restore_user_recom_data():
+        print("org user data")
+        print(FileName.original_user_recom_file_name())
         DataFrameObject.uploaded_user_recom_data = pandas.read_csv(FileName.original_user_recom_file_name(),
                                                                    dtype={'user': int, 'lot_id': int, 'rating': float,
                                                                           'auction_id': int, 'number': str, 'lot': str,
@@ -54,7 +56,9 @@ class DataFrameObject(object):
 
     @staticmethod
     def restore_product_recom_data():
-        DataFrameObject.uploaded_product_recom_data = pandas.read_csv(FileName.original_user_recom_file_name(),
+        print("org product data")
+        print(FileName.original_product_recom_file_name())
+        DataFrameObject.uploaded_product_recom_data = pandas.read_csv(FileName.original_product_recom_file_name(),
                                                                       dtype={'lot_id': int, 'auction_id': int,
                                                                              'auction_name': str, 'title': str,
                                                                              'interest_group': str,
@@ -71,7 +75,7 @@ class DataFrameObject(object):
 
     @classmethod
     def save_product_recom_data(self):
-        DataFrameObject.uploaded_product_recom_data.to_csv(FileName.original_user_recom_file_name(), index=False)
+        DataFrameObject.uploaded_product_recom_data.to_csv(FileName.original_product_recom_file_name(), index=False)
 
     @staticmethod
     def load_enriched_data():

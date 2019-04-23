@@ -50,17 +50,17 @@ class OverviewActions(DataFrameObject):
     def ad_id_overview_user_recom(self, search_string, filter_string, offline_mode):
         if offline_mode:
             combined = DataFrameObject.uploaded_product_recom_data.merge(DataFrameObject.enriched_data, left_on='lot_id', right_on='ad_id', how='inner')
-            ad_id_list = [id for id in self.__ad_id_overview_user_recom(combined, search_string=search_string) if not DataFrameObject.enriched_data.loc[DataFrameObject.enriched_data['ad_id'] == id].empty]
+            ad_id_list = [id for id in self.uploaded_product_recom_data(combined, search_string=search_string) if not DataFrameObject.enriched_data.loc[DataFrameObject.enriched_data['ad_id'] == id].empty]
         else:
             ad_id_list = self.__ad_id_overview_user_recom(DataFrameObject.uploaded_product_recom_data, search_string=search_string)
         if filter_string:
             filtered_list = set()
-            # recommendations = list(DataFrameObject.enriched_data[DataFrameObject.enriched_data['title'].notnull()&DataFrameObject.enriched_data['title'].str.contains(filter_string)]['ad_id'].unique())
-            # for recommendation_id in recommendations:
-            #     if not DataFrameObject.uploaded_user_recom_data.loc[DataFrameObject.uploaded_user_recom_data['lot_id'] == recommendation_id].empty:
-            #         filtered_list.add(recommendation_id)
-            #     elif not DataFrameObject.uploaded_user_recom_data.loc[DataFrameObject.uploaded_user_recom_data['lot_id'] == recommendation_id].empty:
-            #         filtered_list.update(list(DataFrameObject.uploaded_user_recom_data.loc[DataFrameObject.uploaded_user_recom_data['lot_id'] == recommendation_id]['ad_id']))
+            recommendations = list(DataFrameObject.enriched_data[DataFrameObject.enriched_data['title'].notnull()&DataFrameObject.enriched_data['title'].str.contains(filter_string)]['ad_id'].unique())
+            for recommendation_id in recommendations:
+                if not DataFrameObject.uploaded_product_recom_data.loc[DataFrameObject.uploaded_product_recom_data['lot_id'] == recommendation_id].empty:
+                    filtered_list.add(recommendation_id)
+                elif not DataFrameObject.uploaded_product_recom_data.loc[DataFrameObject.uploaded_product_recom_data['lot_id'] == recommendation_id].empty:
+                    filtered_list.update(list(DataFrameObject.uploaded_product_recom_data.loc[DataFrameObject.uploaded_product_recom_data['lot_id'] == recommendation_id]['ad_id']))
             ad_id_list = list(item for item in filtered_list if item in ad_id_list)
         return ad_id_list
 
@@ -141,7 +141,9 @@ class OverviewActions(DataFrameObject):
         result_list = []
         for row in DataFrameObject.uploaded_product_recom_data.loc[DataFrameObject.uploaded_product_recom_data['lot_id'] == int(ad_id)].values:
             result = AdObject()
-            result.set_initial_data(row[1], row[2], row[3])
+            result.set_initial_data(row[7], row[14], row[14])
+            result.title = row[10]
+            result.categories = row[13]
             result_list.append(result)
         return result_list
 
@@ -151,9 +153,12 @@ class OverviewActions(DataFrameObject):
         result_list = []
         for row in DataFrameObject.uploaded_user_recom_data.loc[DataFrameObject.uploaded_user_recom_data['user'] == int(user_id)].values:
         # for row in DataFrameObject.uploaded_user_recom_data.loc[DataFrameObject.uploaded_user_recom_data['lot_id'] == ad_id].values:
-            result = AdObject()
-            result.set_initial_data(row[1], row[2], row[3])
-            result_list.append(result)
+            if row[1] != ad_id:
+                result = AdObject()
+                result.set_initial_data(row[1], row[2], row[2])
+                result.title = row[7]
+                result.categories = row[10]
+                result_list.append(result)
         return result_list
 
     @staticmethod
