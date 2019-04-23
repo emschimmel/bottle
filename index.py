@@ -324,12 +324,11 @@ def __draw_index_with_recommenders_and_users(all=True, ad_id=selected_item, user
 
 
 def __draw_index(all=True, ad_id=selected_item, user_id=selected_user_item):
-    # maybe we need a beter check here
     if State.system_mode == State.AD_RECOMMENDERS_MODE and os.path.exists(FileName.original_file_name()):
         return __draw_index_with_recommenders(all=all, ad_id=ad_id)
     if State.system_mode == State.AD_LIST_MODE and os.path.exists(FileName.original_data_list_file_name()):
         return __draw_index_list_mode(all=all)
-    if State.system_mode == State.AD_USER_RECOM_MODE and os.path.exists(FileName.original_user_recom_file_name()):
+    if State.system_mode == State.AD_USER_RECOM_MODE and os.path.exists(FileName.original_product_recom_file_name()):
         return __draw_index_user_recom_mode(all=all, ad_id=ad_id, user_id=selected_user_item)
     return __draw_index_no_data()
 
@@ -426,18 +425,18 @@ def open_item(ad_id):
     global limit
 
     limit = state.default_limit
-    selected_item = ad_id
+    selected_item = int(ad_id)
     return redirect('/')
 
 
-@get('/_open_item_for_user/<user_id>/<all>')
+@get('/_open_item_for_user/<user_id>')
 @view('index')
-def open_item(user_id, all):
+def open_item(user_id):
     global selected_user_item
     global limit
 
     limit = state.default_limit
-    selected_user_item = user_id
+    selected_user_item = int(user_id)
     return redirect('/')
 
 
