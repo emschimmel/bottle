@@ -429,15 +429,19 @@ def open_item(ad_id):
     return redirect('/')
 
 
-@get('/_open_item_for_user/<user_id>')
+@get('/_open_item_for_user/<user_id>/<all>')
 @view('index')
-def open_item(user_id):
+def open_item(user_id, all):
     global selected_user_item
     global limit
 
     limit = state.default_limit
     selected_user_item = int(user_id)
-    return redirect('/')
+    if all == "False":
+        return redirect('/share/'+str(selected_item))
+    else:
+        return redirect('/')
+
 
 
 @get('/_show_all')
