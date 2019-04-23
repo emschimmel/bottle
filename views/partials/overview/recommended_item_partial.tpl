@@ -31,7 +31,7 @@
     <tr>
     % if system_mode == "user_recom_mode":
       <td style="background-color:hsl({{(1-float(recommendation.score/3))*150}},100%,50%)">
-        <span class="w-100">{{ "{0:.2f}".format((recommendation.score / 3)*100) }}% Chance that the user places a bid
+        <span class="w-100">{{ "{0:.2f}".format((recommendation.score / 3)*100) }}%
         &nbsp; ({{recommendation.rank}})
         </span>
       </td>
