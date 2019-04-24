@@ -421,11 +421,13 @@ def main_page():
 @get('/_open_item/<ad_id>')
 @view('index')
 def open_item(ad_id):
+    global selected_user_item
     global selected_item
     global limit
 
     limit = state.default_limit
     selected_item = int(ad_id)
+    selected_user_item = 0
     return redirect('/')
 
 
