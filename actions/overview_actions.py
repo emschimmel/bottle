@@ -49,8 +49,7 @@ class OverviewActions(DataFrameObject):
     @classmethod
     def ad_id_overview_user_recom(self, search_string, filter_string, offline_mode):
         if offline_mode:
-            combined = DataFrameObject.uploaded_product_recom_data.merge(DataFrameObject.enriched_data, left_on='lot_id', right_on='ad_id', how='inner')
-            ad_id_list = [id for id in self.uploaded_product_recom_data(combined, search_string=search_string) if not DataFrameObject.enriched_data.loc[DataFrameObject.enriched_data['ad_id'] == id].empty]
+            ad_id_list = [id for id in DataFrameObject.uploaded_product_recom_data['lot_id'].unique() if not DataFrameObject.enriched_data.loc[DataFrameObject.enriched_data['ad_id'] == str(id)].empty]
         else:
             ad_id_list = self.__ad_id_overview_user_recom(DataFrameObject.uploaded_product_recom_data, search_string=search_string)
         if filter_string:
@@ -69,7 +68,7 @@ class OverviewActions(DataFrameObject):
         result = AdObject()
         result.id = ad_id
         if State.system_mode == State.AD_USER_RECOM_MODE:
-            full_adds = DataFrameObject.uploaded_product_recom_data.loc[DataFrameObject.uploaded_product_recom_data['lot_id'] == ad_id].values
+            full_adds = DataFrameObject.uploaded_product_recom_data.loc[DataFrameObject.uploaded_product_recom_data['lot_id'] == int(ad_id)].values
             for row in full_adds:
                 result.title = row[3]
                 result.categories = row[6]
