@@ -68,6 +68,12 @@ class OverviewActions(DataFrameObject):
     def get_ad_by_id(self, ad_id):
         result = AdObject()
         result.id = ad_id
+        if State.system_mode == State.AD_USER_RECOM_MODE:
+            full_adds = DataFrameObject.uploaded_product_recom_data.loc[DataFrameObject.uploaded_product_recom_data['lot_id'] == ad_id].values
+            for row in full_adds:
+                result.title = row[3]
+                result.categories = row[6]
+                break
         enriched_result, loaded = self.__set_enriched_data(ad_id, result)
         result = enriched_result
         if not loaded and not State.offline_mode:
@@ -104,6 +110,7 @@ class OverviewActions(DataFrameObject):
         for index, result in enumerate(result_list[0:limit]):
             result, loaded = self.__set_enriched_data(result.id, result)
             if loaded:
+                print(result)
                 result_list[index] = result
             else:
                 ad_ids_to_load.append(result.id)

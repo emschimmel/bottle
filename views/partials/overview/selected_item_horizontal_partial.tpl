@@ -1,5 +1,5 @@
 <div class="row">
-<img width="300px" height="50%" src="{{selected_ad.img_url}}" class="col-3" />
+<img width="220px" height="150px" src="{{selected_ad.img_url}}" />
 <div class="col-9">
 <table class="table table-sm">
     <thead>

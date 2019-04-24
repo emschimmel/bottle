@@ -36,12 +36,14 @@ class AdObject(object):
     def set_enriched_data(self, url, img_url, title, price, loaded, error, expired, categories, enriched_at, location, extra_data=list(), extra_images=list()):
         self.url = url
         self.img_url = img_url
-        self.title = title
+        if self.title == "":
+            self.title = title
         self.price = price
         self.loaded = loaded
         self.error = error
         self.expired = expired
-        self.categories = categories
+        if len(self.categories):
+            self.categories = [self.categories]
         if isinstance(categories, str):
             self.categories = ast.literal_eval(categories)
         self.enriched_at = enriched_at
