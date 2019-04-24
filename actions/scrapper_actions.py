@@ -118,7 +118,8 @@ class ScrapperActions(DataFrameObject):
     @classmethod
     def start_all_for_user_recom(self):
         # TODO: check if this is the right field returning (lot_id vs ad_id)
-        all_ids = DataFrameObject.uploaded_user_recom_data.loc[DataFrameObject.uploaded_user_recom_data['lot_id'].isin(DataFrameObject.enriched_data['ad_id']) == False]['ad_id']
+        all_ids = DataFrameObject.uploaded_product_recom_data.loc[DataFrameObject.uploaded_product_recom_data['lot_id'].isin(DataFrameObject.enriched_data['ad_id']) == False]['lot_id', 'auction_id']
+        print(all_ids)
         #TODO: check if this is the right one
         self.__start_processes_for_list_without_recommenders(all_ids)
 

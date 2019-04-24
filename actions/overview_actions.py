@@ -110,7 +110,6 @@ class OverviewActions(DataFrameObject):
         for index, result in enumerate(result_list[0:limit]):
             result, loaded = self.__set_enriched_data(result.id, result)
             if loaded:
-                print(result)
                 result_list[index] = result
             else:
                 ad_ids_to_load.append(result.id)
@@ -159,7 +158,6 @@ class OverviewActions(DataFrameObject):
         #todo: do something with the category of the ad_id
         result_list = []
         for row in DataFrameObject.uploaded_user_recom_data.loc[DataFrameObject.uploaded_user_recom_data['user'] == int(user_id)].values:
-        # for row in DataFrameObject.uploaded_user_recom_data.loc[DataFrameObject.uploaded_user_recom_data['lot_id'] == ad_id].values:
             if row[1] != ad_id:
                 result = AdObject()
                 result.set_initial_data(row[1], row[2], row[2])

@@ -42,6 +42,8 @@ class AdObject(object):
         self.loaded = loaded
         self.error = error
         self.expired = expired
+        if isinstance(self.categories, float):
+            self.categories = []
         if len(self.categories):
             self.categories = [self.categories]
         if isinstance(categories, str):
