@@ -1,5 +1,7 @@
 # Ui tool to visualize ad recommendations
 
+TODO: update this Readme to support the new usage mode.
+
 ### Start
 
 The format of the csv files should be this order of fields: 
