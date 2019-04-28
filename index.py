@@ -193,9 +193,14 @@ def __draw_index_user_recom_mode(all=True, ad_id=selected_item, user_id=selected
         view['selected_ad'] = selected_ad
         recommendations, product_ad_ids_to_load = overview_action.get_product_recommenders_for_initial_view(ad_id=ad_id,
                                                                                                             limit=limit)
+
+        # if len(recommendations):
+        #     recommendations = sorted(recommendations, key=lambda x: float(x.score), reverse=True)
         user_recommendations, user_ad_ids_to_load = overview_action.get_user_recommenders_for_initial_view(ad_id=ad_id,
                                                                                                            user_id=user_id,
                                                                                                            limit=limit)
+        # if len(user_recommendations):
+        #     user_recommendations = sorted(user_recommendations, key=lambda x: float(x.score), reverse=True)
 
         if len(product_ad_ids_to_load + user_ad_ids_to_load) > 0:
             scrapper_action.start_processes_for_list(product_ad_ids_to_load + user_ad_ids_to_load)

@@ -67,19 +67,24 @@ class OverviewActions(DataFrameObject):
     def get_ad_by_id(self, ad_id):
         result = AdObject()
         result.id = ad_id
+        auction = ""
         if State.system_mode == State.AD_USER_RECOM_MODE:
             full_adds = DataFrameObject.uploaded_product_recom_data.loc[DataFrameObject.uploaded_product_recom_data['lot_id'] == int(ad_id)].values
             for row in full_adds:
+                auction = row[1]
                 result.title = row[3]
                 result.categories = row[6]
                 break
         enriched_result, loaded = self.__set_enriched_data(ad_id, result)
         result = enriched_result
         if not loaded and not State.offline_mode:
-            data = TenantConfig().startForId(tenant=State.tenant, id=ad_id)
+            data = TenantConfig().startForId(tenant=State.tenant, id="{auction}_{lot_id}".format(auction=auction, lot_id=ad_id))
             if data is not None:
                 if data.loaded:
-                    panda_row = pandas.DataFrame(data=[data.enriched_panda_row()], columns=DataFrameObject.enriched_data.columns)
+                    data.title = result.title
+                    data.categories = [result.categories]
+                    data = data.enriched_panda_row()
+                    panda_row = pandas.DataFrame(data=[data], columns=DataFrameObject.enriched_data.columns)
                     DataFrameObject.enriched_data = DataFrameObject.enriched_data.append(panda_row, ignore_index=True)
                     DataFrameObject.save_enriched_data()
                     result, loaded = self.__set_enriched_data(ad_id, result)
@@ -111,7 +116,11 @@ class OverviewActions(DataFrameObject):
             if loaded:
                 result_list[index] = result
             else:
-                ad_ids_to_load.append(result.id)
+                auction = DataFrameObject.uploaded_product_recom_data.loc[DataFrameObject.uploaded_product_recom_data['lot_id'] == result.id]['auction']
+                if not auction.empty:
+                    ad_ids_to_load.append("{auction}_{lot_id}".format(auction=auction.values[0], lot_id=result.id))
+                else:
+                    del result_list[index]
         return result_list, ad_ids_to_load
 
     def get_user_recommenders_for_initial_view(self, ad_id, user_id, limit=6):
@@ -124,7 +133,12 @@ class OverviewActions(DataFrameObject):
             if loaded:
                 result_list[index] = result
             else:
-                ad_ids_to_load.append(result.id)
+                auction = DataFrameObject.uploaded_product_recom_data.loc[DataFrameObject.uploaded_product_recom_data['lot_id'] == result.id]['auction']
+
+                if not auction.empty:
+                    ad_ids_to_load.append("{auction}_{lot_id}".format(auction=auction.values[0], lot_id=result.id))
+                else:
+                    del result_list[index]
         return result_list, ad_ids_to_load
 
     @classmethod
@@ -167,7 +181,7 @@ class OverviewActions(DataFrameObject):
 
     @staticmethod
     def __set_enriched_data(ad_id, result):
-        enriched_result = DataFrameObject.enriched_data.loc[DataFrameObject.enriched_data['ad_id'] == ad_id]
+        enriched_result = DataFrameObject.enriched_data.loc[DataFrameObject.enriched_data['ad_id'] == str(ad_id)]
         if not enriched_result.empty:
             for row in enriched_result.values:
                 result.set_enriched_data(url=row[1],

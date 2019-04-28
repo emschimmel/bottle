@@ -15,9 +15,12 @@ class EnrichDataBVA():
     @classmethod
     def start_for_id(self, ad_id, url, tenant):
         object = AdObject()
-        object.id = ad_id
-        object, auction_id = self.__get_product_data(ad_id, object)
-        url = url.format(auction_id=auction_id, lot_id=ad_id)
+        print("starting for:")
+        print(ad_id)
+        auction_id, lot_id = str(ad_id).split('_')
+        object.id = lot_id
+
+        url = url.format(auction_id=auction_id, lot_id=lot_id)
         response = requests.get(url)
         html = BeautifulSoup(response.content, "html.parser") # slowest parser
         # print(html)
@@ -25,35 +28,11 @@ class EnrichDataBVA():
         object.url = url
 
         object.error = False
-        object.img_url, error = self.__get_img(html, tenant, ad_id)
+        object.img_url, error = self.__get_img(html, tenant, lot_id)
         # object.extra_images, error = self.__get_other_images(html=html, tenant=tenant, id=ad_id)
         object.loaded = True
+        print(object)
         return object
-
-    @staticmethod
-    def __get_product_data(id, object):
-        auction_id = 1
-        # available_data = ScrapperActions.uploaded_product_recom_data[ScrapperActions.uploaded_product_recom_data['lot_id'] == id]
-        # if available_data.empty:
-        #     for row in available_data.values:
-        #         auction_id = row[1]
-        #         object.title = row[3]
-        #         object.categories = row[6]
-        # else:
-        #     available_data = ScrapperActions.uploaded_product_recom_data[ScrapperActions.uploaded_product_recom_data['recommendation_lot_id'] == id]
-        #     if available_data.empty:
-        #         for row in available_data.values:
-        #             auction_id = row[8]
-        #             object.title = row[10]
-        #             object.categories = row[13]
-        #     else:
-        #         available_data = ScrapperActions.uploaded_user_recom_data[ScrapperActions.uploaded_user_recom_data['lot_id'] == id]
-        #         if available_data.empty:
-        #             for row in available_data.values:
-        #                 auction_id = row[3]
-        #                 object.title = row[7]
-        #                 object.categories = row[10]
-        return object, auction_id
 
     @staticmethod
     def __get_other_images(html, tenant, id):

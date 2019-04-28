@@ -112,8 +112,12 @@ class ScrapperActions(DataFrameObject):
             all_ids = [id for id in all_ids if id >= start and id <= end]
         if amount:
             all_ids = all_ids[:int(amount)]
+        modified_ids = []
+        for id in all_ids:
+            auction = DataFrameObject.uploaded_user_recom_data.loc[DataFrameObject.uploaded_user_recom_data['lot_id'] == id]['action']
+            modified_ids.append(auction+"_"+id)
         #TODO: check if this is the right one
-        self.__start_processes_for_list_without_recommenders(all_ids)
+        self.__start_processes_for_list_without_recommenders(modified_ids)
 
     @classmethod
     def start_all_for_user_recom(self):
@@ -121,7 +125,12 @@ class ScrapperActions(DataFrameObject):
         all_ids = DataFrameObject.uploaded_product_recom_data.loc[DataFrameObject.uploaded_product_recom_data['lot_id'].isin(DataFrameObject.enriched_data['ad_id']) == False]['lot_id', 'auction_id']
         print(all_ids)
         #TODO: check if this is the right one
-        self.__start_processes_for_list_without_recommenders(all_ids)
+        modified_ids = []
+        for id in all_ids:
+            auction = DataFrameObject.uploaded_user_recom_data.loc[DataFrameObject.uploaded_user_recom_data['lot_id'] == id]['action']
+            modified_ids.append(auction+"_"+id)
+        #TODO: check if this is the right one
+        self.__start_processes_for_list_without_recommenders(modified_ids)
 
 
     @classmethod
