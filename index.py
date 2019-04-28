@@ -391,6 +391,9 @@ def __draw_scrape_controller():
     elif State.system_mode == State.AD_LIST_MODE:
         view['amount_todo'] = scrapper_action.amount_adds_for_list()
         view['amount_done'] = scrapper_action.amount_enriched_for_list()
+    elif State.system_mode == State.AD_USER_RECOM_MODE:
+        view['amount_todo'] = scrapper_action.amount_adds_for_user_mode()
+        view['amount_done'] = scrapper_action.amount_enriched_for_user_mode()
     else:
         view['amount_todo'] = 0
         view['amount_done'] = 0

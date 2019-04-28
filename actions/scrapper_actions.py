@@ -41,7 +41,7 @@ class ScrapperActions(DataFrameObject):
     @staticmethod
     def amount_enriched():
         try:
-            return len(DataFrameObject.enriched_data['ad_id'].isin(DataFrameObject.uploaded_csv_data['ad_id']))
+            return len(DataFrameObject.enriched_data['ad_id'].isin(DataFrameObject.uploaded_csv_data['ad_id']).unique())
         except:
             return 0
 
@@ -55,9 +55,26 @@ class ScrapperActions(DataFrameObject):
     @staticmethod
     def amount_enriched_for_list():
         try:
-            return len(DataFrameObject.enriched_data['ad_id'].isin(DataFrameObject.uploaded_add_list_data['ad_id']))
+            return len(DataFrameObject.enriched_data['ad_id'].isin(DataFrameObject.uploaded_add_list_data['ad_id']).unique())
         except:
             return 0
+
+    @staticmethod
+    def amount_adds_for_user_mode():
+        try:
+            return len(DataFrameObject.uploaded_product_recom_data['lot_id'].unique()+DataFrameObject.uploaded_user_recom_data['lot_id'].unique())
+        except:
+            return 0
+
+    @staticmethod
+    def amount_enriched_for_user_mode():
+        try:
+            productamount = len(DataFrameObject.enriched_data['ad_id'].isin(DataFrameObject.uploaded_product_recom_data['lot_id']).unique())
+            useramount = len(DataFrameObject.enriched_data['ad_id'].isin(DataFrameObject.uploaded_user_recom_data['lot_id']).unique())
+            return productamount+useramount
+        except:
+            return 0
+
 
     @classmethod
     def start_for_criteria(self, amount, start, end):
@@ -112,26 +129,25 @@ class ScrapperActions(DataFrameObject):
             all_ids = [id for id in all_ids if id >= start and id <= end]
         if amount:
             all_ids = all_ids[:int(amount)]
-        modified_ids = []
-        for id in all_ids:
-            auction = DataFrameObject.uploaded_user_recom_data.loc[DataFrameObject.uploaded_user_recom_data['lot_id'] == id]['action']
-            modified_ids.append(auction+"_"+id)
-        #TODO: check if this is the right one
-        self.__start_processes_for_list_without_recommenders(modified_ids)
+        self.__find_auction_and_start_without_recommenders(all_ids)
 
     @classmethod
     def start_all_for_user_recom(self):
         # TODO: check if this is the right field returning (lot_id vs ad_id)
-        all_ids = DataFrameObject.uploaded_product_recom_data.loc[DataFrameObject.uploaded_product_recom_data['lot_id'].isin(DataFrameObject.enriched_data['ad_id']) == False]['lot_id', 'auction_id']
-        print(all_ids)
-        #TODO: check if this is the right one
+        all_ids = DataFrameObject.uploaded_product_recom_data.loc[DataFrameObject.uploaded_product_recom_data['lot_id'].isin(DataFrameObject.enriched_data['ad_id']) == False]['lot_id']
+        self.__find_auction_and_start_without_recommenders(all_ids)
+
+
+    @classmethod
+    def __find_auction_and_start_without_recommenders(self, all_ids):
         modified_ids = []
         for id in all_ids:
-            auction = DataFrameObject.uploaded_user_recom_data.loc[DataFrameObject.uploaded_user_recom_data['lot_id'] == id]['action']
-            modified_ids.append(auction+"_"+id)
-        #TODO: check if this is the right one
+            auction = \
+            DataFrameObject.uploaded_user_recom_data.loc[DataFrameObject.uploaded_user_recom_data['lot_id'] == id][
+                'auction']
+            if not auction.empty:
+                modified_ids.append("{auction}_{lot_id}".format(auction=auction.values[0], lot_id=id))
         self.__start_processes_for_list_without_recommenders(modified_ids)
-
 
     @classmethod
     def __start_processes_for_list_without_recommenders(self, all_ids):
