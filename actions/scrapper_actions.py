@@ -62,15 +62,15 @@ class ScrapperActions(DataFrameObject):
     @staticmethod
     def amount_adds_for_user_mode():
         try:
-            return len(DataFrameObject.uploaded_product_recom_data['lot_id'].unique()+DataFrameObject.uploaded_user_recom_data['lot_id'].unique())
+            return len(DataFrameObject.uploaded_product_recom_data['lot_id'].unique())+len(DataFrameObject.uploaded_user_recom_data['lot_id'].unique())
         except:
             return 0
 
     @staticmethod
     def amount_enriched_for_user_mode():
         try:
-            productamount = len(DataFrameObject.enriched_data['ad_id'].isin(DataFrameObject.uploaded_product_recom_data['lot_id']).unique())
-            useramount = len(DataFrameObject.enriched_data['ad_id'].isin(DataFrameObject.uploaded_user_recom_data['lot_id']).unique())
+            productamount = len(DataFrameObject.uploaded_product_recom_data['lot_id'].isin(DataFrameObject.enriched_data['ad_id']).unique())
+            useramount = len(DataFrameObject.uploaded_user_recom_data['lot_id'].isin(DataFrameObject.enriched_data['ad_id']).unique())
             return productamount+useramount
         except:
             return 0
@@ -119,7 +119,7 @@ class ScrapperActions(DataFrameObject):
     @classmethod
     def start_for_criteria_for_user_recom(self, amount, start, end):
         # TODO: check if this is the right field returning (lot_id vs ad_id)
-        all_ids = [id for id in list(DataFrameObject.uploaded_user_recom_data['lot_id'].unique()) if
+        all_ids = [id for id in list(DataFrameObject.uploaded_product_recom_data['lot_id'].unique()) if
                    id not in DataFrameObject.enriched_data]
         if start or end:
             if not start:
@@ -135,6 +135,7 @@ class ScrapperActions(DataFrameObject):
     def start_all_for_user_recom(self):
         # TODO: check if this is the right field returning (lot_id vs ad_id)
         all_ids = DataFrameObject.uploaded_product_recom_data.loc[DataFrameObject.uploaded_product_recom_data['lot_id'].isin(DataFrameObject.enriched_data['ad_id']) == False]['lot_id']
+        all_ids = all_ids+DataFrameObject.uploaded_user_recom_data.loc[DataFrameObject.uploaded_user_recom_data['lot_id'].isin(DataFrameObject.enriched_data['ad_id']) == False]['lot_id']
         self.__find_auction_and_start_without_recommenders(all_ids)
 
 

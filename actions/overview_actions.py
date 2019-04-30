@@ -72,7 +72,7 @@ class OverviewActions(DataFrameObject):
             full_adds = DataFrameObject.uploaded_product_recom_data.loc[DataFrameObject.uploaded_product_recom_data['lot_id'] == int(ad_id)].values
             for row in full_adds:
                 auction = row[1]
-                result.title = row[3]
+                result.title = "{auction_name} > {title}".format(auction_name = row[2], title=row[3])
                 result.categories = row[6]
                 break
         enriched_result, loaded = self.__set_enriched_data(ad_id, result)
@@ -161,7 +161,7 @@ class OverviewActions(DataFrameObject):
         for row in DataFrameObject.uploaded_product_recom_data.loc[DataFrameObject.uploaded_product_recom_data['lot_id'] == int(ad_id)].values:
             result = AdObject()
             result.set_initial_data(row[7], row[14], row[14])
-            result.title = row[10]
+            result.title = "{auction_name} > {title}".format(auction_name = row[9], title=row[10])
             result.categories = row[13]
             result_list.append(result)
         return result_list
@@ -174,7 +174,7 @@ class OverviewActions(DataFrameObject):
             if row[1] != ad_id:
                 result = AdObject()
                 result.set_initial_data(row[1], row[2], row[2])
-                result.title = row[7]
+                result.title = "{auction_name} > {title}".format(auction_name = row[6], title=row[7])
                 result.categories = row[10]
                 result_list.append(result)
         return result_list
